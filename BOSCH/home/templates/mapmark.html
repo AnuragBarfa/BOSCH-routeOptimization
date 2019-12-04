@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>adddefaultpushpinHTML</title>
+        <meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
+        <style type='text/css'>body{margin:0;padding:0;overflow:hidden;font-family:'Segoe UI',Helvetica,Arial,Sans-Serif}</style>
+    </head>
+    <body>
+        <div id='printoutPanel'></div>
+        <input type="search" value="Search" />
+        
+        <div id='myMap' style='width: 100vw; height: 100vh;'></div>
+        <script type='text/javascript'>
+            function loadMapScenario() {
+               // var map = new Microsoft.Maps.Map(document.getElementById('myMap'), {});
+                var map = new Microsoft.Maps.Map(document.getElementById('myMap'), {
+                    /* No need to set credentials if already passed in URL */
+                    center: new Microsoft.Maps.Location(47.60357, -122.32945)
+                });
+                //-----------------------------MARKER-----------------------------------
+                //DEFAULT MARKER
+                //var pushpin = new Microsoft.Maps.Pushpin(map.getCenter(), null);
+                //Colour Marker
+                //var pushpin = new Microsoft.Maps.Pushpin(map.getCenter(), { color: 'red' });
+                //Image Mark
+                /*var pushpin = new Microsoft.Maps.Pushpin(map.getCenter(), {
+                    icon: 'https://www.bingmapsportal.com/Content/images/poi_custom.png',
+                    anchor: new Microsoft.Maps.Point(12, 39)
+                });*/
+                //Title
+                 /*var pushpin = new Microsoft.Maps.Pushpin(map.getCenter(), { text: 'A', title: 'Title', subTitle: 'Subtitle' });
+               */
+                /*var pushpin = new Microsoft.Maps.Pushpin(map.getCenter(), {
+                    icon: 'https://bingmapsisdk.blob.core.windows.net/isdksamples/defaultPushpin.png',
+                    anchor: new Microsoft.Maps.Point(12, 39)
+                });*/
+                /* var pushpin = new Microsoft.Maps.Pushpin(map.getCenter(), {
+                    icon: 'https://www.bingmapsportal.com/Content/images/poi_custom.png',
+                    anchor: new Microsoft.Maps.Point(12, 39),
+                    text: 'A',
+                    textOffset: new Microsoft.Maps.Point(0, 5)
+                });
+
+                map.entities.push(pushpin);
+                pushpin.setOptions({ enableHoverStyle: true, enableClickedStyle: true });
+                document.getElementById('printoutPanel').innerHTML =
+                    '<b>Location:</b> <br>' + pushpin.getLocation() + '<br>';
+                document.getElementById('printoutPanel').innerHTML =
+                    '<b>Icon:</b> <br>' + pushpin.getIcon() + '<br>';
+                document.getElementById('printoutPanel').innerHTML +=
+                    '<b>Anchor:</b> <br>' + pushpin.getAnchor() + '<br>';
+                document.getElementById('printoutPanel').innerHTML +=
+                    '<b>Text:</b> <br>' + pushpin.getText() + '<br>';
+                */
+                ///--------------------------MARKER OVER----------------------------------
+
+                //-----------------------POLYLINE-----------------------------------------
+                /*var center = map.getCenter();
+                //SIMPLE
+                var polyline = new Microsoft.Maps.Polyline([
+                    new Microsoft.Maps.Location(center.latitude + 0.02, center.longitude - 0.08),
+                    new Microsoft.Maps.Location(center.latitude + 0.02, center.longitude),
+                    new Microsoft.Maps.Location(center.latitude - 0.02, center.longitude),
+                    new Microsoft.Maps.Location(center.latitude - 0.02, center.longitude + 0.08)], null);
+                */
+               /* var polyline = new Microsoft.Maps.Polyline([
+                    new Microsoft.Maps.Location(center.latitude + 0.02, center.longitude - 0.08),
+                    new Microsoft.Maps.Location(center.latitude + 0.02, center.longitude),
+                    new Microsoft.Maps.Location(center.latitude - 0.02, center.longitude),
+                    new Microsoft.Maps.Location(center.latitude - 0.02, center.longitude + 0.08)], { strokeColor: 'blue', strokeThickness: 5, strokeDashArray: [1, 2, 5, 10] });
+                */
+              /*  var center = map.getCenter();
+                var polyline = new Microsoft.Maps.Polyline([
+                    new Microsoft.Maps.Location(center.latitude + 0.02, center.longitude - 0.08),
+                    new Microsoft.Maps.Location(center.latitude + 0.02, center.longitude),
+                    new Microsoft.Maps.Location(center.latitude - 0.02, center.longitude),
+                    new Microsoft.Maps.Location(center.latitude - 0.02, center.longitude + 0.08)], { strokeColor: 'green', strokeThickness: 5 });
+                map.entities.push(polyline);
+                document.getElementById('printoutPanel').innerHTML =
+                    'Setting polyline locations in 2 seconds...';
+                var updatePrintout = setTimeout(function () {
+                    polyline.setLocations([
+                        new Microsoft.Maps.Location(center.latitude + 0.02, center.longitude - 0.08),
+                        new Microsoft.Maps.Location(center.latitude - 0.02, center.longitude),
+                        new Microsoft.Maps.Location(center.latitude + 0.02, center.longitude),
+                        new Microsoft.Maps.Location(center.latitude - 0.02, center.longitude + 0.08)
+                    ]);
+                    document.getElementById('printoutPanel').innerHTML =
+                        'Locations of polyline set.';
+                }, 2000);
+
+                map.entities.push(polyline);
+                   document.getElementById('printoutPanel').innerHTML =
+                    '<b>Locations:</b> <br>' + polyline.getLocations() + '<br>';
+                document.getElementById('printoutPanel').innerHTML +=
+                    '<b>Stroke color:</b> <br>' + polyline.getStrokeColor() + '<br>';
+                document.getElementById('printoutPanel').innerHTML +=
+                    '<b>Stroke dash array:</b> <br>' + polyline.getStrokeDashArray() + '<br>';
+                document.getElementById('printoutPanel').innerHTML +=
+                    '<b>Stroke thickness:</b> <br>' + polyline.getStrokeThickness() + '<br>';
+                */
+                ///----------------------POLYLINE OVER------------------------------------
+                ///----------------------POLYGON------------------------------------------
+                ///-----------------------INFO--------------------------------------------
+                //var center = map.getCenter();
+               // var infobox = new Microsoft.Maps.Infobox(center, { title: 'Map Center', description: 'Seattle' });
+               /* var infobox = new Microsoft.Maps.Infobox(map.getCenter(), {
+                    title: 'Title',
+                    description: 'Description',
+                    actions: [
+                        { label: 'Handler1', eventHandler: function () { alert('Handler1'); } },
+                        { label: 'Handler2', eventHandler: function () { alert('Handler2'); } },
+                        { label: 'Handler3', eventHandler: function () { alert('Handler3'); } }
+                    ]
+                });*/
+               /* var infoboxTemplate = '<div id="infoboxText" style="background-color:White; border-style:solid; border-width:medium; border-color:DarkOrange; min-height:100px; width: 240px;">' +
+                    '<b id="infoboxTitle" style="position: absolute; top: 10px; left: 10px; width: 220px;">{title}</b>' +
+                    '<a id="infoboxDescription" style="position: absolute; top: 30px; left: 10px; width: 220px;">{description}</a></div>';
+                var infobox = new Microsoft.Maps.Infobox(center, { htmlContent: infoboxTemplate.replace('{title}', 'myTitle').replace('{description}', 'myDescription') });
+              
+                infobox.setMap(map);*/
+
+                 /*var center = map.getCenter();
+                var pushpin = new Microsoft.Maps.Pushpin(map.getCenter(), null);
+                var infobox = new Microsoft.Maps.Infobox(center, { title: 'Map Center', description: 'Seattle', visible: false });
+                infobox.setMap(map);
+                Microsoft.Maps.Events.addHandler(pushpin, 'click', function () {
+                    infobox.setOptions({ visible: true });
+                });*/
+                 var pushpins = Microsoft.Maps.TestDataGenerator.getPushpins(10, map.getBounds());
+                var infobox = new Microsoft.Maps.Infobox(pushpins[0].getLocation(), { visible: false, autoAlignment: true });
+                infobox.setMap(map);
+                for (var i = 0; i < pushpins.length; i++) {
+                    var pushpin = pushpins[i];
+                    //Store some metadata with the pushpin
+                    pushpin.metadata = {
+                        title: 'Pushpin ' + i,
+                        description: 'Discription for pushpin' + i
+                    };
+                    Microsoft.Maps.Events.addHandler(pushpin, 'click', function (args) {
+                        infobox.setOptions({
+                            location: args.target.getLocation(),
+                            title: args.target.metadata.title,
+                            description: args.target.metadata.description,
+                            visible: true
+                        });
+                    });
+                }
+                map.entities.push(pushpins);
+              
+                map.entities.push(pushpin);
+                ///-----------------------INFOOVER----------------------------------------
+            }
+        </script>
+        <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?key=Ak1Niz5T-7wp9lrVRb1kGtNm46vCML3OAkAiAL_7mPQWFe2N253Jw5E5lDl2y0kK&callback=loadMapScenario' async defer></script>
+    </body>
+</html>
