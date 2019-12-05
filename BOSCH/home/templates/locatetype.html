@@ -4,7 +4,7 @@
     <title></title>
     <meta charset="utf-8" />
     <script type='text/javascript'>
-    var map, searchManager,str='Your Searched Results: ',places=[],studentval =[];
+    var map,infobox, searchManager,str='Your Searched Results: ',places=[],studentval =[],locations=[],old=0;
 
 function onlyUnique(value, index, self) { 
     return self.indexOf(value) === index;
@@ -14,6 +14,9 @@ function onlyUnique(value, index, self) {
         map = new Microsoft.Maps.Map('#myMap', {
             credentials: 'Ak1Niz5T-7wp9lrVRb1kGtNm46vCML3OAkAiAL_7mPQWFe2N253Jw5E5lDl2y0kK'
         });
+
+        //Create an infobox at the center of the map but don't show it.
+
     }
         function showval(){
 
@@ -24,10 +27,18 @@ function onlyUnique(value, index, self) {
           console.log(studentval[i].value);
           //alert(studentval[i].value)
         }            
+        for (var i = 0; i < locations.length; i++) {
+          console.log(locations);
+          //alert(studentval[i].value)
+        }            
+        
         }
-        function clear(){
-            map.entities.clear();
-        }
+    function clear(){
+            map.clear();
+    }
+    function Optimize(){
+
+    }
     function Student() {
         document.getElementById("showbtn").style.display = "block";
         alert('No of studens: '+document.getElementById('studentval').value);
@@ -58,18 +69,38 @@ function onlyUnique(value, index, self) {
     function geocodeQuery(query) {
         
         var searchRequest = {
+
             where: query,
             callback: function (r) {
                 document.getElementById("student").style.display = "block";
                 if (r && r.results && r.results.length > 0) {
                     var pin, pins = [], locs = [], output = 'Results:<br/>';
-
+                    
+                        infobox = new Microsoft.Maps.Infobox(map.getCenter(), {
+                        visible: false
+                        });
+                        infobox.setMap(map);
+   
                     for (var i = 0; i < r.results.length; i++) {
                         //Create a pushpin for each result. 
-                        pin = new Microsoft.Maps.Pushpin(r.results[i].location, {
-                            text: i + ''
-                        });
+                        var x=i+old;
+                        pin = new Microsoft.Maps.Pushpin(r.results[i].location,{ text: x+""});
+                        
+                         pin.metadata = {
+                          title: 'Pin ' + i,
+                          description: 'Discription for pin' + i
+                        };
+
+                        Microsoft.Maps.Events.addHandler(pin, 'click', pushpinClicked);
+
+                        
+                        
                         pins.push(pin);
+                        //alert("Pin "+pin);
+                        //alert("Loca "+r.results[i].location);
+                        locations.push(r.results[i].locations)    
+                        locations=locations.filter(onlyUnique);
+
                         locs.push(r.results[i].location);
                         var a = r.results[0].name;
                         a=a.split(",")[0];
@@ -78,6 +109,7 @@ function onlyUnique(value, index, self) {
                         //str+=' ,'+r.results[0].name+' ,';
                         output += i + ') ' + r.results[i].name + '<br/>';
                     }
+                    old+=i;
                     
                     //Add the pins to the map
                     map.entities.push(pins);
@@ -109,9 +141,20 @@ function onlyUnique(value, index, self) {
 
         //Make the geocode request.
         searchManager.geocode(searchRequest);
-
-
     }
+
+   function pushpinClicked(e) {
+        //Make sure the infobox has metadata to display.
+        if (e.target.metadata) {
+            //Set the infobox options with the metadata of the pushpin.
+            infobox.setOptions({
+                location: e.target.getLocation(),
+                title: e.target.metadata.title,
+                visible: true
+            });
+        }
+    }
+
     </script>
     <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap' async defer>
         
