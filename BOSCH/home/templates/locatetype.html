@@ -24,25 +24,30 @@ function onlyUnique(value, index, self) {
                         console.log(places[i]);
                     }
         for (var i = 0; i < studentval.length; i++) {
-          console.log(studentval[i].value);
+          console.log(studentval[i]);
           //alert(studentval[i].value)
         }            
-        for (var i = 0; i < locations.length; i++) {
-          console.log(locations);
-          //alert(studentval[i].value)
-        }            
-        
         }
+    
     function clear(){
             map.clear();
     }
-    function Optimize(){
 
+    function Optimize(){
+        var rand1 = locations[Math.floor(Math.random() * locations.length)];
+        var rand2;
+        while(1){
+         rand2 = locations[Math.floor(Math.random() * locations.length)];
+        if(rand1!=rand2)break;
+        }
+
+        alert(rand1+" "+rand2);
+           
     }
     function Student() {
         document.getElementById("showbtn").style.display = "block";
         alert('No of studens: '+document.getElementById('studentval').value);
-        studentval.push(document.getElementById('studentval'));
+        studentval.push(document.getElementById('studentval').value);
         document.getElementById("student").style.display = "none";
         //console.log(school.value);
     }
@@ -83,12 +88,12 @@ function onlyUnique(value, index, self) {
    
                     for (var i = 0; i < r.results.length; i++) {
                         //Create a pushpin for each result. 
-                        var x=i+old;
+                        var x=i+old+1;
                         pin = new Microsoft.Maps.Pushpin(r.results[i].location,{ text: x+""});
                         
                          pin.metadata = {
-                          title: 'Pin ' + i,
-                          description: 'Discription for pin' + i
+                          title: 'Pin ' + x,
+                          description: 'Discription for pin' + x
                         };
 
                         Microsoft.Maps.Events.addHandler(pin, 'click', pushpinClicked);
@@ -98,17 +103,16 @@ function onlyUnique(value, index, self) {
                         pins.push(pin);
                         //alert("Pin "+pin);
                         //alert("Loca "+r.results[i].location);
-                        locations.push(r.results[i].locations)    
-                        locations=locations.filter(onlyUnique);
-
                         locs.push(r.results[i].location);
                         var a = r.results[0].name;
                         a=a.split(",")[0];
                         places.push(a);
                         places=places.filter( onlyUnique );
                         //str+=' ,'+r.results[0].name+' ,';
-                        output += i + ') ' + r.results[i].name + '<br/>';
+                        
+                        output += x + ') ' + r.results[i].name + '<br/>';
                     }
+                    locations=locations.concat(locs);
                     old+=i;
                     
                     //Add the pins to the map
@@ -119,15 +123,14 @@ function onlyUnique(value, index, self) {
 
                     //Determine a bounding box to best view the results.
                     var bounds;
-
                     if (r.results.length == 1) {
-                        bounds = r.results[0].bestView;
 
-                        
+                        //bounds = r.results[0].bestView;
+                    bounds = Microsoft.Maps.LocationRect.fromLocations(locations);
 
                     } else {
                         //Use the locations from the results to calculate a bounding box.
-                        bounds = Microsoft.Maps.LocationRect.fromLocations(locs);
+                        bounds = Microsoft.Maps.LocationRect.fromLocations(locations);
                     }
 
                     map.setView({ bounds: bounds });
