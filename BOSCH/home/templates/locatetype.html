@@ -4,8 +4,7 @@
     <title></title>
     <meta charset="utf-8" />
     <script type='text/javascript'>
-    var map, searchManager,str='Your Searched Results: ',places=[];
-var studentval =[];
+    var map, searchManager,str='Your Searched Results: ',places=[],studentval =[];
 
 function onlyUnique(value, index, self) { 
     return self.indexOf(value) === index;
@@ -23,17 +22,23 @@ function onlyUnique(value, index, self) {
                     }
         for (var i = 0; i < studentval.length; i++) {
           console.log(studentval[i].value);
+          //alert(studentval[i].value)
         }            
         }
+        function clear(){
+            map.entities.clear();
+        }
     function Student() {
+        document.getElementById("showbtn").style.display = "block";
         alert('No of studens: '+document.getElementById('studentval').value);
         studentval.push(document.getElementById('studentval'));
-         document.getElementById("student").style.display = "none";
-
+        document.getElementById("student").style.display = "none";
         //console.log(school.value);
     }
 
     function Search() {
+        document.getElementById("showbtn2").style.display = "block";
+        document.getElementById('studentval').value="";
         if (!searchManager) {
             //Create an instance of the search manager and perform the search.
             Microsoft.Maps.loadModule('Microsoft.Maps.Search', function () {
@@ -125,7 +130,8 @@ function onlyUnique(value, index, self) {
   
     </div>
 <div>
-    <button onclick="showval()"> Show All Values</button>
+    <button id="showbtn" onclick="showval()" hidden="hidden"> Show All Values</button>
+    <button  id="showbtn2" onclick="clear()" hidden="hidden"> Clear On Map</button>
 </div>
 
 </body>
