@@ -34,15 +34,14 @@ function onlyUnique(value, index, self) {
     }
 
     function Optimize(){
-        
+
         var rand1 = locations[Math.floor(Math.random() * locations.length)];
         var rand2;
         while(1){
          rand2 = locations[Math.floor(Math.random() * locations.length)];
         if(rand1!=rand2)break;
         }
-
-        alert(rand1+" "+rand2);
+            alert(rand1+" "+rand2);
            
     }
     function Student() {
@@ -178,7 +177,8 @@ function onlyUnique(value, index, self) {
     </div>
 <div>
     <button id="showbtn" onclick="showval()" hidden="hidden"> Show All Values</button>
-    <button  id="showbtn2" onclick="Optimize()" hidden="hidden"> Route Optimize</button>
+    <button  type="submit" id="showbtn2" onclick="Optimize()" hidden="hidden"> Route Optimize</button>
+
 </div>
 
 </body>
