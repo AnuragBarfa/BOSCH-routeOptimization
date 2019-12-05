@@ -37,7 +37,7 @@ function onlyUnique(value, index, self) {
     }
 
     function Search() {
-        
+        document.getElementById("showbtn2").style.display = "block";
         document.getElementById('studentval').value="";
         if (!searchManager) {
             //Create an instance of the search manager and perform the search.
@@ -131,7 +131,7 @@ function onlyUnique(value, index, self) {
     </div>
 <div>
     <button id="showbtn" onclick="showval()" hidden="hidden"> Show All Values</button>
-    
+    <button  id="showbtn2" onclick="Optimize()" hidden="hidden"> Route Optimize</button>
 </div>
 
 </body>
