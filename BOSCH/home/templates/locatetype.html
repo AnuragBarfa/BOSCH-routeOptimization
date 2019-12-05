@@ -4,21 +4,33 @@
     <title></title>
     <meta charset="utf-8" />
     <script type='text/javascript'>
-    var map, searchManager,str='Your Searched Results: ',school='';
+    var map, searchManager,str='Your Searched Results: ',places=[];
 var studentval =[];
+
+function onlyUnique(value, index, self) { 
+    return self.indexOf(value) === index;
+}
+
     function GetMap() {
         map = new Microsoft.Maps.Map('#myMap', {
             credentials: 'Ak1Niz5T-7wp9lrVRb1kGtNm46vCML3OAkAiAL_7mPQWFe2N253Jw5E5lDl2y0kK'
         });
     }
-    function VALBOX(){
-        studentval.push(document.getElementById('student'));
-    }    
-    function Student() {
+        function showval(){
+
+            for (var i = 0; i < places.length; i++) {
+                        console.log(places[i]);
+                    }
         for (var i = 0; i < studentval.length; i++) {
           console.log(studentval[i].value);
+        }            
         }
-        
+    function Student() {
+        alert('No of studens: '+document.getElementById('studentval').value);
+        studentval.push(document.getElementById('studentval'));
+         document.getElementById("student").style.display = "none";
+
+        //console.log(school.value);
     }
 
     function Search() {
@@ -54,12 +66,14 @@ var studentval =[];
                         });
                         pins.push(pin);
                         locs.push(r.results[i].location);
-                        str+=' ,'+r.results[0].name+' ,';
-                        console.log(str);
-
+                        var a = r.results[0].name;
+                        a=a.split(",")[0];
+                        places.push(a);
+                        places=places.filter( onlyUnique );
+                        //str+=' ,'+r.results[0].name+' ,';
                         output += i + ') ' + r.results[i].name + '<br/>';
                     }
-
+                    
                     //Add the pins to the map
                     map.entities.push(pins);
 
@@ -106,7 +120,12 @@ var studentval =[];
     <div id='output' style="margin-left:10px;float:left;"></div>
     <div id="student" hidden="hidden" style="margin-left:10px;" onload="VALBOX();">
         <label>No. of Students:</label>
-        <input id='searchTbx' type='text'/>
-        <input type='button'value='Go' onclick='Student()'/>
+        <input id="studentval" type="text" name="enter" class="enter" value="" />
+        <input type="button" value="Go" onclick="Student()"/>
+  
     </div>
+<div>
+    <button onclick="showval()"> Show All Values</button>
+</div>
+
 </body>
