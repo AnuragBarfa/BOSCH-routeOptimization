@@ -1,1 +1,1 @@
-D:/usr/lib/python3.6/sre_parse.py
+/usr/lib/python3.6/sre_parse.py

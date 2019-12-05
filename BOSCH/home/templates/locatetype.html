@@ -13,7 +13,7 @@
     }
 
     function Student() {
-        //document.getElementById("student").style.display = "block";
+         var studentval = document.getElementById('student').value;
         
     }
 
@@ -39,6 +39,7 @@
         var searchRequest = {
             where: query,
             callback: function (r) {
+                document.getElementById("student").style.display = "block";
                 if (r && r.results && r.results.length > 0) {
                     var pin, pins = [], locs = [], output = 'Results:<br/>';
 
@@ -97,9 +98,9 @@
     <br/>
     <div id="myMap" style="position:relative;width:600px;height:400px;float:left;"></div>
     <div id='output' style="margin-left:10px;float:left;"></div>
-    <div id="student" style="margin-left:10px;float:left;">
+    <div id="student" hidden="hidden" style="margin-left:10px;">
         <label>No. of Students:</label>
         <input id='searchTbx' type='text'/>
-        <input type='button'value='Go' onclick='Student()'  />
+        <input type='button'value='Go' onclick='Student()'/>
     </div>
 </body>
