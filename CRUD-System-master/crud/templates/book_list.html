@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1 class="page-header">Locations</h1>
   <button class="btn btn-primary show-form" data-url="{% url 'book_create' %}">
   <span class="glyphicon glyphicon-plus"></span>
   New Location
@@ -11,8 +10,8 @@
       <tr>
         <th>#</th>
         <th>Location</th>
-        <th>No of Students</th>
-        
+        <th>Students</th>
+        <th>Timestamp</th>
       </tr>
     </thead>
     <tbody>
