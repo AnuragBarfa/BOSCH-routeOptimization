@@ -1,16 +1,8 @@
-from django.shortcuts import render
-from django.views.generic import UpdateView, ListView
-from django.http import HttpResponse
+from django.shortcuts import render,get_object_or_404
+from .models import Book
+from .forms import BookForm
+from django.http import JsonResponse
 from django.template.loader import render_to_string
-
-# Create your views here.
-def home(request):
-	return render(request,'home.html')
-
-def mapView(request):
-	return render(request,'mapView.html')
-
-
 
 def book_list(request):
 	books = Book.objects.all()
@@ -63,6 +55,8 @@ def book_delete(request,id):
 		data['html_form'] = render_to_string('book_delete.html',context,request=request)
 
 	return JsonResponse(data)
+
+
 
 
 

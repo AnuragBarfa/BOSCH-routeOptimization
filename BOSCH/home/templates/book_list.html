@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1 class="page-header">Books</h1>
+  <button class="btn btn-primary show-form" data-url="{% url 'book_create' %}">
+  <span class="glyphicon glyphicon-plus"></span>
+  New Book
+  </button>
+  <table class="table" id="book-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Type</th>
+        <th>Publication date</th>
+        <th>Pages</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% include "book_list_2.html" %}
+    </tbody>
+  </table>
+
+  <div class="modal fade" id="modal-book">
+    <div class="modal-dialog">
+      <div class="modal-content"></div>
+    </div>
+  </div>
+{% endblock %}
