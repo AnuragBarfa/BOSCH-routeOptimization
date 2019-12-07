@@ -1,24 +1,27 @@
 {% for book in books %}
+  
   <tr>
     <td>{{ book.id }}</td>
-    <td>{{ book.location }}</td>
-    <td>{{ book.no_of_students }}</td>
-    <td>{{ book.timestamp }}</td>
-    <td>  
-      <button class="btn btn-warning show-form-update" data-url="{% url 'book_update' book.id %}">
+    <td><pre style="white-space:pre-wrap; word-wrap:break-word;">{{ book.location }}</pre></td>
+    <td><pre style="white-space:pre-wrap; word-wrap:break-word;">{{ book.no_of_students }}</pre></td>
+    <td><pre style="white-space:pre-wrap; word-wrap:break-word;">{{ book.timestamp }}</pre></td>
+    <td style="width: 3%;">  
+      <button class="btn btn-warning show-form-update" data-url="{% url 'book_update' book.id %}" >
       <span class="glyphicon glyphicon-pencil"></span>
       
       </button>
     </td>
-    <td>  
+    <td style="width: 3%;">  
       <button class="btn btn-danger show-form-delete" data-url="{% url 'book_delete' book.id %}">
       <span class="glyphicon glyphicon-trash"></span>
       
       </button>
     </td>
   </tr>
+
 {% empty %}
   <tr>
     <td colspan="7" class="text-center bg-warning">No Location</td>
   </tr>
+
 {% endfor %}

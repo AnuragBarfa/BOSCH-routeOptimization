@@ -1,18 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <button class="btn btn-primary show-form" data-url="{% url 'book_create' %}" style="float: right;">
-
+  <button class="btn btn-primary show-form" data-url="{% url 'book_create' %}">
   <span class="glyphicon glyphicon-plus"></span>
+  New Location
   </button>
-  <br/>
-  <table class="table" id="book-table" style="float: right;width: 35%;">
+  <table class="table" id="book-table">
     <thead>
       <tr>
-        <th id="index" style="width: 5%;">#</th>
-        <th  style="width: 40%">Location</th>
-        <th style="width: 8%;">Students</th>
-        <th style="width: 12%;">Time</th>
+        <th>#</th>
+        <th>Location</th>
+        <th>Students</th>
+        <th>Timestamp</th>
       </tr>
     </thead>
     <tbody>
