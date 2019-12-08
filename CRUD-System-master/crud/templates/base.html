@@ -6,26 +6,31 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <title>Markers</title>
-        <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-    </head>
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <style type="text/css">
+      .pac-container{
+        z-index:10000;
+      }
+    </style>
+  </head>
   <body>
     <br/>
- <div id="map" style="position:relative;width:65%;height:400px;float:left;"></div>
+    <div id="map" style="position:relative;width:65%;height:400px;float:left;"></div>
 
     <div style='float:right; width: 180px;'>
- <div style='position: fixed'>
-     <div class="container" ></div>
+      <div style='position: fixed'>
+        <div class="container" >
+          
+        </div>
+      </div>
+    </div>
 
- </div>
-</div>
 
-
-<button  type="submit" id="optimize" onclick="Optimize()" > Route Optimize</button>
-      {% block content %}
-      {% endblock %}
+    <button  type="submit" id="optimize" onclick="Optimize()" > Route Optimize</button>
+    {% block content %}
+    {% endblock %}
 
     <script>
-
       function initMap() {
         var myLatLng = {lat: -25.363, lng: 131.044};
 
@@ -40,20 +45,64 @@
           title: 'Hello World!'
         });
 
-		var input = document.getElementById('searchTextField');
-  		new google.maps.places.Autocomplete(input);
-		
-		google.maps.event.addDomListener(window, 'load', initialize);
+  		  var input = document.getElementById('searchTextField');
+    		new google.maps.places.Autocomplete(input);
+    		var input = document.getElementById('searchTextField');
+        var autocomplete = new google.maps.places.Autocomplete(input);
+        google.maps.event.addListener(autocomplete, 'place_changed', function () {
+            var place = autocomplete.getPlace();
+            document.getElementById('city2').value = place.name;
+            document.getElementById('cityLat').value = place.geometry.location.lat();
+            document.getElementById('cityLng').value = place.geometry.location.lng();
+        });
       }
     </script>
-    <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmwBs8dSuwg56fTWsbJyMdrvXYU3_Pim4&libraries=places&callback=initMap">
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmwBs8dSuwg56fTWsbJyMdrvXYU3_Pim4&libraries=places&callback=initMap">
     </script>
     <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>  
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/plugin.js' %}"></script>
+    <script type="text/javascript">
+      $("#bookCreateForm").submit(function(e) {
+          alert("up")
+          e.preventDefault(); // avoid to execute the actual submit of the form.
+
+          var form = $(this);
+          var url = form.attr('action');
+
+          $.ajax({
+                 type: "POST",
+                 url: url,
+                 data: form.serialize(), // serializes the form's elements.
+                 success: function(data)
+                 {
+                     // alert(data); // show response from the php script.
+                     $('#myModal').modal('toggle');
+                     var row='<tr>'+
+                        '<td>'+form[0][6]['value']+'</td>'+
+                        '<td><pre style="white-space:pre-wrap; word-wrap:break-word;">'+form[0][2]['value']+'</pre></td>'+
+                        '<td><pre style="white-space:pre-wrap; word-wrap:break-word;">'+form[0][7]['value']+'</pre></td>'+
+                        '<td><pre style="white-space:pre-wrap; word-wrap:break-word;">'+form[0][6]['value']+'</pre></td>'+
+                        '<td style="width: 3%;">'+  
+                          '<button class="btn btn-warning show-form-update" data-url="{% url "book_update" 17 %}" >'+
+                          '<span class="glyphicon glyphicon-pencil"></span>'+
+                          '</button>'+
+                        '</td>'+
+                        '<td style="width: 3%;">'+  
+                          '<button class="btn btn-danger show-form-delete" data-url="{% url "book_delete" 17 %}">'+
+                          '<span class="glyphicon glyphicon-trash"></span>'+
+                          '</button>'+
+                        '</td>'+
+                      '</tr>';
+                    $('#book-table tr:last').after(row);  
+                    console.log(row);
+                 }
+               });
+
+      });
+    </script>
+    
     {% block javascript %}
     {% endblock %}
-
   </body>
 </html>

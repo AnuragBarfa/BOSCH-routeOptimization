@@ -1,69 +1,73 @@
-	{% load crispy_forms_tags %}
-<head><style>
-	.pac-container{
-		z-index:10000;
-	}
-</style></head>
-	<form method="post" data-url="{% url 'book_create' %}" class="create-form">
-		{% csrf_token %}
-			<div class="modal-header">
-			<h5 class="modal-title" >Create Location</h5>
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			<span aria-hidden="true">&times;</span>
-			</button>
-			</div>
-			<div class="modal-body">
-			<!-- {{form | crispy}} -->
-			<section><input id="searchTextField" type="text" size="50" name="location">
-			<input id="submit" type="button" value="Geocode">
-			</section>
-			<input type="text" name="timestamp">
+<!-- {% load crispy_forms_tags %} -->
+<head>
+	<style type="text/css">
+		.pac-container{
+			z-index:10000;
+		}
+	</style>
+</head>
+<form method="post" data-url="{% url 'book_create' %}" class="create-form">
+	{% csrf_token %}
+		<div class="modal-header">
+		<h5 class="modal-title" >Create Location</h5>
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		<span aria-hidden="true">&times;</span>
+		</button>
+		</div>
+		<div class="modal-body">
+		<!-- {{form | crispy}} -->
+		<!-- <section><input id="searchTextField" type="text" size="50" name="location">
+		<input id="submit" type="button" value="Geocode">
+		</section> -->
+			<input id="searchTextField" type="text" size="50" name="location" placeholder="Enter a location" autocomplete="on" runat="server" />  
+		    <input type="text" id="city2" name="city2" />
+		    <input type="text" id="cityLat" name="cityLat" />
+		    <input type="text" id="cityLng" name="cityLng" />
+		    <input type="text" name="timestamp">
 			<input type="number" name="no_of_students">
-			</div>
-			<div class="modal-footer">
-			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-			<button type="submit" class="btn btn-primary">add location</button>
-			</div>
-	</form>
-
-    <script>
-
-      function initMap() {
-    
-        var map = new google.maps.Map(document.getElementById('map');
-	
-		var input = document.getElementById('searchTextField');
-  		
-  		new google.maps.places.Autocomplete(input);
-		
-		google.maps.event.addDomListener(window, 'load', initialize);
-
-
-		 var geocoder = new google.maps.Geocoder();
- 		document.getElementById('submit').addEventListener('click', function() {
-          geocodeAddress(geocoder, map);
-        });
-      }
-
-      function geocodeAddress(geocoder, resultsMap) {
-        var address = document.getElementById('address').value;
-        geocoder.geocode({'address': address}, function(results, status) {
-          if (status === 'OK') {
-            resultsMap.setCenter(results[0].geometry.location);
-            var marker = new google.maps.Marker({
-              map: resultsMap,
-              position: results[0].geometry.location
+		</div>
+		<div class="modal-footer">
+		<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		<button type="submit" class="btn btn-primary">add location</button>
+		</div>
+</form>
+<script>
+        function initialize() {
+          var input = document.getElementById('searchTextField');
+          var autocomplete = new google.maps.places.Autocomplete(input);
+            google.maps.event.addListener(autocomplete, 'place_changed', function () {
+                var place = autocomplete.getPlace();
+                document.getElementById('city2').value = place.name;
+                document.getElementById('cityLat').value = place.geometry.location.lat();
+                document.getElementById('cityLng').value = place.geometry.location.lng();
             });
-          } else {
-            alert('Geocode was not successful for the following reason: ' + status);
-          }
-        });
-      }
-
-    
+        }
+        google.maps.event.addDomListener(window, 'load', initialize);
     </script>
-<script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmwBs8dSuwg56fTWsbJyMdrvXYU3_Pim4&libraries=places&callback=initMap">
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmwBs8dSuwg56fTWsbJyMdrvXYU3_Pim4&libraries=places"></script>
+	<style>
+<!-- 
+<html>
+<head>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmwBs8dSuwg56fTWsbJyMdrvXYU3_Pim4&libraries=places"></script>
+    <script>
+        function initialize() {
+          var input = document.getElementById('searchTextField');
+          var autocomplete = new google.maps.places.Autocomplete(input);
+            google.maps.event.addListener(autocomplete, 'place_changed', function () {
+                var place = autocomplete.getPlace();
+                document.getElementById('city2').value = place.name;
+                document.getElementById('cityLat').value = place.geometry.location.lat();
+                document.getElementById('cityLng').value = place.geometry.location.lng();
+            });
+        }
+        google.maps.event.addDomListener(window, 'load', initialize);
     </script>
-    
-    </script>
+</head>
+<body>
+    <input id="searchTextField" type="text" size="50" placeholder="Enter a location" autocomplete="on" runat="server" />  
+    <input type="text" id="city2" name="city2" />
+    <input type="text" id="cityLat" name="cityLat" />
+    <input type="text" id="cityLng" name="cityLng" />
+</body>
+</html> -->
