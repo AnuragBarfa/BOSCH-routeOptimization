@@ -1,22 +1,10 @@
-{%load static 	%}
 <!DOCTYPE html>
 <html>
-<head>
-	  <title>Location</title>
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-  
-</head>
 <body>
 
 <h1>My First Google Map</h1>
 
-<div id="googleMap" style="width:65%;height:400px;"></div>
-
-    <div class="container" style="width: 45%; float: right;">
-      {% block content %}
-      {% endblock %}
-    </div>
-
+<div id="googleMap" style="width:100%;height:400px;"></div>
 
 <script>
 function myMap() {
