@@ -6,31 +6,26 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <title>Markers</title>
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-    <style type="text/css">
-      .pac-container{
-        z-index:10000;
-      }
-    </style>
-  </head>
+        <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    </head>
   <body>
     <br/>
-    <div id="map" style="position:relative;width:65%;height:400px;float:left;"></div>
+ <div id="map" style="position:relative;width:65%;height:400px;float:left;"></div>
 
     <div style='float:right; width: 180px;'>
-      <div style='position: fixed'>
-        <div class="container" >
-          
-        </div>
-      </div>
-    </div>
+ <div style='position: fixed'>
+     <div class="container" ></div>
+
+ </div>
+</div>
 
 
-    <button  type="submit" id="optimize" onclick="Optimize()" > Route Optimize</button>
-    {% block content %}
-    {% endblock %}
+<button  type="submit" id="markall" onclick="markall()" > Mark All </button>
+      {% block content %}
+      {% endblock %}
 
     <script>
+      var loc=[];
       function initMap() {
         var myLatLng = {lat: -25.363, lng: 131.044};
 
@@ -38,71 +33,53 @@
           zoom: 4,
           center: myLatLng
         });
-
-        var marker = new google.maps.Marker({
-          position: myLatLng,
-          map: map,
-          title: 'Hello World!'
-        });
-
-  		  var input = document.getElementById('searchTextField');
-    		new google.maps.places.Autocomplete(input);
-    		var input = document.getElementById('searchTextField');
-        var autocomplete = new google.maps.places.Autocomplete(input);
-        google.maps.event.addListener(autocomplete, 'place_changed', function () {
-            var place = autocomplete.getPlace();
-            document.getElementById('city2').value = place.name;
-            document.getElementById('cityLat').value = place.geometry.location.lat();
-            document.getElementById('cityLng').value = place.geometry.location.lng();
+  	  
+            var geocoder = new google.maps.Geocoder();
+    document.getElementById('markall').addEventListener('click', function() {
+          geocodeAddress(geocoder, map);
         });
       }
+
+ function geocodeAddress(geocoder, resultsMap) {
+        for(var i=0;i<loc.length;i++){
+        geocoder.geocode({'address': loc[i]}, function(results, status) {
+          if (status === 'OK') {
+            resultsMap.setCenter(results[0].geometry.location);
+            var marker = new google.maps.Marker({
+              map: resultsMap,
+              position: results[0].geometry.location
+            });
+            // alert("DONE");
+          } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+          }
+        });
+      }}
+
+
+      function onlyUnique(value, index, self) { 
+        return self.indexOf(value) === index;
+      }
+        
+      function markall(){
+        {% for book in books%}
+        loc.push("{{book.location}}");
+        {% endfor %}
+        loc=loc.filter( onlyUnique );
+        //for(var i=0;i<loc.length;i++)alert(loc[i]);
+      }
+
+
+
     </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmwBs8dSuwg56fTWsbJyMdrvXYU3_Pim4&libraries=places&callback=initMap">
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmwBs8dSuwg56fTWsbJyMdrvXYU3_Pim4&libraries=places&callback=initMap">
     </script>
     <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>  
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/plugin.js' %}"></script>
-    <script type="text/javascript">
-      $("#bookCreateForm").submit(function(e) {
-          alert("up")
-          e.preventDefault(); // avoid to execute the actual submit of the form.
-
-          var form = $(this);
-          var url = form.attr('action');
-
-          $.ajax({
-                 type: "POST",
-                 url: url,
-                 data: form.serialize(), // serializes the form's elements.
-                 success: function(data)
-                 {
-                     // alert(data); // show response from the php script.
-                     $('#myModal').modal('toggle');
-                     var row='<tr>'+
-                        '<td>'+form[0][6]['value']+'</td>'+
-                        '<td><pre style="white-space:pre-wrap; word-wrap:break-word;">'+form[0][2]['value']+'</pre></td>'+
-                        '<td><pre style="white-space:pre-wrap; word-wrap:break-word;">'+form[0][7]['value']+'</pre></td>'+
-                        '<td><pre style="white-space:pre-wrap; word-wrap:break-word;">'+form[0][6]['value']+'</pre></td>'+
-                        '<td style="width: 3%;">'+  
-                          '<button class="btn btn-warning show-form-update" data-url="{% url "book_update" 17 %}" >'+
-                          '<span class="glyphicon glyphicon-pencil"></span>'+
-                          '</button>'+
-                        '</td>'+
-                        '<td style="width: 3%;">'+  
-                          '<button class="btn btn-danger show-form-delete" data-url="{% url "book_delete" 17 %}">'+
-                          '<span class="glyphicon glyphicon-trash"></span>'+
-                          '</button>'+
-                        '</td>'+
-                      '</tr>';
-                    $('#book-table tr:last').after(row);  
-                    console.log(row);
-                 }
-               });
-
-      });
-    </script>
-    
     {% block javascript %}
     {% endblock %}
+
   </body>
 </html>

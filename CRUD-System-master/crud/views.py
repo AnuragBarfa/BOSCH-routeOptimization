@@ -5,19 +5,10 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 
 def book_list(request):
-	if request.method == 'POST':
-		form = BookForm(request.POST)
-		print("in post")
-	else:
-		form = BookForm()
-	print(form)
-	save_all(request,form,'book_create.html')
 	books = Book.objects.all()
-	print(books)
 	context = {
-	'books': books,
-	'form':form
-	}	
+	'books': books
+	}
 	return render(request, 'book_list.html',context)
 
 def save_all(request,form,template_name):
