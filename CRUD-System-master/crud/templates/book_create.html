@@ -14,7 +14,9 @@
 			</div>
 			<div class="modal-body">
 			<!-- {{form | crispy}} -->
-			<input id="searchTextField" type="text" size="50" name="location">
+			<section><input id="searchTextField" type="text" size="50" name="location">
+			<input id="submit" type="button" value="Geocode">
+			</section>
 			<input type="text" name="timestamp">
 			<input type="number" name="no_of_students">
 			</div>
@@ -27,48 +29,41 @@
     <script>
 
       function initMap() {
-        var myLatLng = {lat: -25.363, lng: 131.044};
-
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 4,
-          center: myLatLng
-        });
+    
+        var map = new google.maps.Map(document.getElementById('map');
 	
-	   var marker = new google.maps.Marker({
-          position: myLatLng,
-          map: map,
-          title: 'Hello World!'
-        });
-
 		var input = document.getElementById('searchTextField');
   		
   		new google.maps.places.Autocomplete(input);
 		
 		google.maps.event.addDomListener(window, 'load', initialize);
+
+
+		 var geocoder = new google.maps.Geocoder();
+ 		document.getElementById('submit').addEventListener('click', function() {
+          geocodeAddress(geocoder, map);
+        });
       }
 
-      geocoder = new google.maps.Geocoder();
+      function geocodeAddress(geocoder, resultsMap) {
+        var address = document.getElementById('address').value;
+        geocoder.geocode({'address': address}, function(results, status) {
+          if (status === 'OK') {
+            resultsMap.setCenter(results[0].geometry.location);
+            var marker = new google.maps.Marker({
+              map: resultsMap,
+              position: results[0].geometry.location
+            });
+          } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+          }
+        });
+      }
 
-	//function codeAddress() {
-
-    //In this case it gets the address from an element on the page, but obviously you  could just pass it to the method instead
-    var address = document.getElementById( 'searchTextField' ).value;
-
-    geocoder.geocode( { 'address' : address }, function( results, status ) {
-        if( status == google.maps.GeocoderStatus.OK ) {
-
-            //In this case it creates a marker, but you can get the lat and lng from the location.LatLng
-            map.setCenter( results[0].geometry.location );
-            var marker = new google.maps.Marker( {
-                map     : map,
-                position: results[0].geometry.location
-            } );
-        } else {
-            alert( 'Geocode was not successful for the following reason: ' + status );
-        }
-    } );
-	//}
+    
     </script>
-    <!-- <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmwBs8dSuwg56fTWsbJyMdrvXYU3_Pim4&libraries=places&callback=initMap"> -->
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmwBs8dSuwg56fTWsbJyMdrvXYU3_Pim4&libraries=places&callback=initMap">
+    </script>
+    
     </script>
