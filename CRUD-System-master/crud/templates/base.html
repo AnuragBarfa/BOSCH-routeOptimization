@@ -1,52 +1,22 @@
-{% load static %}
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Location</title>
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-        <script type='text/javascript'>
- function GetMap() {
-        map = new Microsoft.Maps.Map('#myMap', {
-            credentials: 'Ak1Niz5T-7wp9lrVRb1kGtNm46vCML3OAkAiAL_7mPQWFe2N253Jw5E5lDl2y0kK'
-        });
+<html>
+<body>
 
-        //Create an infobox at the center of the map but don't show it.
+<h1>My First Google Map</h1>
 
-    }
-   
+<div id="googleMap" style="width:100%;height:400px;"></div>
 
-    </script>
-    <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap' async defer>
-        
-    </script>
+<script>
+function myMap() {
+var mapProp= {
+  center:new google.maps.LatLng(51.508742,-0.120850),
+  zoom:5,
+};
+var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+}
+</script>
 
-  </head>
-  <body>    
-    <br/>
-            <div id="myMap" style="position:relative;width:65%;height:400px;float:left;"></div>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmwBs8dSuwg56fTWsbJyMdrvXYU3_Pim4&callback=myMap"></script>
 
-    <div style='float:right; width: 180px;'>
- <div style='position: fixed'>
-     <div class="container" ></div>
-
- </div>
-</div>
-      
-
-    
-<button  type="submit" id="optimize" onclick="Optimize()" > Route Optimize</button>
-
-      {% block content %}
-      {% endblock %}
-
-    <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>  
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/plugin.js' %}"></script>
-
-    {% block javascript %}
-    {% endblock %}
-  </body>
+</body>
 </html>
