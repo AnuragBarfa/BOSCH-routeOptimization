@@ -10,13 +10,21 @@
 
 <h1>My First Google Map</h1>
 
-<div id="googleMap" style="width:65%;height:400px;"></div>
+ <div id="googleMap" style="position:relative;width:65%;height:400px;float:left;"></div>
 
-    <div class="container" style="width: 45%; float: right;">
+    <div style='float:right; width: 180px;'>
+ <div style='position: fixed'>
+     <div class="container" ></div>
+
+ </div>
+</div>
+
+
+
+<button  type="submit" id="optimize" onclick="Optimize()" > Route Optimize</button>
+
       {% block content %}
       {% endblock %}
-    </div>
-
 
 <script>
 function myMap() {
@@ -29,6 +37,10 @@ var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
 </script>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmwBs8dSuwg56fTWsbJyMdrvXYU3_Pim4&callback=myMap"></script>
-
+<script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>  
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/plugin.js' %}"></script>
+    {% block javascript %}
+    {% endblock %}
 </body>
 </html>
