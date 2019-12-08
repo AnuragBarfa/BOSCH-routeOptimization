@@ -20,7 +20,7 @@
 </div>
 
 
-<button  type="submit" id="markall" onclick="markall()" > Mark All </button>
+<button  type="submit" id="markall" onclick="markall()" style="width: 0px; height: 0px"></button>
       {% block content %}
       {% endblock %}
 
@@ -68,8 +68,14 @@
         loc=loc.filter( onlyUnique );
         //for(var i=0;i<loc.length;i++)alert(loc[i]);
       }
-
-
+      
+        function addlocation(){    
+                // markall();
+              }
+  
+      window.onload = function(){
+        document.getElementById("markall").click();
+        }
 
     </script>
     <script async defer
