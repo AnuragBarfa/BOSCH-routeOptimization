@@ -33,6 +33,12 @@
           zoom: 4,
           center: myLatLng
         });
+	
+	   var marker = new google.maps.Marker({
+          position: myLatLng,
+          map: map,
+          title: 'Hello World!'
+        });
 
 		var input = document.getElementById('searchTextField');
   		
@@ -40,7 +46,29 @@
 		
 		google.maps.event.addDomListener(window, 'load', initialize);
       }
+
+      geocoder = new google.maps.Geocoder();
+
+	//function codeAddress() {
+
+    //In this case it gets the address from an element on the page, but obviously you  could just pass it to the method instead
+    var address = document.getElementById( 'searchTextField' ).value;
+
+    geocoder.geocode( { 'address' : address }, function( results, status ) {
+        if( status == google.maps.GeocoderStatus.OK ) {
+
+            //In this case it creates a marker, but you can get the lat and lng from the location.LatLng
+            map.setCenter( results[0].geometry.location );
+            var marker = new google.maps.Marker( {
+                map     : map,
+                position: results[0].geometry.location
+            } );
+        } else {
+            alert( 'Geocode was not successful for the following reason: ' + status );
+        }
+    } );
+	//}
     </script>
-    <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmwBs8dSuwg56fTWsbJyMdrvXYU3_Pim4&libraries=places&callback=initMap">
+    <!-- <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmwBs8dSuwg56fTWsbJyMdrvXYU3_Pim4&libraries=places&callback=initMap"> -->
     </script>
