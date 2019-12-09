@@ -25,17 +25,20 @@
       {% endblock %}
 
     <script>
-      var loc=[];
-      function initMap() {
-        var myLatLng = {lat: -25.363, lng: 131.044};
 
-        var map = new google.maps.Map(document.getElementById('map'), {
+      
+
+      var loc=[],map,geocoder,myLatLng;
+      function initMap() {
+         myLatLng = {lat: -25.363, lng: 131.044};
+
+        map = new google.maps.Map(document.getElementById('map'), {
           zoom: 4,
           center: myLatLng
         });
   	  
-            var geocoder = new google.maps.Geocoder();
-    document.getElementById('markall').addEventListener('click', function() {
+             geocoder = new google.maps.Geocoder();
+            document.getElementById('markall').addEventListener('click', function() {
           geocodeAddress(geocoder, map);
         });
       }
@@ -45,16 +48,41 @@
         geocoder.geocode({'address': loc[i]}, function(results, status) {
           if (status === 'OK') {
             resultsMap.setCenter(results[0].geometry.location);
+           
             var marker = new google.maps.Marker({
-              map: resultsMap,
+              map: resultsMap,              
               position: results[0].geometry.location
             });
-            // alert("DONE");
+             console.log("OLD START:"+ results[0].geometry.location);
           } else {
             alert('Geocode was not successful for the following reason: ' + status);
           }
         });
       }}
+
+function geocodeAddress2(geocoder, resultsMap,address) {
+        // var address=document.getElementById('searchTextField');
+        loc.push(address);
+        loc=loc.filter( onlyUnique );
+        for(var i=0;i<loc.length;i++){alert(loc[i]);}
+        geocoder.geocode({'address': address}, function(results, status) {
+          if (status === 'OK') {
+
+            resultsMap.setCenter(results[0].geometry.location);
+            alert(results[0].geometry.location);
+            var marker = new google.maps.Marker({
+              map: resultsMap,              
+              position: results[0].geometry.location
+            });
+            console.log("NEW START:"+ results[0].geometry.location);
+              alert("DONE");
+
+
+          } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+          }
+        });
+      }
 
 
       function onlyUnique(value, index, self) { 
@@ -67,14 +95,30 @@
         {% endfor %}
         loc=loc.filter( onlyUnique );
         //for(var i=0;i<loc.length;i++)alert(loc[i]);
+          
       }
       
-        function addlocation(){    
-                // markall();
-              }
-  
+       function addlocation(){
+          alert('VALUE='+document.getElementById('searchTextField').value);
+           var address=document.getElementById('searchTextField').value;
+           geocodeAddress2(geocoder, map ,address);
+      }
+    
+      // if (localStorage.getItem("newmapvalue") === true) {
+      //    loc.push(localStorage.getItem("newmapvalue"));
+      //    alert("STORED!");  
+      //    document.getElementById("markall").click();
+      //    localStorage.clear();      
+      //    }
+    
+     
+
       window.onload = function(){
-        document.getElementById("markall").click();
+        document.getElementById("markall").click();        
+         
+    
+    
+
         }
 
     </script>
