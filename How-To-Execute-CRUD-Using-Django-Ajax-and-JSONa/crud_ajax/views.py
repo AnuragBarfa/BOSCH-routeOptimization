@@ -37,9 +37,15 @@ class CreateCrudUser(View):
 class DeleteCrudUser(View):
     def  get(self, request):
         id1 = request.GET.get('id', None)
-        CrudUser.objects.get(id=id1).delete()
+        usr=CrudUser.objects.get(id=id1)
+        location=usr.name
+        print(location)
+        usr.delete()
+
+        print("STARTED INIT!!");
         data = {
-            'deleted': True
+            'deleted': True,
+            'location':location
         }
         return JsonResponse(data)
 
