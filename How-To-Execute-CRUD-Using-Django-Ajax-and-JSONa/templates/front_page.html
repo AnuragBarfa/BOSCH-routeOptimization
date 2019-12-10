@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <style type="text/css">
 	#wrapper { position: relative; }
-   	#over_map { position: absolute; top: 10px; left: 60%; z-index: 99;  }
+   	#over_map { position: absolute; top: 10px; right: 1%; z-index: 99;  }
 </style>
 <style type="text/css">
     body {
@@ -15,14 +15,13 @@
     font-family: 'Open Sans', sans-serif;
   }
   .table-wrapper {
-    width: 400px;
-    margin: 30px auto;
-        background: #fff;
-        padding: 20px;  
-        box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    width: 300px;
+    background: #fff; 
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
     }
     .table-title {
-        padding-bottom: 10px;
+        padding-left: 10px;
+        padding-bottom: 2px;
         margin: 0 0 10px;
     }
     .table-title h2 {
@@ -101,27 +100,25 @@
 		<div id="over_map" class="pull-right">
 			<!-- <button>Location</button>
 			<button>Location</button> -->
-			<p>
-			  <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample1" role="button" aria-expanded="false" aria-controls="collapseExample1">
-			    Location
-			  </a>
-			</p>
-			<div class="collapse" id="collapseExample1">
-			  <div class="card card-body">
-			    <div class="table-wrapper">
+			<div class="table-wrapper">
             <div class="table-title">
                 <div class="row">
-                    <div class="col-sm-8"><h2>Employee <b>Details</b></h2></div>
+                    <div class="col-sm-8">
+                        <h2><a data-toggle="collapse" href="#collapseExample1" role="button" aria-expanded="false" aria-controls="collapseExample1">Location</a></h2>
+                    </div>
                     <div class="col-sm-4">
-                        <button type="button" class="btn btn-info add-new"><i class="fa fa-plus"></i> Add New</button>
+                        
                     </div>
                 </div>
             </div>
-            <table class="table">
+            <div class="collapse" id="collapseExample1">
+              <div class="card card-body">
+                <table class="table">
                 <thead>
                     <tr>
                         <th>Location</th>
-                        <th>Passenger</th>
+                        <th>P. No.</th>
+                        <th><button type="button" class="btn btn-info add-new"><!-- <i class="fa fa-plus"></i> -->Add Loc</button></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -154,9 +151,12 @@
                     </tr>      
                 </tbody>
             </table>
+              </div>
+            </div>
+            
         </div>
-			  </div>
-			</div>
+
+			
 			<br>
 			<p>
 			  <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample2" role="button" aria-expanded="false" aria-controls="collapseExample2">
@@ -182,7 +182,8 @@
 
         map = new google.maps.Map(document.getElementById('map'), {
           zoom: 4,
-          center: myLatLng
+          center: myLatLng,
+          disableDefaultUI: true
         });
 
         // var marker = new google.maps.Marker({
@@ -191,14 +192,6 @@
         //   title: 'Hello World!'
         // });
 
-        var input = document.getElementById('searchTextField');
-        var autocomplete = new google.maps.places.Autocomplete(input);
-        google.maps.event.addListener(autocomplete, 'place_changed', function () {
-            var place = autocomplete.getPlace();
-            document.getElementById('city2').value = place.name;
-            document.getElementById('cityLat').value = place.geometry.location.lat();
-            document.getElementById('cityLng').value = place.geometry.location.lng();
-        });
         // var input2 = document.getElementById('form-id');
         // var autocomplete2 = new google.maps.places.Autocomplete(input2);
         // google.maps.event.addListener(autocomplete2, 'place_changed', function () {
@@ -220,16 +213,30 @@ $(document).ready(function(){
   var actions = $("table td:last-child").html();
   // Append table with add row form on add new button click
     $(".add-new").click(function(){
-    $(this).attr("disabled", "disabled");
-    var index = $("table tbody tr:last-child").index();
-        var row = '<tr>' +
-            '<td><input type="text" class="form-control" name="name" id="name"></td>' +
-            '<td><input type="text" class="form-control" name="department" id="department"></td>' +
-      '<td>' + actions + '</td>' +
-        '</tr>';
-      $("table").prepend(row);   
-    $("table tbody tr").eq(0).find(".add, .edit").toggle();
-    $('[data-toggle="tooltip"]').tooltip();
+      $(this).attr("disabled", "disabled");
+      var index = $("table tbody tr:last-child").index();
+          var row = '<tr>' +
+              '<td><input type="text" class="form-control" name="name" id="name"></td>' +
+              '<td><input type="text" class="form-control" name="department" id="department"></td>' +
+        '<td>' + actions + '</td>' +
+          '</tr>';
+        $("table").prepend(row);   
+      $("table tbody tr").eq(0).find(".add, .edit").toggle();
+      $('[data-toggle="tooltip"]').tooltip();
+      var input = document.getElementById('name');
+      console.log(input);
+      var autocomplete = new google.maps.places.Autocomplete(input);
+      var Lat;
+      var Lng;
+      var Loc;
+      google.maps.event.addListener(autocomplete, 'place_changed', function () {
+          var place = autocomplete.getPlace();
+          // document.getElementById('city2').value = place.name;
+          Lat = place.geometry.location.lat();
+          Lng = place.geometry.location.lng();
+      });
+      CurrLocation = new google.maps.LatLng(Lat, Lng);
+      addMarker(CurrLocation);
     });
   // Add row on add button click
   $(document).on("click", ".add", function(){
@@ -259,7 +266,7 @@ $(document).ready(function(){
     });   
     $(this).parents("tr").find(".add, .edit").toggle();
     $(".add-new").attr("disabled", "disabled");
-    });
+  });
   // Delete row on delete button click
   $(document).on("click", ".delete", function(){
         $(this).parents("tr").remove();
