@@ -20,7 +20,7 @@ from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 
-from simple_ajax.views import UserSignUpView, ValidateUsername
+# from simple_ajax.views import UserSignUpView, ValidateUsername
 from crud_ajax.views import CreateCrudUser, CrudView, DeleteCrudUser, UpdateCrudUser
 
 urlpatterns = [
@@ -30,8 +30,8 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name='front_page.html')),
 
     # Simple Ajax Example
-    path('simpleajax/', UserSignUpView.as_view(), name='simple_ajax'),
-    path('ajax/validate-username/', ValidateUsername.as_view(), name='simple_ajax_validate'),
+    # path('simpleajax/', UserSignUpView.as_view(), name='simple_ajax'),
+    # path('ajax/validate-username/', ValidateUsername.as_view(), name='simple_ajax_validate'),
 
     # Django Ajax CRUD Operations
     path('crud/', CrudView.as_view(), name='crud_ajax'),
@@ -40,6 +40,6 @@ urlpatterns = [
     path('ajax/crud/update/', UpdateCrudUser.as_view(), name='crud_ajax_update'),
 
     # Chat
-    path('chat', TemplateView.as_view(template_name='chat/chat_login.html')),
+    # path('chat', TemplateView.as_view(template_name='chat/chat_login.html')),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

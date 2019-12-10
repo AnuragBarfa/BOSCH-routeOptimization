@@ -39,9 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
     
-    'simple_ajax',
+    # 'simple_ajax',
     'crud_ajax',
-    'chat',
+    # 'chat',
 
 ]
 
