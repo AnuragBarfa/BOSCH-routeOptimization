@@ -1,13 +1,16 @@
+
 {% extends 'base.html' %}
 
 {% block title %}Django Ajax Example{% endblock %}
 {% block stylesheet %}
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+{% load static  %}
+<link rel="stylesheet" href="{% static 'css/icon.css' %}">
+<link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
 <style type="text/css">
 	#wrapper { position: relative; }
    	#over_map { position: absolute; top: 10px; right: 1%; z-index: 99;  }
 </style>
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
 <style type="text/css">
     body {
         color: #404E67;
@@ -126,7 +129,9 @@
                         <td>John Doe</td>
                         <td>20</td>
                         <td>
-              <a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a>
+                          <a class="add" title="Add" data-toggle="tooltip">
+                            <i class="material-icons">&#xE03B;</i>
+                          </a>
                             <a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
                             <a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
                         </td>
@@ -177,6 +182,7 @@
   <script>
       var map;
       var storeLocationDetails;
+      var geocoder;
       function initMap() {
         var myLatLng = {lat: 20.593684, lng: 78.96288000000004};
 
@@ -185,7 +191,7 @@
           center: myLatLng,
           disableDefaultUI: true
         });
-
+        geocoder = new google.maps.Geocoder();
         // var marker = new google.maps.Marker({
         //   position: myLatLng,
         //   map: map,
@@ -226,11 +232,15 @@ $(document).ready(function(){
       var input = document.getElementById('name');
       console.log(input);
       var autocomplete = new google.maps.places.Autocomplete(input);
+      
       var Lat;
       var Lng;
       var Loc;
       google.maps.event.addListener(autocomplete, 'place_changed', function () {
           var place = autocomplete.getPlace();
+          console.log("SEE BELOW");
+          console.log(input);
+          console.log("SEE ABOVE");
           // document.getElementById('city2').value = place.name;
           Lat = place.geometry.location.lat();
           Lng = place.geometry.location.lng();
@@ -252,16 +262,46 @@ $(document).ready(function(){
     });
     $(this).parents("tr").find(".error").first().focus();
     if(!empty){
+      var loc1="Hello",input;
+      var Lat1,Lng1;
       input.each(function(){
         $(this).parent("td").html($(this).val());
+        
+       // console.log($(this));
+        if(loc1==="Hello")
+         {
+             loc1=$(this).val();
+             // alert(loc1);
+            geocoder.geocode( { 'address': loc1}, function(results, status) {
+               if (status == google.maps.GeocoderStatus.OK)
+              { console.log("OK");
+                  // do something with the geocoded result
+                  //
+                  var myMarker = new google.maps.Marker({
+                  map: map,    
+                  position: results[0].geometry.location
+                });
+                  
+                  //console.log(results[0].geometry.location.lat());
+                  //console.log(results[0].geometry.location.lng());
+              }
+});     
+        //   Lat = loc.geometry.location.lat();
+        //   Lng = loc.geometry.location.lng();
+        //   alert("LAT:"+Lat);  
+      
+         }
+
       });     
+
+
       $(this).parents("tr").find(".add, .edit").toggle();
       $(".add-new").removeAttr("disabled");
     }   
     });
   // Edit row on edit button click
   $(document).on("click", ".edit", function(){    
-        $(this).parents("tr").find("td:not(:last-child)").each(function(){
+        $(this).parents("tr").find("td:not(:last-child):not(:first-child)").each(function(){
       $(this).html('<input type="text" class="form-control" value="' + $(this).text() + '">');
     });   
     $(this).parents("tr").find(".add, .edit").toggle();
@@ -274,6 +314,10 @@ $(document).ready(function(){
     });
 });
 </script>   
+  <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>  
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/plugin.js' %}"></script>
+
 {% endblock %}
 <!-- 
 <!DOCTYPE html>
