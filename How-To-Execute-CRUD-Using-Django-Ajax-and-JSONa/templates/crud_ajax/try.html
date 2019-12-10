@@ -1,0 +1,91 @@
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <style type="text/css">
+    *{
+      margin: 5px;
+    }
+  </style>
+</head>
+<div id="accordion">
+  <div class="card">
+    <div class="card-header" id="headingOne">
+      <h5 class="mb-0">
+        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          Location
+        </button>
+      </h5>
+    </div>
+
+    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+      <div class="card-body">
+          
+  <div class="row">
+    <div class="col">
+      <section>
+        <input type="text" placeholder="Location" name="location" id="location">
+        <input type="number" style="width: 50px;" name="passenger" min="0">
+        <button  onclick="addlocation()">ADD</button>
+        <button onclick="dellocation()">DELETE</button>
+      </section>
+    </div>
+    <div class="col">
+  <div id="container"></div>
+</div>
+  
+    </div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header" id="headingTwo">
+      <h5 class="mb-0">
+        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+         Buses 
+         </button>
+      </h5>
+    </div>
+    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+      <div class="card-body">
+<div class="row">
+<div class="col">
+  <section>
+    <input type="text" name="Buses" id="buses">
+    <input type="number" style="width: 50px;" name="capacity" min="0">
+    <button  onclick="addbus()">ADD</button> 
+    <button  onclick="delbus()">DELETE</button>
+  </section>
+</div>
+<div class="col">
+  
+</div>
+      </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    var locations=[],buses=[];
+    function display(){
+      var str="";
+    for(var i=0;i<locations.length();i++)str+=locations[i]+" \n ";
+    document.getElementById('container').value=str;
+    }
+    function addlocation(){
+     var input= document.getElementById('location').value;
+     locations.push(input);
+     display();
+    }
+    function dellocation(){
+      var input= document.getElementById('location').value;
+
+    }
+    function addbus(){
+    var input= document.getElementById('buses').value;
+    buses.push(input);
+    }
+    function delbus(){
+      var input= document.getElementById('location').value;
+    
+    }
+  </script>
