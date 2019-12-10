@@ -182,6 +182,7 @@
   <script>
       var map;
       var storeLocationDetails={};
+      var directionsDisplay,directionsService;
       var geocoder;
       function initMap() {
         var myLatLng = {lat: 20.593684, lng: 78.96288000000004};
@@ -189,9 +190,14 @@
         map = new google.maps.Map(document.getElementById('map'), {
           zoom: 4,
           center: myLatLng,
+           mapTypeId: google.maps.MapTypeId.ROADMAP,
           disableDefaultUI: true
         });
-        geocoder = new google.maps.Geocoder();
+          directionsService = new google.maps.DirectionsService();
+          directionsDisplay = new google.maps.DirectionsRenderer();
+          geocoder = new google.maps.Geocoder();
+          directionsRenderer.setMap(map);
+
         // var marker = new google.maps.Marker({
         //   position: myLatLng,
         //   map: map,
