@@ -181,7 +181,7 @@
 </script>
   <script>
       var map;
-      var storeLocationDetails;
+      var storeLocationDetails={};
       var geocoder;
       function initMap() {
         var myLatLng = {lat: 20.593684, lng: 78.96288000000004};
@@ -238,15 +238,15 @@ $(document).ready(function(){
       var Loc;
       google.maps.event.addListener(autocomplete, 'place_changed', function () {
           var place = autocomplete.getPlace();
-          console.log("SEE BELOW");
-          console.log(input);
-          console.log("SEE ABOVE");
-          // document.getElementById('city2').value = place.name;
-          Lat = place.geometry.location.lat();
-          Lng = place.geometry.location.lng();
+          // console.log("SEE BELOW");
+          // console.log(input);
+          // console.log("SEE ABOVE");
+          // // document.getElementById('city2').value = place.name;
+          // Lat = place.geometry.location.lat();
+          // Lng = place.geometry.location.lng();
       });
-      CurrLocation = new google.maps.LatLng(Lat, Lng);
-      addMarker(CurrLocation);
+      // CurrLocation = new google.maps.LatLng(Lat, Lng);
+      // addMarker(CurrLocation);
     });
   // Add row on add button click
   $(document).on("click", ".add", function(){
@@ -281,7 +281,7 @@ $(document).ready(function(){
                   map: map,    
                   position: results[0].geometry.location
                 });
-                  
+                  storeLocationDetails[loc1]=myMarker;
                   //console.log(results[0].geometry.location.lat());
                   //console.log(results[0].geometry.location.lng());
               }
@@ -310,6 +310,8 @@ $(document).ready(function(){
   // Delete row on delete button click
   $(document).on("click", ".delete", function(){
         $(this).parents("tr").remove();
+        var address=$(this).parents("tr").find("td:first-child").text();
+        storeLocationDetails[address].setMap(null);
     $(".add-new").removeAttr("disabled");
     });
 });
