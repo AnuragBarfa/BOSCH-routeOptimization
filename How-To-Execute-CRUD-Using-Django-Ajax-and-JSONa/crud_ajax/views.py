@@ -5,6 +5,9 @@ from django.views.generic import TemplateView, View, DeleteView
 from django.core import serializers
 from django.http import JsonResponse
 
+def FrontView(request):
+    users=CrudUser.objects.all()
+    return render(request,'front_page.html',{'users':users})
 
 class CrudView(TemplateView):
     template_name = 'crud_ajax/crud.html'
