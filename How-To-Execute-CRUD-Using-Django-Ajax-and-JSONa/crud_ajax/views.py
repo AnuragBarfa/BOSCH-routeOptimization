@@ -6,9 +6,10 @@ from django.core import serializers
 from django.http import JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
+from .RouteOptimization import trial
 def FrontView(request):
     users=CrudUser.objects.all()
-    # print(trial("barfa"))
+    print(trial("barfa"))
     return render(request,'front_page.html',{'users':users})
 
 class RouteView(View):
@@ -21,8 +22,8 @@ class RouteView(View):
         routes=[]
         data={}
         route={}
-        # route['bus']
-        # route['type']="pickup/drop"
+        route['bus']="NHAK"
+        route['type']="pickup/drop"
         route['nodes']=[{'lat':22.2,'lng':77.7,'arr':12,'depa':32,'count':20},{'lat':32.2,'lng':87.7,'arr':12,'depa':32,'count':20}]
 
         data['routes']=route 
