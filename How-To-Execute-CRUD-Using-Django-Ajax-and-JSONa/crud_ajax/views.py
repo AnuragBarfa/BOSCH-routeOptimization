@@ -9,6 +9,13 @@ def FrontView(request):
     users=CrudUser.objects.all()
     return render(request,'front_page.html',{'users':users})
 
+class RouteView(View):
+    def get(self, request):
+        data = {
+            'user': 'user'
+        }
+        return JsonResponse(data)
+
 class CrudView(TemplateView):
     template_name = 'crud_ajax/crud.html'
     def get_context_data(self, **kwargs):

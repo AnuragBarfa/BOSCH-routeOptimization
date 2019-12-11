@@ -102,6 +102,11 @@
 		<div id="over_map" class="pull-right">
 			<!-- <button>Location</button>
 			<button>Location</button> -->
+      <p>
+        <button class="btn btn-primary" aria-expanded="false" onclick="routeopt()">
+          Route Optimizer
+        </button>
+      </p>
 			<div class="table-wrapper">
             <div class="table-title">
                 <div class="row">
@@ -159,17 +164,65 @@
         </div>
 
 			
-			<br>
-			<p>
-			  <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample2" role="button" aria-expanded="false" aria-controls="collapseExample2">
-			    Bus
-			  </a>
-			</p>
-			<div class="collapse" id="collapseExample2">
-			  <div class="card card-body">
-			    <input type="" name="">
-			  </div>
-			</div>
+			
+<div class="table-wrapper">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-8">
+                        <h2><a data-toggle="collapse" href="#collapseExample2" role="button" aria-expanded="false" aria-controls="collapseExample2">Buses</a></h2>
+                    </div>
+                    <div class="col-sm-4">
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="collapse" id="collapseExample2">
+              <div class="card card-body">
+                <table class="table">
+                <thead>
+                    <tr>
+                        <th>Bus No</th>
+                        <th>Capacity</th>
+                        <th><button type="button" class="btn btn-info add-new" id="bus"><!-- <i class="fa fa-plus"></i> -->Add Bus</button></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>John Doe</td>
+                        <td>20</td>
+                        <td>
+              <a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a>
+                            <a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
+                            <a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Peter Parker</td>
+                        <td>15</td>
+                        <td>
+              <a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a>
+                            <a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
+                            <a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Fran Wilson</td>
+                        <td>16</td>
+                        <td>
+              <a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a>
+                            <a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
+                            <a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
+                        </td>
+                    </tr>      
+                </tbody>
+            </table>
+              </div>
+            </div>
+            
+        </div>
+
+
+
 		</div>
 	</div>
 {% endblock %}
@@ -177,6 +230,26 @@
 {% block javascript %}
 </script>
   <script>
+    function routeopt(){
+      $.ajax({
+    url: "route/",
+    data: { 
+        "VarA": "VarA", 
+        "VarB": "VarB", 
+        "VarC": "VarC"
+    },
+    cache: false,
+    type: "GET",
+    success: function(response) {
+      console.log("SUCCESS");
+      console.log(response);
+    },
+    error: function(xhr) {
+      console.log("FAILED");
+      console.log(xhr);
+    }
+});
+    }
       var map;
       var storeLocationDetails=new Map();
       function initMap() {
@@ -211,6 +284,7 @@
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmwBs8dSuwg56fTWsbJyMdrvXYU3_Pim4&libraries=places&callback=initMap">
   </script>
   <script type="text/javascript">
+//LOCATION
 $(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip();
   var actions = $("table td:last-child").html();
@@ -227,7 +301,7 @@ $(document).ready(function(){
       $("table tbody tr").eq(0).find(".add, .edit").toggle();
       $('[data-toggle="tooltip"]').tooltip();
       var input = document.getElementById('name');
-      console.log(input);
+      // console.log(input);
       var autocomplete = new google.maps.places.Autocomplete(input);
       // var Lat;
       // var Lng;
@@ -295,6 +369,11 @@ $(document).ready(function(){
     console.log(storeLocationDetails);
     });
 });
+
+
+
+
+
 </script>  
 <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>  
 <script src="{% static 'js/bootstrap.min.js' %}"></script>

@@ -21,13 +21,15 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 # from simple_ajax.views import UserSignUpView, ValidateUsername
-from crud_ajax.views import CreateCrudUser, CrudView, DeleteCrudUser, UpdateCrudUser, FrontView
+from crud_ajax.views import CreateCrudUser, CrudView, DeleteCrudUser, UpdateCrudUser, FrontView , RouteView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     
     # Front Page
     path('', FrontView, name='home'),
+
+    path('route/', RouteView.as_view(), name='routeOpt'),
 
     # Simple Ajax Example
     # path('simpleajax/', UserSignUpView.as_view(), name='simple_ajax'),
