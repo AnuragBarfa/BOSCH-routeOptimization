@@ -6,10 +6,9 @@ from django.core import serializers
 from django.http import JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
-
-
 def FrontView(request):
     users=CrudUser.objects.all()
+    print(trial("barfa"))
     return render(request,'front_page.html',{'users':users})
 
 class RouteView(View):
