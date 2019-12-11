@@ -4,17 +4,30 @@ from .models import CrudUser
 from django.views.generic import TemplateView, View, DeleteView
 from django.core import serializers
 from django.http import JsonResponse
+import json
+from django.views.decorators.csrf import csrf_exempt
+
 
 def FrontView(request):
     users=CrudUser.objects.all()
     return render(request,'front_page.html',{'users':users})
 
 class RouteView(View):
-    def get(self, request):
-        data = {
-            'user': 'user'
-        }
+    def post(self, request):
+        print("in view")
+        print(request.POST)
+        x=json.loads(request.POST['locations'])
+        print(x)
+        data={}
+        # routes=[]
+        # route={}
+        # route['bus']
+        # route['type']="pickup/drop"
+        # route['nodes']=[{'lat':,'lng':,'arr':,'depa':,'count':},{}]
+        # data['routes']=routes 
+        data['name']='anurag'       
         return JsonResponse(data)
+
 
 class CrudView(TemplateView):
     template_name = 'crud_ajax/crud.html'

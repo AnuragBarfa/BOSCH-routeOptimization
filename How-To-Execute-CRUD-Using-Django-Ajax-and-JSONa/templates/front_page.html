@@ -126,37 +126,10 @@
                         <th>Location</th>
                         <th>P. No.</th>
                         <th><button type="button" class="btn btn-info add-new"><!-- <i class="fa fa-plus"></i> -->Add Loc</button></th>
-                    </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>John Doe</td>
-                        <td>20</td>
-                        <td>
-              <a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a>
-                            <a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
-                            <a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Peter Parker</td>
-                        <td>15</td>
-                        <td>
-              <a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a>
-                            <a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
-                            <a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Fran Wilson</td>
-                        <td>16</td>
-                        <td>
-              <a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a>
-                            <a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
-                            <a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
-                        </td>
-                    </tr>      
-                </tbody>
+                
+                  </tbody>
             </table>
               </div>
             </div>
@@ -184,28 +157,10 @@
                         <th>Bus No</th>
                         <th>Capacity</th>
                         <th><button type="button" class="btn btn-info add-new" id="bus"><!-- <i class="fa fa-plus"></i> -->Add Bus</button></th>
-                    </tr>
+                    </tr>     
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>John Doe</td>
-                        <td>20</td>
-                        <td>
-              <a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a>
-                            <a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
-                            <a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Peter Parker</td>
-                        <td>15</td>
-                        <td>
-              <a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a>
-                            <a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
-                            <a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
-                        </td>
-                    </tr>
-                    <tr>
+                  <tr>
                         <td>Fran Wilson</td>
                         <td>16</td>
                         <td>
@@ -213,8 +168,8 @@
                             <a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
                             <a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
                         </td>
-                    </tr>      
-                </tbody>
+                    </tr> 
+                   </tbody>
             </table>
               </div>
             </div>
@@ -230,28 +185,72 @@
 {% block javascript %}
 </script>
   <script>
-    function routeopt(){
-      $.ajax({
-    url: "route/",
-    data: { 
-        "VarA": "VarA", 
-        "VarB": "VarB", 
-        "VarC": "VarC"
-    },
-    cache: false,
-    type: "GET",
-    success: function(response) {
-      console.log("SUCCESS");
-      console.log(response);
-    },
-    error: function(xhr) {
-      console.log("FAILED");
-      console.log(xhr);
-    }
-});
-    }
+    
       var map;
+      var geocoder;
       var storeLocationDetails=new Map();
+
+
+        function routeopt(){
+                var citytostore=[],passengernotostore=[],citylattostore=[],citylngtostore=[];
+                var bustostore=[],capacitytostore=[];
+  
+          var data={};
+          console.log("READING START 2");
+                  $('#lc_searchresult > table > tbody > tr').each(function() {
+            $(this).children('td:nth-child(2)').each(function(){
+              var data = $(this).html();
+            console.log(data);
+            passengernotostore.push(data);
+            })
+
+          });
+         for(key in storeLocationDetails)
+            {
+              citytostore.push(key);
+              // text += (key + ' = ' + storeLocationDetails[key].getPosition().lat() + '\n');
+              citylattostore.push(storeLocationDetails[key].getPosition().lat());
+              citylngtostore.push(storeLocationDetails[key].getPosition().lng());
+            }
+
+        //////////////////SEND
+
+        // var addressofcity={"CITY":citytostore,"PASSENGER":passengernotostore,"LAT":citylattostore,"LNG":citylngtostore};
+
+        var locations=[];
+        for(var i=0;i<citytostore.length;i++){
+          var currLocation={};
+          currLocation['name']=citytostore[i];
+          currLocation['count']=passengernotostore[i];
+          currLocation['lat']=citylattostore[i];
+          currLocation['lng']=citylngtostore[i];
+          locations.push(currLocation);
+        }
+        console.log("ADDRESS:");
+        console.log(locations);
+         $.ajax({
+          url: "route/",
+          data: {'csrfmiddlewaretoken':'{{csrf_token}}','locations':JSON.stringify(locations)},
+          cache: false,
+          type: "POST",
+          success: function(response) {
+            console.log("SUCCESS");
+            console.log(response);
+          },
+          error: function(xhr) {
+            console.log("FAILED");
+            console.log(xhr);
+          }
+        });
+
+         ///////////////////
+         return false;
+
+        }
+
+        
+
+
       function initMap() {
         var myLatLng = {lat: 20.593684, lng: 78.96288000000004};
 
