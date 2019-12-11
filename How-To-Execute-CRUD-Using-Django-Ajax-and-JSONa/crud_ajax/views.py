@@ -17,14 +17,16 @@ class RouteView(View):
         print(request.POST)
         x=json.loads(request.POST['locations'])
         print(x)
+        # data={'lat':22.2,'lng':77.8,'arr':12,'depa':32,'count':20}
+        routes=[]
         data={}
-        # routes=[]
-        # route={}
+        route={}
         # route['bus']
         # route['type']="pickup/drop"
-        # route['nodes']=[{'lat':,'lng':,'arr':,'depa':,'count':},{}]
-        # data['routes']=routes 
-        data['name']='anurag'       
+        route['nodes']=[{'lat':22.2,'lng':77.7,'arr':12,'depa':32,'count':20},{'lat':32.2,'lng':87.7,'arr':12,'depa':32,'count':20}]
+
+        data['routes']=route 
+        # data['name']='anurag'       
         return JsonResponse(data)
 
 
