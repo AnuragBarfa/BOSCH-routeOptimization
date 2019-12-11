@@ -1,16 +1,15 @@
-
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}Django Ajax Example{% endblock %}
 {% block stylesheet %}
-{% load static  %}
-<link rel="stylesheet" href="{% static 'css/icon.css' %}">
-<link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <style type="text/css">
 	#wrapper { position: relative; }
    	#over_map { position: absolute; top: 10px; right: 1%; z-index: 99;  }
 </style>
-  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
 <style type="text/css">
     body {
         color: #404E67;
@@ -19,7 +18,7 @@
   }
   .table-wrapper {
     width: 300px;
-    background: #fff; 
+    background: #f2f2f2; 
     box-shadow: 0 1px 1px rgba(0,0,0,.05);
     }
     .table-title {
@@ -61,7 +60,7 @@
     table.table td a {
     cursor: pointer;
         display: inline-block;
-        margin: 0 5px;
+        margin: 0 2px;
     min-width: 24px;
     }    
   table.table td a.add {
@@ -129,9 +128,7 @@
                         <td>John Doe</td>
                         <td>20</td>
                         <td>
-                          <a class="add" title="Add" data-toggle="tooltip">
-                            <i class="material-icons">&#xE03B;</i>
-                          </a>
+              <a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a>
                             <a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
                             <a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
                         </td>
@@ -181,22 +178,15 @@
 </script>
   <script>
       var map;
-      var storeLocationDetails={};
-      var directionsDisplay,directionsService;
-      var geocoder;
+      var storeLocationDetails=new Map();
       function initMap() {
         var myLatLng = {lat: 20.593684, lng: 78.96288000000004};
 
         map = new google.maps.Map(document.getElementById('map'), {
           zoom: 4,
           center: myLatLng,
-           mapTypeId: google.maps.MapTypeId.ROADMAP,
           disableDefaultUI: true
         });
-          directionsService = new google.maps.DirectionsService();
-          directionsDisplay = new google.maps.DirectionsRenderer();
-          geocoder = new google.maps.Geocoder();
-          directionsRenderer.setMap(map);
 
         // var marker = new google.maps.Marker({
         //   position: myLatLng,
@@ -211,10 +201,11 @@
         // });
       }
       function addMarker(location) {
-          marker = new google.maps.Marker({
-              position: location,
-              map: map
-          });
+        console.log("in marker");
+        marker = new google.maps.Marker({
+            position: location,
+            map: map
+        });
       }
   </script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmwBs8dSuwg56fTWsbJyMdrvXYU3_Pim4&libraries=places&callback=initMap">
@@ -238,21 +229,15 @@ $(document).ready(function(){
       var input = document.getElementById('name');
       console.log(input);
       var autocomplete = new google.maps.places.Autocomplete(input);
-      
-      var Lat;
-      var Lng;
-      var Loc;
+      // var Lat;
+      // var Lng;
+      // var Loc;
       google.maps.event.addListener(autocomplete, 'place_changed', function () {
           var place = autocomplete.getPlace();
-          // console.log("SEE BELOW");
-          // console.log(input);
-          // console.log("SEE ABOVE");
-          // // document.getElementById('city2').value = place.name;
+          // document.getElementById('city2').value = place.name;
           // Lat = place.geometry.location.lat();
           // Lng = place.geometry.location.lng();
       });
-      // CurrLocation = new google.maps.LatLng(Lat, Lng);
-      // addMarker(CurrLocation);
     });
   // Add row on add button click
   $(document).on("click", ".add", function(){
@@ -268,41 +253,27 @@ $(document).ready(function(){
     });
     $(this).parents("tr").find(".error").first().focus();
     if(!empty){
-      var loc1="Hello",input;
-      var Lat1,Lng1;
+      var address="hello";
       input.each(function(){
         $(this).parent("td").html($(this).val());
-        
-       // console.log($(this));
-        if(loc1==="Hello")
-         {
-             loc1=$(this).val();
-             // alert(loc1);
-            geocoder.geocode( { 'address': loc1}, function(results, status) {
-               if (status == google.maps.GeocoderStatus.OK)
-              { console.log("OK");
-                  // do something with the geocoded result
-                  //
-                  var myMarker = new google.maps.Marker({
-                  map: map,    
-                  position: results[0].geometry.location
-                });
-                  storeLocationDetails[loc1]=myMarker;
-                  //console.log(results[0].geometry.location.lat());
-                  //console.log(results[0].geometry.location.lng());
-              }
-});     
-        //   Lat = loc.geometry.location.lat();
-        //   Lng = loc.geometry.location.lng();
-        //   alert("LAT:"+Lat);  
-      
-         }
-
+        if(address==="hello"){
+          address=$(this).val();
+        }
       });     
-
-
       $(this).parents("tr").find(".add, .edit").toggle();
       $(".add-new").removeAttr("disabled");
+      var geocoder = new google.maps.Geocoder();
+      geocoder.geocode( { 'address': address}, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK)
+        {
+            // map.setCenter(results[0].geometry.location);
+            var marker = new google.maps.Marker({
+              map: map,
+              position: results[0].geometry.location
+            });
+            storeLocationDetails[address]=marker;
+        }
+      });
     }   
     });
   // Edit row on edit button click
@@ -315,17 +286,19 @@ $(document).ready(function(){
   });
   // Delete row on delete button click
   $(document).on("click", ".delete", function(){
-        $(this).parents("tr").remove();
-        var address=$(this).parents("tr").find("td:first-child").text();
-        storeLocationDetails[address].setMap(null);
+    console.log(storeLocationDetails);
+    var address=$(this).parents("tr").find("td:first-child").text();
+    $(this).parents("tr").remove();
     $(".add-new").removeAttr("disabled");
+    storeLocationDetails[address].setMap(null);
+    storeLocationDetails.delete(address);
+    console.log(storeLocationDetails);
     });
 });
-</script>   
-  <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>  
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/plugin.js' %}"></script>
-
+</script>  
+<script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>  
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/plugin.js' %}"></script>
 {% endblock %}
 <!-- 
 <!DOCTYPE html>
