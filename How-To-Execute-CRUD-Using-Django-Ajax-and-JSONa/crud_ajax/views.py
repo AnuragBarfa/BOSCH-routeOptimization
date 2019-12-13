@@ -86,11 +86,14 @@ def main(datakac):
 
 class RouteView(View):
     def post(self, request):
+        buscap=[]
+        count=[]
         print("in view")
         print(request.POST)
         locations=json.loads(request.POST['locations'])
         busdetails=json.loads(request.POST['busdetails'])
         # print(locations)
+        print("BUS=====================")
         print(busdetails)
         #print(x[0]["name"])
         #x[{},{}]
@@ -126,9 +129,14 @@ class RouteView(View):
         # routes.append(route)
         for i in range(0,len(locations)):
             route['nodes'].append(locations[i])
-        
+            count.append(int(locations[i]['count']))
+        print("PSNGR NO ================")    
+        print(count)
         for i in range(0,len(busdetails)):
-            route['bus'].append(busdetails[i])
+            # route['bus'].append(busdetails[i])
+            buscap.append(int(busdetails[i]['buscapacity']))
+        print("buscapacity================")    
+        print(buscap)
         routes.append(route)
         # route2={}    
         # route2['bus']="NK324"
