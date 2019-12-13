@@ -284,15 +284,15 @@
                 console.log("SUCCESS");
                 console.log(response);
                   responsestore=response['routes'];
-                  // console.log(response['routes'][0]['nodes'][0]);
-                  // for(var i =0;i<response['routes'].length;i++)
-                  //   {  
-                  //     calcRoute(response['routes'][i]);
+                  console.log(response['routes'][0]['nodes'][0]);
+                  for(var i =0;i<response['routes'].length;i++)
+                    {  
+                      calcRoute(response['routes'][i]);
 
-                  //     console.log(response['routes'][i]['nodes']);
-                  //   }
+                      console.log(response['routes'][i]['nodes']);
+                    }
                   
-                  // boundall();
+                  boundall();
                distancematrix(responsestore,responsestore);
 
                },

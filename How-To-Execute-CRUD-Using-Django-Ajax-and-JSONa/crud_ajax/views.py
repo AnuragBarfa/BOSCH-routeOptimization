@@ -7,10 +7,99 @@ from django.http import JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
 from .RouteOptimization import mySolver
+import requests
+import json
+import urllib
+from urllib.request import urlopen
+
 def FrontView(request):
     users=CrudUser.objects.all()
     # mySolver()
     return render(request,'front_page.html',{'users':users})
+def create_data():
+    """Creates the data."""
+    data = {}
+    data['API_key'] = 'AIzaSyDmwBs8dSuwg56fTWsbJyMdrvXYU3_Pim4'
+    data['addresses'] = ['3610+Hacks+Cross+Rd+Memphis+TN', # depot
+                       '1921+Elvis+Presley+Blvd+Memphis+TN',
+                       '149+Union+Avenue+Memphis+TN',
+                       '1034+Audubon+Drive+Memphis+TN',
+                       '1532+Madison+Ave+Memphis+TN',
+                       '706+Union+Ave+Memphis+TN',
+                       '3641+Central+Ave+Memphis+TN',
+                       '926+E+McLemore+Ave+Memphis+TN',
+                       '4339+Park+Ave+Memphis+TN',
+                       '600+Goodwyn+St+Memphis+TN',
+                       '2000+North+Pkwy+Memphis+TN',
+                       '262+Danny+Thomas+Pl+Memphis+TN',
+                       '125+N+Front+St+Memphis+TN',
+                       '5959+Park+Ave+Memphis+TN',
+                       '814+Scott+St+Memphis+TN',
+                       '1005+Tillman+St+Memphis+TN']
+    return data
+
+def create_distance_matrix(data):
+    data = create_data()  
+    addresses = data["addresses"]
+    API_key = data["API_key"]
+    # Distance Matrix API only accepts 100 elements per request, so get rows in multiple requests.
+    max_elements = 100
+    num_addresses = len(addresses) # 16 in this example.
+    # Maximum number of rows that can be computed per request (6 in this example).
+    max_rows = max_elements // num_addresses
+    # num_addresses = q * max_rows + r (q = 2 and r = 4 in this example).
+    q, r = divmod(num_addresses, max_rows)
+    dest_addresses = addresses
+    distance_matrix = []
+    # Send q requests, returning max_rows rows per request.
+    for i in range(q):
+        origin_addresses = addresses[i * max_rows: (i + 1) * max_rows]
+        response = send_request(origin_addresses, dest_addresses, API_key)
+        distance_matrix += build_distance_matrix(response)
+
+    # Get the remaining remaining r rows, if necessary.
+    if r > 0:
+        origin_addresses = addresses[q * max_rows: q * max_rows + r]
+        response = send_request(origin_addresses, dest_addresses, API_key)
+        distance_matrix += build_distance_matrix(response)
+    return distance_matrix    
+
+def send_request(origin_addresses, dest_addresses, API_key):
+    """ Build and send request for the given origin and destination addresses."""
+    def build_address_str(addresses):
+        # Build a pipe-separated string of addresses
+        address_str = ''
+        for i in range(len(addresses) - 1):
+            address_str += addresses[i] + '|'
+        address_str += addresses[-1]
+        return address_str
+
+    request = 'https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial'
+    origin_address_str = build_address_str(origin_addresses)
+    dest_address_str = build_address_str(dest_addresses)
+    request = request + '&origins=' + origin_address_str + '&destinations=' + dest_address_str + '&key=' + API_key
+    html = urlopen(request).read()
+    # jsonResult = urllib.urlopen(request).read()
+    response = json.loads(html)
+    return response
+
+
+def build_distance_matrix(response):
+    distance_matrix = []
+    for row in response['rows']:
+        row_list = [row['elements'][j]['distance']['value'] for j in range(len(row['elements']))]
+        distance_matrix.append(row_list)
+    return distance_matrix  
+
+def main():
+    data = create_data()
+    addresses = data['addresses']
+    API_key = data['API_key']
+    distance_matrix = create_distance_matrix(data)
+    print(distance_matrix)
+
+main()
+
 
 class RouteView(View):
     def post(self, request):
@@ -27,12 +116,12 @@ class RouteView(View):
         routes=[]
         data={}
         route={}
-        # route['bus']="NH123"
-        # route['color']="red"
-        # route['type']="pickup/drop"
-        route['nodes']=[{"lat":12.9216579,"lng":77.55992140000001},
-                        {"lat":12.930428,"lng": 77.53736}]
-                        # {"lat":12.9021902,"lng": 77.51858199999992}]
+        route['bus']="NH123"
+        route['color']="red"
+        route['type']="pickup/drop"
+        # route['nodes']=[{"lat":12.9216579,"lng":77.55992140000001},
+        # #                 {"lat":12.930428,"lng": 77.53736}]
+        #                 # {"lat":12.9021902,"lng": 77.51858199999992}]
                         # # {"lat":12.929655,"lng": 77.551214},
                         # {"lat":12.9233054,"lng":77.55334479999999},
                         # {"lat":12.859117,"lng":77.66167799999994},
@@ -49,42 +138,42 @@ class RouteView(View):
                         # {"lat":12.9364473,"lng":77.58721119999996},
                         # {"lat":12.9039598,"lng":77.52598590000002},
                         # {"lat":12.9100928,"lng":77.48686399999997}]
-        print(route['nodes'])               
-        # routes.append(route)
-        # for i in range(0,len(locations)):
-        #     route['nodes'].append(locations[i])
+        # print(route['nodes'])               
+        routes.append(route)
+        for i in range(0,len(locations)):
+            route['nodes'].append(locations[i])
         
-        # for i in range(0,len(busdetails)):
-        #     route['bus'].append(busdetails[i])
+        for i in range(0,len(busdetails)):
+            route['bus'].append(busdetails[i])
         
-        # route2={}    
-        # route2['bus']="NK324"
-        # route2['color']="green"
-        # route2['type']="pickup/drop"
-        # route2['nodes']=[{'name': "k1", 'count': "20",'arr':"1",'depa':"1", 'lat': 22, 'lng': 79},{'name': "d1", 'count': "30",'arr':"1",'depa':"1", 'lat': 24, 'lng': 83},{'name': "M1", 'count': "20",'arr':"1",'depa':"1", 'lat': 21, 'lng': 81}]
+        route2={}    
+        route2['bus']="NK324"
+        route2['color']="green"
+        route2['type']="pickup/drop"
+        route2['nodes']=[{'name': "k1", 'count': "20",'arr':"1",'depa':"1", 'lat': 22, 'lng': 79},{'name': "d1", 'count': "30",'arr':"1",'depa':"1", 'lat': 24, 'lng': 83},{'name': "M1", 'count': "20",'arr':"1",'depa':"1", 'lat': 21, 'lng': 81}]
         
-        # routes.append(route2)
+        routes.append(route2)
 
-        # route3={}    
-        # route3['bus']="NK324"
-        # route3['color']="black"
-        # route3['type']="pickup/drop"
-        # route3['nodes']=[{'name': "k2", 'count': "20",'arr':"1",'depa':"1", 'lat': 12, 'lng': 77},{'name': "d2", 'count': "30",'arr':"1",'depa':"1", 'lat': 13, 'lng': 80}]
+        route3={}    
+        route3['bus']="NK324"
+        route3['color']="black"
+        route3['type']="pickup/drop"
+        route3['nodes']=[{'name': "k2", 'count': "20",'arr':"1",'depa':"1", 'lat': 12, 'lng': 77},{'name': "d2", 'count': "30",'arr':"1",'depa':"1", 'lat': 13, 'lng': 80}]
         
-        # routes.append(route3)
+        routes.append(route3)
 
-        # route4={}
-        # route4['bus']="NH123"
-        # route4['color']="red"
-        # route4['type']="pickup/drop"
-        # route4['nodes']=[{'name': "k", 'count': "20",'arr':"1",'depa':"1", 'lat': 22.6018382, 'lng': 88.38306550000004},{'name': "d", 'count': "30",'arr':"1",'depa':"1", 'lat': 28.7040592, 'lng': 77.10249019999992},{'name': "M", 'count': "20",'arr':"1",'depa':"1", 'lat': 19.0759837, 'lng': 72.87765590000004}]
-        # routes.append(route4)
-        # data['routes']=routes
-        data['routes']=route['nodes'] 
+        route4={}
+        route4['bus']="NH123"
+        route4['color']="red"
+        route4['type']="pickup/drop"
+        route4['nodes']=[{'name': "k", 'count': "20",'arr':"1",'depa':"1", 'lat': 22.6018382, 'lng': 88.38306550000004},{'name': "d", 'count': "30",'arr':"1",'depa':"1", 'lat': 28.7040592, 'lng': 77.10249019999992},{'name': "M", 'count': "20",'arr':"1",'depa':"1", 'lat': 19.0759837, 'lng': 72.87765590000004}]
+        routes.append(route4)
+        data['routes']=routes
+        # data['routes']=route['nodes'] 
 
-        # print("ROUTES==================================")
-        # print(routes)
-        # print("ROUTES=============OVER=================")
+        print("ROUTES==================================")
+        print(routes)
+        print("ROUTES=============OVER=================")
         # data['name']='anurag'       
         return JsonResponse(data)
 
