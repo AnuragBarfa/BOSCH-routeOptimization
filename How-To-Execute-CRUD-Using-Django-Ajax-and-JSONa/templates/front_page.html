@@ -98,7 +98,7 @@
 
 {% block content %}
 	<div class="container-fluid" style="padding: 0px;">
-		<div id="map" style="position:relative;width:100%;height: 600px;float:left;"></div>
+		<div id="map" style="position:relative;width:100%;height: 800px;float:left;"></div>
 		<div id="over_map" class="pull-right">
 			<!-- <button>Location</button>
 			<button>Location</button> -->
@@ -292,9 +292,9 @@
                 console.log(response['routes'][i]['nodes']);
               }
           
-            
+          
             calcRoute(); 
-  
+            
           },
           error: function(xhr) {
             console.log("FAILED");
@@ -310,7 +310,7 @@
 
       function initMap() {
 
-        var myLatLng = {lat: 20.593684, lng: 78.96288000000004};
+        var myLatLng = {lat: 20, lng: 78};
         directionsService = new google.maps.DirectionsService();
         map = new google.maps.Map(document.getElementById('map'), {
           zoom: 4,
@@ -339,10 +339,12 @@
       for(var i=0;i<response['nodes'].length;i++){
         temp2=[];
         color.push(response['color']);
-        glob=response['color'];
+        
         temp2.push(response['nodes'][i]["name"]);      
         temp2.push(response['nodes'][i]["lat"]);
         temp2.push(response['nodes'][i]["lng"]);
+        bounds.extend(new google.maps.LatLng(response['nodes'][i]["lat"],response['nodes'][i]["lng"]));
+        map.fitBounds(bounds);
         locations2.push(temp2);
       }
       
@@ -359,6 +361,10 @@
       map: map,
       position: new google.maps.LatLng(locations2[i][1], locations2[i][2]),
     });
+
+    
+    
+
 
    var contentString = '<div id="content">'+
             '<div id="siteNotice">'+
@@ -416,7 +422,7 @@ directionsDisplay9.setMap(map);
       
 
 
-alert(locations2);
+// alert(locations2);
 
 
 
@@ -439,6 +445,8 @@ alert(locations2);
         temp2.push(store[i]);
         temp2.push(storeLocationDetails[store[i]].getPosition().lat());
         temp2.push(storeLocationDetails[store[i]].getPosition().lng());
+        bounds.extend(new google.maps.LatLng(storeLocationDetails[store[i]].getPosition().lat(),storeLocationDetails[store[i]].getPosition().lng()));
+        map.fitBounds(bounds);
         locations2.push(temp2);
       }
       
@@ -525,7 +533,22 @@ function boundall(){
                 var e = new google.maps.LatLng(storeLocationDetails[key].getPosition().lat(),storeLocationDetails[key].getPosition().lng());
                 bounds.extend(e);
             }
+       
+        console.log(storeLocationDetails);
+        var store=Object.keys(storeLocationDetails);
+      for(var i=0;i<store.length;i++){
+        var e=new google.maps.LatLng(storeLocationDetails[store[i]].getPosition().lat(),storeLocationDetails[store[i]].getPosition().lng());
+        bounds.extend(e);
+      }
 
+    
+          for(var j=0;j<glob.length;j++)
+     for(var i=0;i<response['routes'][j]['nodes'].length;i++){
+      var e=new google.maps.LatLng(response['routes'][j]['nodes'][i]["lat"],response['routes'][j]['nodes'][i]["lng"]);
+        bounds.extend(e);
+
+      }
+      
 
             map.fitBounds(bounds);
 }
