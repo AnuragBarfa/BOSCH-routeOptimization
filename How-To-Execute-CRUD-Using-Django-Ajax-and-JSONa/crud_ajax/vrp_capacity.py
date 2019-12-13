@@ -23,9 +23,10 @@ from ortools.constraint_solver import pywrapcp
 
 
 # [START data_model]
-def create_data_model():
+def create_data_model(x):
     """Stores the data for the problem."""
     data = {}
+    # data['distance_matrix']=x[0];
     data['distance_matrix'] = [
         [
             0, 548, 776, 696, 582, 274, 502, 194, 308, 194, 536, 502, 388, 354,
@@ -243,13 +244,19 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
     print('Total Distance of all routes: {0}m'.format(total_distance))
     print('Total Load of all routes: {}'.format(total_load))
     print('Total Time of all routes: {0}min'.format(total_time))
+    #return data['routes']=[{"Bus no",[{},{},{}]},{}]
+    #route['Bus_no']=3 route['nodes']=[{},{},{}]
+    #route['Total']=
+    #route['Total']=
+    #route['Total']=
+    #route['nodes'][0]={'stop':0,'load':2,'windows':}
 
 
-def main():
+def solver(x):
     """Solve the CVRP problem."""
     # Instantiate the data problem.
     # [START data]
-    data = create_data_model()
+    data = create_data_model(x)
     # [END data]
 
     # Create the routing index manager.
@@ -350,16 +357,16 @@ def main():
 
     print('\n\n\n')
     ### Running new instance ####
-    data['demands'][14] = 0
+    # data['demands'][14] = 0
     
-    new_solution = routing.SolveFromAssignmentWithParameters(data['previous_solution'] , search_parameters)
+    # new_solution = routing.SolveFromAssignmentWithParameters(data['previous_solution'] , search_parameters)
     
-    if new_solution:
-        print('New solution from previous one : ')
-        print_solution(data, manager , routing, new_solution)
+    # if new_solution:
+    #     print('New solution from previous one : ')
+    #     print_solution(data, manager , routing, new_solution)
         
 
-if __name__ == '__main__':
-    # print(":jias")
-    main()
+# if __name__ == '__main__':
+#     # print(":jias")
+#     main()
 # [END program]

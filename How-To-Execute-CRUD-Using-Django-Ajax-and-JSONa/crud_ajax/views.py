@@ -12,34 +12,19 @@ import json
 import urllib
 from urllib.request import urlopen
 
+
 def FrontView(request):
     users=CrudUser.objects.all()
     # mySolver()
     return render(request,'front_page.html',{'users':users})
-def create_data():
-    """Creates the data."""
-    data = {}
-    data['API_key'] = 'AIzaSyDmwBs8dSuwg56fTWsbJyMdrvXYU3_Pim4'
-    data['addresses'] = ['3610+Hacks+Cross+Rd+Memphis+TN', # depot
-                       '1921+Elvis+Presley+Blvd+Memphis+TN',
-                       '149+Union+Avenue+Memphis+TN',
-                       '1034+Audubon+Drive+Memphis+TN',
-                       '1532+Madison+Ave+Memphis+TN',
-                       '706+Union+Ave+Memphis+TN',
-                       '3641+Central+Ave+Memphis+TN',
-                       '926+E+McLemore+Ave+Memphis+TN',
-                       '4339+Park+Ave+Memphis+TN',
-                       '600+Goodwyn+St+Memphis+TN',
-                       '2000+North+Pkwy+Memphis+TN',
-                       '262+Danny+Thomas+Pl+Memphis+TN',
-                       '125+N+Front+St+Memphis+TN',
-                       '5959+Park+Ave+Memphis+TN',
-                       '814+Scott+St+Memphis+TN',
-                       '1005+Tillman+St+Memphis+TN']
-    return data
+def create_data(datakac):
+    print("DATA['addresses']")
+    print(datakac['addresses'])
+    print(datakac)
+    return datakac
 
-def create_distance_matrix(data):
-    data = create_data()  
+def create_distance_matrix(data,datakac):
+    data = create_data(datakac)  
     addresses = data["addresses"]
     API_key = data["API_key"]
     # Distance Matrix API only accepts 100 elements per request, so get rows in multiple requests.
@@ -91,14 +76,12 @@ def build_distance_matrix(response):
         distance_matrix.append(row_list)
     return distance_matrix  
 
-def main():
-    data = create_data()
+def main(datakac):
+    data = create_data(datakac)
     addresses = data['addresses']
     API_key = data['API_key']
-    distance_matrix = create_distance_matrix(data)
+    distance_matrix = create_distance_matrix(data,datakac)
     print(distance_matrix)
-
-main()
 
 
 class RouteView(View):
@@ -119,6 +102,7 @@ class RouteView(View):
         route['bus']="NH123"
         route['color']="red"
         route['type']="pickup/drop"
+        route['nodes']=[]
         # route['nodes']=[{"lat":12.9216579,"lng":77.55992140000001},
         # #                 {"lat":12.930428,"lng": 77.53736}]
         #                 # {"lat":12.9021902,"lng": 77.51858199999992}]
@@ -139,41 +123,53 @@ class RouteView(View):
                         # {"lat":12.9039598,"lng":77.52598590000002},
                         # {"lat":12.9100928,"lng":77.48686399999997}]
         # print(route['nodes'])               
-        routes.append(route)
+        # routes.append(route)
         for i in range(0,len(locations)):
             route['nodes'].append(locations[i])
         
         for i in range(0,len(busdetails)):
             route['bus'].append(busdetails[i])
+        routes.append(route)
+        # route2={}    
+        # route2['bus']="NK324"
+        # route2['color']="green"
+        # route2['type']="pickup/drop"
+        # route2['nodes']=[{'name': "k1", 'count': "20",'arr':"1",'depa':"1", 'lat': 22, 'lng': 79},{'name': "d1", 'count': "30",'arr':"1",'depa':"1", 'lat': 24, 'lng': 83},{'name': "M1", 'count': "20",'arr':"1",'depa':"1", 'lat': 21, 'lng': 81}]
         
-        route2={}    
-        route2['bus']="NK324"
-        route2['color']="green"
-        route2['type']="pickup/drop"
-        route2['nodes']=[{'name': "k1", 'count': "20",'arr':"1",'depa':"1", 'lat': 22, 'lng': 79},{'name': "d1", 'count': "30",'arr':"1",'depa':"1", 'lat': 24, 'lng': 83},{'name': "M1", 'count': "20",'arr':"1",'depa':"1", 'lat': 21, 'lng': 81}]
-        
-        routes.append(route2)
+        # routes.append(route2)
 
-        route3={}    
-        route3['bus']="NK324"
-        route3['color']="black"
-        route3['type']="pickup/drop"
-        route3['nodes']=[{'name': "k2", 'count': "20",'arr':"1",'depa':"1", 'lat': 12, 'lng': 77},{'name': "d2", 'count': "30",'arr':"1",'depa':"1", 'lat': 13, 'lng': 80}]
+        # route3={}    
+        # route3['bus']="NK324"
+        # route3['color']="black"
+        # route3['type']="pickup/drop"
+        # route3['nodes']=[{'name': "k2", 'count': "20",'arr':"1",'depa':"1", 'lat': 12, 'lng': 77},{'name': "d2", 'count': "30",'arr':"1",'depa':"1", 'lat': 13, 'lng': 80}]
         
-        routes.append(route3)
+        # routes.append(route3)
 
-        route4={}
-        route4['bus']="NH123"
-        route4['color']="red"
-        route4['type']="pickup/drop"
-        route4['nodes']=[{'name': "k", 'count': "20",'arr':"1",'depa':"1", 'lat': 22.6018382, 'lng': 88.38306550000004},{'name': "d", 'count': "30",'arr':"1",'depa':"1", 'lat': 28.7040592, 'lng': 77.10249019999992},{'name': "M", 'count': "20",'arr':"1",'depa':"1", 'lat': 19.0759837, 'lng': 72.87765590000004}]
-        routes.append(route4)
+        # route4={}
+        # route4['bus']="NH123"
+        # route4['color']="red"
+        # route4['type']="pickup/drop"
+        # route4['nodes']=[{'name': "k", 'count': "20",'arr':"1",'depa':"1", 'lat': 22.6018382, 'lng': 88.38306550000004},{'name': "d", 'count': "30",'arr':"1",'depa':"1", 'lat': 28.7040592, 'lng': 77.10249019999992},{'name': "M", 'count': "20",'arr':"1",'depa':"1", 'lat': 19.0759837, 'lng': 72.87765590000004}]
+        # routes.append(route4)
         data['routes']=routes
         # data['routes']=route['nodes'] 
 
         print("ROUTES==================================")
-        print(routes)
-        print("ROUTES=============OVER=================")
+        # print(routes[len(routes)]['nodes'][len(routes[0]['nodes'])]['name'])
+        print(routes[0]['nodes'][0]['name'])
+        print(routes[0]['nodes'][0]['name'].replace(", ", "+"))
+        print("ROUTES=============OVER=================")   
+
+        datakac = {}
+        datakac['API_key'] = 'AIzaSyDmwBs8dSuwg56fTWsbJyMdrvXYU3_Pim4'
+        datakac['addresses']=[]
+        for i in range(0,len(routes[0]['nodes'])):
+            x=routes[0]['nodes'][i]['name'].replace(", ", "+").replace(" ","+").replace(".","+")
+            datakac['addresses'].append(x)
+        datakac['addresses']=list(set(datakac['addresses']))    
+        print(datakac)   
+        main(datakac)
         # data['name']='anurag'       
         return JsonResponse(data)
 
