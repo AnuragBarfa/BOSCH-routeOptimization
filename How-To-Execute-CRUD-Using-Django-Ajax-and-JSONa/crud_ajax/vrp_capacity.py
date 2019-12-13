@@ -265,8 +265,6 @@ def solver(datamatrix,psngr_no,buscap,num_vehicles):
     """Solve the CVRP problem."""
     # Instantiate the data problem.
     # [START data]
-    print("X===============")
-    print(x)
     data = create_data_model(datamatrix,psngr_no,buscap,num_vehicles)
 
     # [END data]
