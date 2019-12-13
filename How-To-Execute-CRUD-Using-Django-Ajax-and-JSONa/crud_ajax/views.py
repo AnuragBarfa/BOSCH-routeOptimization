@@ -30,7 +30,7 @@ class RouteView(View):
         route['bus']="NH123"
         route['color']="red"
         route['type']="pickup/drop"
-        route['nodes']=[{'name': "k", 'count': "20", 'lat': 22.6018382, 'lng': 88.38306550000004},{'name': "d", 'count': "30", 'lat': 28.7040592, 'lng': 77.10249019999992},{'name': "M", 'count': "20", 'lat': 19.0759837, 'lng': 72.87765590000004}]
+        route['nodes']=[]
         routes.append(route)
         for i in range(0,len(locations)):
             route['nodes'].append(locations[i])
@@ -54,7 +54,15 @@ class RouteView(View):
         
         routes.append(route3)
 
+        route4={}
+        route4['bus']="NH123"
+        route4['color']="red"
+        route4['type']="pickup/drop"
+        route4['nodes']=[{'name': "k", 'count': "20", 'lat': 22.6018382, 'lng': 88.38306550000004},{'name': "d", 'count': "30", 'lat': 28.7040592, 'lng': 77.10249019999992},{'name': "M", 'count': "20", 'lat': 19.0759837, 'lng': 72.87765590000004}]
+        routes.append(route4)
+
         data['routes']=routes 
+
         print("ROUTES==================================")
         print(routes)
         print("ROUTES=============OVER=================")

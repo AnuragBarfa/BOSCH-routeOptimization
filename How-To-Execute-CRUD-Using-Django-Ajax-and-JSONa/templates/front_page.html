@@ -330,39 +330,7 @@
             map: map
         });
       }
-       function calcRouterandom() {
-
-        var start = new google.maps.LatLng(37.334818, -121.884886);
-        //var end = new google.maps.LatLng(38.334818, -181.884886);
-        var end = new google.maps.LatLng(37.441883, -122.143019);
-        var bounds = new google.maps.LatLngBounds();
-        bounds.extend(start);
-        bounds.extend(end);
-        map.fitBounds(bounds);
-        var request = {
-            origin: start,
-            destination: end,
-            travelMode: google.maps.TravelMode.DRIVING
-        };
-         directionsDisplay.setOptions({
-        polylineOptions: {
-          strokeColor: 'red'
-        }
-      });
-        // //COLOUR
-       
-
-        directionsService.route(request, function(result, status) {
-          if (status == google.maps.DirectionsStatus.OK) {
-            directionsDisplay.setDirections(result);
-          }
-        });
-
-
-      }
-             function calcRoute3(response) {
-
-       
+      function calcRoute3(response) {
         var locations2 = [
         //];
         ['dsv',  122, 127]
@@ -448,7 +416,7 @@ directionsDisplay9.setMap(map);
       
 
 
-
+alert(locations2);
 
 
 
