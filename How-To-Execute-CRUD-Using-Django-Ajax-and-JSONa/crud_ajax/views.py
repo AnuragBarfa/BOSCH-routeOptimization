@@ -16,16 +16,27 @@ class RouteView(View):
     def post(self, request):
         print("in view")
         print(request.POST)
-        x=json.loads(request.POST['locations'])
-        print(x)
+        locations=json.loads(request.POST['locations'])
+        busdetails=json.loads(request.POST['busdetails'])
+        # print(locations)
+        print(busdetails)
+        #print(x[0]["name"])
+        #x[{},{}]
+
         # data={'lat':22.2,'lng':77.8,'arr':12,'depa':32,'count':20}
         routes=[]
         data={}
         route={}
-        route['bus']="NHAK"
+        route['bus']=[]
         route['type']="pickup/drop"
-        route['nodes']=[{'lat':22.2,'lng':77.7,'arr':12,'depa':32,'count':20},{'lat':32.2,'lng':87.7,'arr':12,'depa':32,'count':20}]
-
+        #route['nodes']=[{'lat':22.2,'lng':77.7,'arr':12,'depa':32,'count':20},{'lat':32.2,'lng':87.7,'arr':12,'depa':32,'count':20}]
+        route['nodes']=[]
+        for i in range(0,len(locations)):
+            route['nodes'].append(locations[i])
+        
+        for i in range(0,len(busdetails)):
+            route['bus'].append(busdetails[i])
+        
         data['routes']=route 
         # data['name']='anurag'       
         return JsonResponse(data)

@@ -120,24 +120,28 @@
             </div>
             <div class="collapse" id="collapseExample1">
               <div class="card card-body">
+                <div id="loc_searchresult">
                 <table class="table">
                 <thead>
                     <tr>
                         <th>Location</th>
                         <th>P. No.</th>
                         <th><button type="button" class="btn btn-info add-new"><!-- <i class="fa fa-plus"></i> -->Add Loc</button></th>
+                      </tr>
                 </thead>
                 <tbody>
 
                   </tbody>
             </table>
+          </div>
+                  <i id="hide_no_loc_available">NO LOCATION AVAILABLE</i>
               </div>
             </div>
             
         </div>
 
 			
-			
+			<br/>
           <div class="table-wrapper">
             <div class="table-title">
                 <div class="row">
@@ -151,6 +155,7 @@
             </div>
             <div class="collapse" id="collapseExample2">
               <div class="card card-body">
+                <div id="bus_searchresult">
                 <table class="table">
                 <thead>
                     <tr>
@@ -160,17 +165,11 @@
                     </tr>     
                 </thead>
                 <tbody>
-<!--                   <tr>
-                        <td>VOLVO</td>
-                        <td>16</td>
-                        <td>
-              <a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a>
-                            <a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
-                            <a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
-                        </td>
-                    </tr>  -->
                    </tbody>
             </table>
+            <i id="hide_no_bus_available">NO BUS AVAILABLE</i>
+            </div>
+            <!-- <i id="hide_no_loc_available2">NO BUS AVAILABLE</i> -->
               </div>
             </div>
             
@@ -187,25 +186,58 @@
   <script>
     
       var map;
+      var request;
       var geocoder;
       var storeLocationDetails=new Map();
       var directionsDisplay;
       var directionsService;
-
+      var bounds;
+              var sendtocity=[];
+              var citytostore=[],passengernotostore=[],citylattostore=[],citylngtostore=[];
+              var bustostore=[],capacitytostore=[];
+  
         function routeopt(){
-                var citytostore=[],passengernotostore=[],citylattostore=[],citylngtostore=[];
-                var bustostore=[],capacitytostore=[];
+               citytostore=[];
+               passengernotostore=[];
+               citylattostore=[];
+               citylngtostore=[];
+               bustostore=[];
+               capacitytostore=[];
+  
   
           var data={};
-          console.log("READING START 2");
-                  $('#lc_searchresult > table > tbody > tr').each(function() {
+          
+          console.log("STORING PSNG NO");
+          
+          $('#loc_searchresult > table > tbody > tr').each(function() {
             $(this).children('td:nth-child(2)').each(function(){
               var data = $(this).html();
             console.log(data);
             passengernotostore.push(data);
             })
-
           });
+          
+          console.log("STORING BUS NAME");
+          
+          $('#bus_searchresult > table > tbody > tr').each(function() {
+            $(this).children('td:nth-child(2)').each(function(){
+              var data = $(this).html();
+            console.log(data);
+            bustostore.push(data);
+            })
+          });
+          
+          console.log("STORING BUS Capacity");
+          
+          $('#bus_searchresult > table > tbody > tr').each(function() {
+            $(this).children('td:nth-child(2)').each(function(){
+              var data = $(this).html();
+            console.log(data);
+            capacitytostore.push(data);
+            })
+          });
+
+
          for(key in storeLocationDetails)
             {
               citytostore.push(key);
@@ -219,6 +251,15 @@
         // var addressofcity={"CITY":citytostore,"PASSENGER":passengernotostore,"LAT":citylattostore,"LNG":citylngtostore};
 
         var locations=[];
+        var busdetails=[];
+
+        for(var i=0;i<bustostore.length;i++){
+          var currLocation={};
+          currLocation['busname']=bustostore[i];
+          currLocation['buscapacity']=capacitytostore[i];
+          busdetails.push(currLocation);
+        }
+
         for(var i=0;i<citytostore.length;i++){
           var currLocation={};
           currLocation['name']=citytostore[i];
@@ -227,11 +268,12 @@
           currLocation['lng']=citylngtostore[i];
           locations.push(currLocation);
         }
+
         console.log("ADDRESS:");
-        console.log(locations);
-         $.ajax({
+        // console.log(locations);
+          $.ajax({
           url: "route/",
-          data: {'csrfmiddlewaretoken':'{{csrf_token}}','locations':JSON.stringify(locations)},
+          data: {'csrfmiddlewaretoken':'{{csrf_token}}','locations':JSON.stringify(locations),'busdetails':JSON.stringify(busdetails)},
           cache: false,
           type: "POST",
           success: function(response) {
@@ -243,7 +285,22 @@
             console.log(xhr);
           }
         });
+            // console.log(storeLocationDetails);
+            // var store=Object.keys(storeLocationDetails);
+            //  console.log(store);
+            // //   var storethisvar=[];
+            // //    for(key in storeLocationDetails)
+            // // {  console.log(key);
+            // //    storethisvar.push("HELLO");
+            // // }
+            
 
+            // if(store.length>1)
+            // for(var i=1;i<store.length;i++){
+            //   // calcRoute(
+            //   //   storeLocationDetails[store[i-1]].getPosition().lat(),storeLocationDetails[store[i-1]].getPosition().lng(),storeLocationDetails[store[i]].getPosition().lat(),storeLocationDetails[store[i]].getPosition().lng());
+            // }
+             calcRoute(); 
          ///////////////////
          return false;
 
@@ -253,15 +310,19 @@
 
 
       function initMap() {
+
         var myLatLng = {lat: 20.593684, lng: 78.96288000000004};
         directionsService = new google.maps.DirectionsService();
         map = new google.maps.Map(document.getElementById('map'), {
           zoom: 4,
-          center: myLatLng//,
-          //disableDefaultUI: true
+          center: myLatLng,
+          disableDefaultUI: true
         });
         directionsDisplay = new google.maps.DirectionsRenderer();
+
         directionsDisplay.setMap(map);
+
+        bounds = new google.maps.LatLngBounds();
         // var marker = new google.maps.Marker({
         //   position: myLatLng,
         //   map: map,
@@ -273,6 +334,7 @@
         // google.maps.event.addListener(autocomplete2, 'place_changed', function () {
         //     var place = autocomplete2.getPlace();
         // });
+
       }
       function addMarker(location) {
         console.log("in marker");
@@ -281,39 +343,131 @@
             map: map
         });
       }
+
       function calcRoute() {
-        var start = new google.maps.LatLng(37.334818, -121.884886);
-        //var end = new google.maps.LatLng(38.334818, -181.884886);
-        var end = new google.maps.LatLng(37.441883, -122.143019);
-        var bounds = new google.maps.LatLngBounds();
-        bounds.extend(start);
-        bounds.extend(end);
-        map.fitBounds(bounds);
-        var request = {
-            origin: start,
-            destination: end,
-            travelMode: google.maps.TravelMode.DRIVING
-        };
-        directionsService.route(request, function (response, status) {
-            if (status == google.maps.DirectionsStatus.OK) {
-                directionsDisplay.setDirections(response);
-                directionsDisplay.setMap(map);
-            } else {
-                alert("Directions Request from " + start.toUrlValue(6) + " to " + end.toUrlValue(6) + " failed: " + status);
-            }
-        });
+        console.log(storeLocationDetails);
+      var store=Object.keys(storeLocationDetails);
+        var locations = [
+        //];
+        ['Delhi ',  28.7040592, 77.10249019999992]
+      ]; 
+      
+      for(var i=0;i<store.length;i++){
+        var temp=[];
+        temp.push(store[i]);
+        temp.push(storeLocationDetails[store[i]].getPosition().lat());
+        temp.push(storeLocationDetails[store[i]].getPosition().lng());
+        locations.push(temp);
+      }
+      
+      console.log("LOC===========");
+      console.log(locations);
+
+   var marker, i;
+  var request = {
+    travelMode: google.maps.TravelMode.DRIVING
+  };
+  for (i = 1; i < locations.length; i++) {
+
+    marker = new google.maps.Marker({
+      map: map,
+      position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+    });
+
+   var contentString = '<div id="content">'+
+            '<div id="siteNotice">'+
+            '</div>'+
+            '<h4 id="firstHeading" class="firstHeading">'+sendtocity[i-1] +'</h4>'+
+            '<div id="bodyContent">'+'sdgdfhrsgyyyyyyyyyyyyyyyyyyyyyyyyyy'+
+            '<p><i>ARRIVAL:</i></p>'+
+            '<p><i>DEPARTURE:</i></p>'+
+            '<p><i>No. of PSNGR:</i></p>'+
+            '</div>'+
+            '</div>';
+
+ //               var infowindow = new google.maps.InfoWindow({
+ //                  content: contentString
+ //                });
+ //               console.log("adding info box");
+ // marker.addListener('click', function() {
+ //          infowindow.open(map, marker);
+ //        });
+
+
+    // google.maps.event.addListener(marker, 'click', (function(marker, i) {
+    //   return function() {
+    //     // infowindow.setContent(locations[i][0]);
+    //     infowindow.open(map, marker);
+    //   }
+    // })(marker, i));
+
+    if (i == 1) request.origin = marker.getPosition();
+    else if (i == locations.length - 1) request.destination = marker.getPosition();
+    else {
+      if (!request.waypoints) request.waypoints = [];
+      request.waypoints.push({
+        location: marker.getPosition(),
+        stopover: true
+      });
+    }
+
+  }
+  directionsService.route(request, function(result, status) {
+    if (status == google.maps.DirectionsStatus.OK) {
+      directionsDisplay.setDirections(result);
+    }
+  });
+
       }
   </script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmwBs8dSuwg56fTWsbJyMdrvXYU3_Pim4&libraries=places&callback=initMap">
   </script>
   <script type="text/javascript">
+
+function boundall(){
+  for(key in storeLocationDetails)
+            {
+                var e = new google.maps.LatLng(storeLocationDetails[key].getPosition().lat(),storeLocationDetails[key].getPosition().lng());
+                bounds.extend(e);
+            }
+
+
+            map.fitBounds(bounds);
+}
+
+function isEmpty( obj ) {
+    for ( var name in obj ) {return false;}
+    return true;
+}
+
+function hide_or_show_no_location(){
+  // alert(isEmpty(storeLocationDetails));
+  if(!isEmpty(storeLocationDetails))document.getElementById("hide_no_loc_available").style.display = "none";
+      else{document.getElementById("hide_no_loc_available").style.display = "block";}
+}
+
+function hide_or_show_no_bus(){
+
+   alert(isEmpty(bustostore));
+  if(bustostore.length==0)document.getElementById("hide_no_bus_available").style.display = "block";
+      else{document.getElementById("hide_no_bus_available").style.display = "none";}
+}
 //LOCATION
 var glob;
 $(document).ready(function(){
+ document.getElementById("hide_no_loc_available").style.display = "block"; 
+
   $('[data-toggle="tooltip"]').tooltip();
   var actions = $("table td:last-child").html();
   // Append table with add row form on add new button click
     $(".add-new").click(function(){
+        
+        hide_or_show_no_location();
+      
+      console.log(isEmpty(storeLocationDetails));
+        
+        
+
       $(this).attr("disabled", "disabled");
       //var index = $("table tbody tr:last-child").index();
       var row = '<tr>' +
@@ -321,9 +475,15 @@ $(document).ready(function(){
           '<td><input type="text" class="form-control" name="department" id="department"></td>' +
       '<td><a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a><a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a><a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a></td>'+
       '</tr>';
+      
+       // $(this).closest('card').find('i').hide();
+      
+
       var currTable = $(this).closest('table');
       currTable.prepend(row);  
       currTable.find('tbody').find('tr').eq(0).find(".add, .edit").toggle();
+
+      // hide_or_show_no_bus();
       // $("table tbody tr").eq(0).find(".add, .edit").toggle();
       $('[data-toggle="tooltip"]').tooltip();
       if($(this.closest('.collapse')).attr('id')==="collapseExample1"){
@@ -332,12 +492,19 @@ $(document).ready(function(){
         var autocomplete = new google.maps.places.Autocomplete(input);
         google.maps.event.addListener(autocomplete, 'place_changed', function () {
             var place = autocomplete.getPlace();
+            
             // document.getElementById('city2').value = place.name;
             // Lat = place.geometry.location.lat();
             // Lng = place.geometry.location.lng();
         });
+      
+      
       }
     });
+
+
+
+
   // Add row on add button click
   $(document).on("click", ".add", function(){
     var empty = false;
@@ -352,6 +519,8 @@ $(document).ready(function(){
     });
     $(this).parents("tr").find(".error").first().focus();
     if(!empty){
+      document.getElementById("hide_no_loc_available").style.display = "none";
+
       var address="hello";
       input.each(function(){
         $(this).parent("td").html($(this).val());
@@ -367,14 +536,52 @@ $(document).ready(function(){
           if (status == google.maps.GeocoderStatus.OK)
           {
               // map.setCenter(results[0].geometry.location);
+              var contentString = '<div id="content">'+
+            '<div id="siteNotice">'+
+            '</div>'+
+            '<h4 id="firstHeading" class="firstHeading">'+address +'</h4>'+
+            '<div id="bodyContent">'+
+            '<p><i>ARRIVAL:</i></p>'+
+            '<p><i>DEPARTURE:</i></p>'+
+            '<p><i>No. of PSNGR:</i></p>'+
+            '</div>'+
+            '</div>';
+              sendtocity.push(address);
+               // var infowindow = new google.maps.InfoWindow({
+               //    content: contentString
+               //  });
+
               var marker = new google.maps.Marker({
                 map: map,
-                position: results[0].geometry.location
+                title: address,
+                position: results[0].geometry.location,
+                provideRouteAlternatives: true
               });
+
+        // marker.addListener('click', function() {
+        //   infowindow.open(map, marker);
+        // });
+
               storeLocationDetails[address]=marker;
-              calcRoute();
+              
+              //calcRoute(storeLocationDetails[address].lat);
+              boundall();
+              ////
+              
+                   
+            // {         
+            //    calcRoute(
+            //    storeLocationDetails[citytostore[i-1]].getPosition().lat(),storeLocationDetails[citytostore[i-1]].getPosition().lng(),storeLocationDetails[citytostore[i]].getPosition().lat(),storeLocationDetails[citytostore[i]].getPosition().lng());
+            
+
+              ////
+            // console.log("ins");
+
           }
         });
+
+            
+
       }
       //console.log($(this.closest('.collapse')));
       
@@ -391,44 +598,32 @@ $(document).ready(function(){
   // Delete row on delete button click
   $(document).on("click", ".delete", function(){
     console.log(storeLocationDetails);
+    // hide_or_show_no_location();
+    //     // $(this).closest('card').find('i').hide();
+      
     var address=$(this).parents("tr").find("td:first-child").text();
     if($(this.closest('.collapse')).attr('id')==="collapseExample1"){
-      storeLocationDetails[address].setMap(null);
-      storeLocationDetails.delete(address);
+      storeLocationDetails[address].setMap(null);      
+      
+      //storeLocationDetails.clear();/
+      
+      delete storeLocationDetails[address]; 
+
+        hide_or_show_no_location();
+      
       console.log(storeLocationDetails);
     }
     $(this).parents("tr").remove();
     $(".add-new").removeAttr("disabled");
     });
+    // hide_or_show_no_bus();
 });
-
-
 
 
 
 </script>  
 
 {% endblock %}
-<!-- 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Bootstrap Table with Add and Delete Row Feature</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans">
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 
-</head>
-<body>
-    <div class="container">
-        
-    </div>     
-</body>
-</html>                             -->
+<!-- //COLOUR //DIFF ROUTE PLOT // BOUNDED //  n                   cvb -->
