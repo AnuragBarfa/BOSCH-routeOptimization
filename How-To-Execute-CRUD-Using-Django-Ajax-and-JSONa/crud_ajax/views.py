@@ -7,6 +7,7 @@ from django.http import JsonResponse
 import json
 from django.views.decorators.csrf import csrf_exempt
 from .RouteOptimization import mySolver
+from .vrp_capacity import solver
 import requests
 import json
 import urllib
@@ -82,12 +83,13 @@ def main(datakac):
     API_key = data['API_key']
     distance_matrix = create_distance_matrix(data,datakac)
     print(distance_matrix)
+    solver(distance_matrix)
 
 
 class RouteView(View):
     def post(self, request):
         buscap=[]
-        count=[]
+        count=[]        
         print("in view")
         print(request.POST)
         locations=json.loads(request.POST['locations'])
@@ -137,6 +139,7 @@ class RouteView(View):
             buscap.append(int(busdetails[i]['buscapacity']))
         print("buscapacity================")    
         print(buscap)
+        num_vehicles=len(buscap)
         routes.append(route)
         # route2={}    
         # route2['bus']="NK324"

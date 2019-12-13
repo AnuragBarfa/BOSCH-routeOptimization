@@ -23,7 +23,7 @@ from ortools.constraint_solver import pywrapcp
 
 
 # [START data_model]
-def create_data_model(x):
+def create_data_model():
     """Stores the data for the problem."""
     data = {}
     # data['distance_matrix']=x[0];
@@ -256,7 +256,9 @@ def solver(x):
     """Solve the CVRP problem."""
     # Instantiate the data problem.
     # [START data]
-    data = create_data_model(x)
+    print("X===============")
+    print(x)
+    data = create_data_model()
     # [END data]
 
     # Create the routing index manager.
