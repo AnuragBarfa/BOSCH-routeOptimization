@@ -105,11 +105,12 @@ def create_data_model(datamatrix,psngr_no,buscap,num_vehicles):
     # ]
     # # [START demands_capacities]
     # # data['demands'] = [0, 0, 1, 2, 4, 2, 4, 8, 8, 1, 2, 1, 2, 4, 4, 8, 8]
-    # data['demands']=[]
-    # data['demands'].append(0)
-    # data['demands'].append(0)
-    # data['demands']=psngr_no
-    
+    data['demands']=[]
+    data['demands'].append(0)
+    data['demands'].append(0)
+    data['demands']=psngr_no
+    print("psngr_no======================")
+    print(data['demands'])
     #data['vehicle_capacities'] = [20, 5, 10, 35]
     data['vehicle_capacities']=[]
     data['vehicle_capacities']=buscap
@@ -122,7 +123,7 @@ def create_data_model(datamatrix,psngr_no,buscap,num_vehicles):
     # data['depot']=0
     data['starts'] = [0 ,0 ,0 ,0]
     data['ends'] = [1, 1, 1, 1]
-
+    
     data['time_windows'] = \
         [(0,200),
         (0,200), (0,200), # 1, 2
