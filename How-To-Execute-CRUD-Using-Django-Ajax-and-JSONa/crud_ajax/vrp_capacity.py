@@ -28,6 +28,10 @@ def create_data_model(datamatrix,psngr_no,buscap,num_vehicles):
     data = {}
     data['distance_matrix']=[]
     data['distance_matrix']=datamatrix
+
+    print("DIST MATRIX============")
+    print(data['distance_matrix'])
+
     # data['distance_matrix']=x[0];
     # data['distance_matrix'] = [
     #     [
@@ -100,17 +104,19 @@ def create_data_model(datamatrix,psngr_no,buscap,num_vehicles):
     #     ],
     # ]
     # # [START demands_capacities]
-    # data['demands'] = [0, 0, 1, 2, 4, 2, 4, 8, 8, 1, 2, 1, 2, 4, 4, 8, 8]
-    data['demands']=[]
+    # # data['demands'] = [0, 0, 1, 2, 4, 2, 4, 8, 8, 1, 2, 1, 2, 4, 4, 8, 8]
+    # data['demands']=[]
     # data['demands'].append(0)
     # data['demands'].append(0)
-    data['demands']=psngr_no
+    # data['demands']=psngr_no
     
-    # data['vehicle_capacities'] = [20, 5, 10, 35]
+    #data['vehicle_capacities'] = [20, 5, 10, 35]
     data['vehicle_capacities']=[]
     data['vehicle_capacities']=buscap
-    # [END demands_capacities]
-    data['num_vehicles'] = num_vehicles
+    print("vehicle_capacities======================")
+    print(data['vehicle_capacities'])
+    # # [END demands_capacities]
+    data['num_vehicles'] = len(buscap)
     data['time_per_demand_unit'] = 5  # 5 minutes/unit
     data['num_locations'] = len(data['distance_matrix'])
     # data['depot']=0
