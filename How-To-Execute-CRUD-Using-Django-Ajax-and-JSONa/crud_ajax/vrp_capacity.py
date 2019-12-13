@@ -98,7 +98,7 @@ def create_data_model():
     ]
     # [START demands_capacities]
     data['demands'] = [0, 0, 1, 2, 4, 2, 4, 8, 8, 1, 2, 1, 2, 4, 4, 8, 8]
-    data['vehicle_capacities'] = [15, 15, 15, 15]
+    data['vehicle_capacities'] = [20, 5, 10, 35]
     # [END demands_capacities]
     data['num_vehicles'] = 4
     data['time_per_demand_unit'] = 5  # 5 minutes/unit
@@ -109,7 +109,7 @@ def create_data_model():
 
     data['time_windows'] = \
         [(0,200),
-        (0,120), (0,200), # 1, 2
+        (0,200), (0,200), # 1, 2
         (0,200), (0,200), # 3, 4
         (0,200), (0,200), # 5, 6
         (0,200), (0,200), # 7, 8
@@ -245,7 +245,7 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
     print('Total Time of all routes: {0}min'.format(total_time))
 
 
-def mySolver():
+def main():
     """Solve the CVRP problem."""
     # Instantiate the data problem.
     # [START data]
@@ -359,3 +359,7 @@ def mySolver():
         print_solution(data, manager , routing, new_solution)
         
 
+if __name__ == '__main__':
+    # print(":jias")
+    main()
+# [END program]

@@ -98,18 +98,22 @@ def create_data_model():
     ]
     # [START demands_capacities]
     data['demands'] = [0, 0, 1, 2, 4, 2, 4, 8, 8, 1, 2, 1, 2, 4, 4, 8, 8]
-    data['vehicle_capacities'] = [15, 15, 15, 15]
+    data['vehicle_capacities'] = [20, 5, 10, 35, 15, 15, 15, 15]
     # [END demands_capacities]
-    data['num_vehicles'] = 4
+    data['num_vehicles'] = 8
     data['time_per_demand_unit'] = 5  # 5 minutes/unit
     data['num_locations'] = len(data['distance_matrix'])
     # data['depot']=0
-    data['starts'] = [0 ,0 ,0 ,0]
-    data['ends'] = [1, 1, 1, 1]
-
+    data['starts'] = [0 ,0 ,0 ,0 ,0 ,0 ,0 ,0]
+    data['ends'] = [1, 1, 1, 1, 1, 1, 1, 1]
+    trimmer=4
+    data['vehicle_capacities']=data['vehicle_capacities'][:trimmer]
+    data['num_vehicles']=trimmer
+    data['starts']=data['starts'][:trimmer]
+    data['ends']=data['ends'][:trimmer]
     data['time_windows'] = \
         [(0,200),
-        (0,120), (0,200), # 1, 2
+        (0,200), (0,200), # 1, 2
         (0,200), (0,200), # 3, 4
         (0,200), (0,200), # 5, 6
         (0,200), (0,200), # 7, 8
@@ -245,7 +249,7 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
     print('Total Time of all routes: {0}min'.format(total_time))
 
 
-def mySolver():
+def main():
     """Solve the CVRP problem."""
     # Instantiate the data problem.
     # [START data]
@@ -321,11 +325,11 @@ def mySolver():
         partial(create_time_evaluator(data), manager))
     add_time_window_constraints(routing, manager, data, time_evaluator_index)
 
-    penalty = 20000
-    for node in range(0, len(data['distance_matrix'])):
-        if manager.NodeToIndex(node) == -1:
-            continue
-        routing.AddDisjunction([manager.NodeToIndex(node)], penalty)
+    # penalty = 20000
+    # for node in range(0, len(data['distance_matrix'])):
+    #     if manager.NodeToIndex(node) == -1:
+    #         continue
+    #     routing.AddDisjunction([manager.NodeToIndex(node)], penalty)
 
 
 
@@ -348,14 +352,18 @@ def mySolver():
         print_solution(data, manager, routing, assignment)
     # [END print_solution]
 
-    print('\n\n\n')
-    ### Running new instance ####
-    data['demands'][14] = 0
+    # print('\n\n\n')
+    # ### Running new instance ####
+    # data['demands'][14] = 0
     
-    new_solution = routing.SolveFromAssignmentWithParameters(data['previous_solution'] , search_parameters)
+    # new_solution = routing.SolveFromAssignmentWithParameters(data['previous_solution'] , search_parameters)
     
-    if new_solution:
-        print('New solution from previous one : ')
-        print_solution(data, manager , routing, new_solution)
+    # if new_solution:
+    #     print('New solution from previous one : ')
+    #     print_solution(data, manager , routing, new_solution)
         
 
+if __name__ == '__main__':
+    # print(":jias")
+    main()
+# [END program]
