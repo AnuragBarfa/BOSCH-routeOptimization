@@ -9,8 +9,8 @@ from django.views.decorators.csrf import csrf_exempt
 from .RouteOptimization import mySolver
 def FrontView(request):
     users=CrudUser.objects.all()
-    mySolver()
-    return render(request,'base.html',{'users':users})
+    # mySolver()
+    return render(request,'front_page.html',{'users':users})
 
 class RouteView(View):
     def post(self, request):

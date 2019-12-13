@@ -318,7 +318,7 @@
           center: myLatLng,
           disableDefaultUI: true
         });
-        directionsDisplay = new google.maps.DirectionsRenderer();
+        directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
 
         directionsDisplay.setMap(map);
 
@@ -373,7 +373,8 @@
       map: map,
       position: new google.maps.LatLng(locations[i][1], locations[i][2]),
     });
-
+    console.log("printing marker")
+    console.log(storeLocationDetails[locations[i][0]]);
    var contentString = '<div id="content">'+
             '<div id="siteNotice">'+
             '</div>'+
@@ -385,13 +386,13 @@
             '</div>'+
             '</div>';
 
- //               var infowindow = new google.maps.InfoWindow({
- //                  content: contentString
- //                });
+               var infowindow = new google.maps.InfoWindow({
+                  content: contentString
+                });
  //               console.log("adding info box");
- // marker.addListener('click', function() {
- //          infowindow.open(map, marker);
- //        });
+        marker.addListener('click', function() {
+          infowindow.open(map, marker);
+        });
 
 
     // google.maps.event.addListener(marker, 'click', (function(marker, i) {
