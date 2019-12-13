@@ -42,7 +42,7 @@ class RouteView(View):
         route2['bus']="NK324"
         route2['color']="green"
         route2['type']="pickup/drop"
-        route2['nodes']=[{'name': "k1", 'count': "20", 'lat': 22, 'lng': 79},{'name': "d1", 'count': "30", 'lat': 24, 'lng': 83},{'name': "M1", 'count': "20", 'lat': 21, 'lng': 81}]
+        route2['nodes']=[{'name': "k1", 'count': "20",'arr':"1",'depa':"1", 'lat': 22, 'lng': 79},{'name': "d1", 'count': "30",'arr':"1",'depa':"1", 'lat': 24, 'lng': 83},{'name': "M1", 'count': "20",'arr':"1",'depa':"1", 'lat': 21, 'lng': 81}]
         
         routes.append(route2)
 
@@ -50,7 +50,7 @@ class RouteView(View):
         route3['bus']="NK324"
         route3['color']="black"
         route3['type']="pickup/drop"
-        route3['nodes']=[{'name': "k2", 'count': "20", 'lat': 12, 'lng': 77},{'name': "d2", 'count': "30", 'lat': 13, 'lng': 80}]
+        route3['nodes']=[{'name': "k2", 'count': "20",'arr':"1",'depa':"1", 'lat': 12, 'lng': 77},{'name': "d2", 'count': "30",'arr':"1",'depa':"1", 'lat': 13, 'lng': 80}]
         
         routes.append(route3)
 
@@ -58,7 +58,7 @@ class RouteView(View):
         route4['bus']="NH123"
         route4['color']="red"
         route4['type']="pickup/drop"
-        route4['nodes']=[{'name': "k", 'count': "20", 'lat': 22.6018382, 'lng': 88.38306550000004},{'name': "d", 'count': "30", 'lat': 28.7040592, 'lng': 77.10249019999992},{'name': "M", 'count': "20", 'lat': 19.0759837, 'lng': 72.87765590000004}]
+        route4['nodes']=[{'name': "k", 'count': "20",'arr':"1",'depa':"1", 'lat': 22.6018382, 'lng': 88.38306550000004},{'name': "d", 'count': "30",'arr':"1",'depa':"1", 'lat': 28.7040592, 'lng': 77.10249019999992},{'name': "M", 'count': "20",'arr':"1",'depa':"1", 'lat': 19.0759837, 'lng': 72.87765590000004}]
         routes.append(route4)
 
         data['routes']=routes 
