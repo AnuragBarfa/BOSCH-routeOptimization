@@ -13,7 +13,9 @@ import json
 import urllib
 from urllib.request import urlopen
 
-
+buscap=[]
+count=[]
+num_vehicles=0
 def FrontView(request):
     users=CrudUser.objects.all()
     # mySolver()
@@ -83,13 +85,12 @@ def main(datakac):
     API_key = data['API_key']
     distance_matrix = create_distance_matrix(data,datakac)
     print(distance_matrix)
-    solver(distance_matrix)
-
+    solver(distance_matrix,count,buscap,len(buscap))
+    #data['num_vehicles'] = 4
+    #data['vehicle_capacities']
 
 class RouteView(View):
     def post(self, request):
-        buscap=[]
-        count=[]        
         print("in view")
         print(request.POST)
         locations=json.loads(request.POST['locations'])
