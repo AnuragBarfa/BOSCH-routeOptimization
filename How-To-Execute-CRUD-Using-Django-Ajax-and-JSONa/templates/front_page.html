@@ -184,7 +184,7 @@
 {% block javascript %}
 <!-- </script> -->
   <script>
-    
+      var globa;
       var map;
       var request;
       var geocoder;
@@ -197,6 +197,9 @@
               var bustostore=[],capacitytostore=[];
   
         function routeopt(){
+
+          
+
                citytostore=[];
                passengernotostore=[];
                citylattostore=[];
@@ -279,34 +282,30 @@
           success: function(response) {
             console.log("SUCCESS");
             console.log(response);
+            //['routes'][1]['nodes'][0]['lat']
+            glob=response['routes'];
+            console.log(response['routes'][0]['nodes'][0]);
+            for(var i =0;i<response['routes'].length;i++)
+              {  
+                calcRoute3(response['routes'][i]);
+                console.log(i+"==========================");
+                console.log(response['routes'][i]['nodes']);
+              }
+          
+            
+            calcRoute(); 
+  
           },
           error: function(xhr) {
             console.log("FAILED");
             console.log(xhr);
           }
         });
-            // console.log(storeLocationDetails);
-            // var store=Object.keys(storeLocationDetails);
-            //  console.log(store);
-            // //   var storethisvar=[];
-            // //    for(key in storeLocationDetails)
-            // // {  console.log(key);
-            // //    storethisvar.push("HELLO");
-            // // }
             
-
-            // if(store.length>1)
-            // for(var i=1;i<store.length;i++){
-            //   // calcRoute(
-            //   //   storeLocationDetails[store[i-1]].getPosition().lat(),storeLocationDetails[store[i-1]].getPosition().lng(),storeLocationDetails[store[i]].getPosition().lat(),storeLocationDetails[store[i]].getPosition().lng());
-            // }
-             calcRoute(); 
-         ///////////////////
          return false;
 
         }
 
-        
 
 
       function initMap() {
@@ -323,18 +322,6 @@
         directionsDisplay.setMap(map);
 
         bounds = new google.maps.LatLngBounds();
-        // var marker = new google.maps.Marker({
-        //   position: myLatLng,
-        //   map: map,
-        //   title: 'Hello World!'
-        // });
-
-        // var input2 = document.getElementById('form-id');
-        // var autocomplete2 = new google.maps.places.Autocomplete(input2);
-        // google.maps.event.addListener(autocomplete2, 'place_changed', function () {
-        //     var place = autocomplete2.getPlace();
-        // });
-
       }
       function addMarker(location) {
         console.log("in marker");
@@ -343,81 +330,220 @@
             map: map
         });
       }
+       function calcRouterandom() {
 
-      function calcRoute() {
-        console.log(storeLocationDetails);
-      var store=Object.keys(storeLocationDetails);
-        var locations = [
+        var start = new google.maps.LatLng(37.334818, -121.884886);
+        //var end = new google.maps.LatLng(38.334818, -181.884886);
+        var end = new google.maps.LatLng(37.441883, -122.143019);
+        var bounds = new google.maps.LatLngBounds();
+        bounds.extend(start);
+        bounds.extend(end);
+        map.fitBounds(bounds);
+        var request = {
+            origin: start,
+            destination: end,
+            travelMode: google.maps.TravelMode.DRIVING
+        };
+         directionsDisplay.setOptions({
+        polylineOptions: {
+          strokeColor: 'red'
+        }
+      });
+        // //COLOUR
+       
+
+        directionsService.route(request, function(result, status) {
+          if (status == google.maps.DirectionsStatus.OK) {
+            directionsDisplay.setDirections(result);
+          }
+        });
+
+
+      }
+             function calcRoute3(response) {
+
+       
+        var locations2 = [
         //];
-        ['Delhi ',  28.7040592, 77.10249019999992]
+        ['dsv',  122, 127]
       ]; 
-      
-      for(var i=0;i<store.length;i++){
-        var temp=[];
-        temp.push(store[i]);
-        temp.push(storeLocationDetails[store[i]].getPosition().lat());
-        temp.push(storeLocationDetails[store[i]].getPosition().lng());
-        locations.push(temp);
+      var temp2=[],color=[];
+      for(var i=0;i<response['nodes'].length;i++){
+        temp2=[];
+        color.push(response['color']);
+        glob=response['color'];
+        temp2.push(response['nodes'][i]["name"]);      
+        temp2.push(response['nodes'][i]["lat"]);
+        temp2.push(response['nodes'][i]["lng"]);
+        locations2.push(temp2);
       }
       
-      console.log("LOC===========");
-      console.log(locations);
+      console.log("LOC3===========");
+      console.log(locations2);
 
-   var marker, i;
+   var marker2, i;
   var request = {
     travelMode: google.maps.TravelMode.DRIVING
   };
-  for (i = 1; i < locations.length; i++) {
+  for (i = 1; i < locations2.length; i++) {
 
-    marker = new google.maps.Marker({
+    marker2 = new google.maps.Marker({
       map: map,
-      position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+      position: new google.maps.LatLng(locations2[i][1], locations2[i][2]),
     });
-    console.log("printing marker")
-    console.log(storeLocationDetails[locations[i][0]]);
+
    var contentString = '<div id="content">'+
             '<div id="siteNotice">'+
             '</div>'+
             '<h4 id="firstHeading" class="firstHeading">'+sendtocity[i-1] +'</h4>'+
-            '<div id="bodyContent">'+'sdgdfhrsgyyyyyyyyyyyyyyyyyyyyyyyyyy'+
+            '<div id="bodyContent">'+''+
             '<p><i>ARRIVAL:</i></p>'+
             '<p><i>DEPARTURE:</i></p>'+
-            '<p><i>No. of PSNGR:</i></p>'+
+            '<p><i>No. of PSNGR:'+passengernotostore[i-2]+'</i></p>'+
             '</div>'+
             '</div>';
 
-               var infowindow = new google.maps.InfoWindow({
+                var infowindow = new google.maps.InfoWindow({
                   content: contentString
                 });
- //               console.log("adding info box");
-        marker.addListener('click', function() {
-          infowindow.open(map, marker);
+        marker2.addListener('click', function() {
+          infowindow.open(map,marker2);
         });
 
-
-    // google.maps.event.addListener(marker, 'click', (function(marker, i) {
-    //   return function() {
-    //     // infowindow.setContent(locations[i][0]);
-    //     infowindow.open(map, marker);
-    //   }
-    // })(marker, i));
-
-    if (i == 1) request.origin = marker.getPosition();
-    else if (i == locations.length - 1) request.destination = marker.getPosition();
+    if (i == 1) {request.origin = marker2.getPosition(); 
+       // marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+    }
+    else if (i == locations2.length - 1) {request.destination = marker2.getPosition();
+    // marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+  }
     else {
       if (!request.waypoints) request.waypoints = [];
-      request.waypoints.push({
-        location: marker.getPosition(),
+        request.waypoints.push({
+        location: marker2.getPosition(),
         stopover: true
       });
     }
-
   }
-  directionsService.route(request, function(result, status) {
-    if (status == google.maps.DirectionsStatus.OK) {
-      directionsDisplay.setDirections(result);
+   var directionsDisplay9 = new google.maps.DirectionsRenderer({
+          suppressMarkers: false,
+          suppressInfoWindows: true
+        });
+        
+  //COLOUR
+  // console.log(color);
+  // console.log(color[0]);
+    directionsDisplay9.setOptions({
+    polylineOptions: {
+    strokeColor: color[0]
     }
   });
+
+directionsDisplay9.setMap(map);
+  var directionsService9 = new google.maps.DirectionsService();
+  directionsService9.route(request, function(result, status) {
+    if (status == google.maps.DirectionsStatus.OK) {
+      directionsDisplay9.setDirections(result);
+    }
+  });
+      
+
+
+
+
+
+
+      }
+     
+// 9706705149,7014920141
+      function calcRoute() {
+
+          console.log(storeLocationDetails);
+        // console.log("OVER");
+        var store=Object.keys(storeLocationDetails);
+      
+                var locations2 = [
+        //];
+        ['dsv',  122, 127]
+      ]; 
+      var temp2=[];
+      for(var i=0;i<store.length;i++){
+        temp2=[];
+        temp2.push(store[i]);
+        temp2.push(storeLocationDetails[store[i]].getPosition().lat());
+        temp2.push(storeLocationDetails[store[i]].getPosition().lng());
+        locations2.push(temp2);
+      }
+      
+      console.log("LOC===========");
+      console.log(locations2);
+      
+   var marker2, i;
+  var request = {
+    travelMode: google.maps.TravelMode.DRIVING
+  };
+  for (i = 1; i < locations2.length; i++) {
+
+    marker2 = new google.maps.Marker({
+      map: map,
+      position: new google.maps.LatLng(locations2[i][1], locations2[i][2]),
+    });
+
+   var contentString = '<div id="content">'+
+            '<div id="siteNotice">'+
+            '</div>'+
+            '<h4 id="firstHeading" class="firstHeading">'+sendtocity[i-1] +'</h4>'+
+            '<div id="bodyContent">'+''+
+            '<p><i>ARRIVAL:</i></p>'+
+            '<p><i>DEPARTURE:</i></p>'+
+            '<p><i>No. of PSNGR:'+passengernotostore[i-2]+'</i></p>'+
+            '</div>'+
+            '</div>';
+
+                var infowindow = new google.maps.InfoWindow({
+                  content: contentString
+                });
+        marker2.addListener('click', function() {
+          infowindow.open(map,marker2);
+        });
+
+    if (i == 1) {request.origin = marker2.getPosition(); 
+       // marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+    }
+    else if (i == locations2.length - 1) {request.destination = marker2.getPosition();
+    // marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+  }
+    else {
+      if (!request.waypoints) request.waypoints = [];
+        request.waypoints.push({
+        location: marker2.getPosition(),
+        stopover: true
+      });
+    }
+  }
+   var directionsDisplay10 = new google.maps.DirectionsRenderer({
+          suppressMarkers: false,
+          suppressInfoWindows: true
+        });
+        
+  //COLOUR
+  directionsDisplay10.setOptions({
+    polylineOptions: {
+    strokeColor: 'blue'
+    }
+  });
+
+directionsDisplay10.setMap(map);
+  var directionsService10 = new google.maps.DirectionsService();
+  directionsService10.route(request, function(result, status) {
+    if (status == google.maps.DirectionsStatus.OK) {
+      directionsDisplay10.setDirections(result);
+    }
+  });
+      
+
+//////////////
+      
+      
 
       }
   </script>
@@ -550,6 +676,7 @@ $(document).ready(function(){
               sendtocity.push(address);
                // var infowindow = new google.maps.InfoWindow({
                //    content: contentString
+
                //  });
 
               var marker = new google.maps.Marker({

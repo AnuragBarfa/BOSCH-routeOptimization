@@ -27,17 +27,37 @@ class RouteView(View):
         routes=[]
         data={}
         route={}
-        route['bus']=[]
+        route['bus']="NH123"
+        route['color']="red"
         route['type']="pickup/drop"
-        #route['nodes']=[{'lat':22.2,'lng':77.7,'arr':12,'depa':32,'count':20},{'lat':32.2,'lng':87.7,'arr':12,'depa':32,'count':20}]
-        route['nodes']=[]
+        route['nodes']=[{'name': "k", 'count': "20", 'lat': 22.6018382, 'lng': 88.38306550000004},{'name': "d", 'count': "30", 'lat': 28.7040592, 'lng': 77.10249019999992},{'name': "M", 'count': "20", 'lat': 19.0759837, 'lng': 72.87765590000004}]
+        routes.append(route)
         for i in range(0,len(locations)):
             route['nodes'].append(locations[i])
         
         for i in range(0,len(busdetails)):
             route['bus'].append(busdetails[i])
         
-        data['routes']=route 
+        route2={}    
+        route2['bus']="NK324"
+        route2['color']="green"
+        route2['type']="pickup/drop"
+        route2['nodes']=[{'name': "k1", 'count': "20", 'lat': 22, 'lng': 79},{'name': "d1", 'count': "30", 'lat': 24, 'lng': 83},{'name': "M1", 'count': "20", 'lat': 21, 'lng': 81}]
+        
+        routes.append(route2)
+
+        route3={}    
+        route3['bus']="NK324"
+        route3['color']="black"
+        route3['type']="pickup/drop"
+        route3['nodes']=[{'name': "k2", 'count': "20", 'lat': 12, 'lng': 77},{'name': "d2", 'count': "30", 'lat': 13, 'lng': 80}]
+        
+        routes.append(route3)
+
+        data['routes']=routes 
+        print("ROUTES==================================")
+        print(routes)
+        print("ROUTES=============OVER=================")
         # data['name']='anurag'       
         return JsonResponse(data)
 
