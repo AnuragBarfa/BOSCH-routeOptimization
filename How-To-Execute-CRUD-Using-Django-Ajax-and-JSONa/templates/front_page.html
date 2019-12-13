@@ -343,8 +343,6 @@
         temp2.push(response['nodes'][i]["name"]);      
         temp2.push(response['nodes'][i]["lat"]);
         temp2.push(response['nodes'][i]["lng"]);
-        bounds.extend(new google.maps.LatLng(response['nodes'][i]["lat"],response['nodes'][i]["lng"]));
-        map.fitBounds(bounds);
         locations2.push(temp2);
       }
       
@@ -445,8 +443,6 @@ directionsDisplay9.setMap(map);
         temp2.push(store[i]);
         temp2.push(storeLocationDetails[store[i]].getPosition().lat());
         temp2.push(storeLocationDetails[store[i]].getPosition().lng());
-        bounds.extend(new google.maps.LatLng(storeLocationDetails[store[i]].getPosition().lat(),storeLocationDetails[store[i]].getPosition().lng()));
-        map.fitBounds(bounds);
         locations2.push(temp2);
       }
       
