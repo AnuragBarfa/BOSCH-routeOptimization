@@ -185,8 +185,26 @@ class RouteView(View):
         #x[{},{}]
 
         # data={'lat':22.2,'lng':77.8,'arr':12,'depa':32,'count':20}
-        # routes=[]
-        data={}
+        routes=[]
+        for i in range(0,len(results)):
+            route={}
+            route['bus']="NH123"
+            route['color']="red"
+            route['type']="pickup/drop"
+            route['nodes']=[]
+            for j in range(0,len(results[i])):
+                node={}
+                stopIndex=results[i][j]['index']
+                node['lat']=locations[stopIndex]['lat']
+                node['lng']=locations[stopIndex]['lng']
+                node['load']=results[i][j]['load_var']
+                node['max_time']=results[i][j]['max_time_var']
+                node['min_time']=results[i][j]['min_time_var']
+                node['max_slack']=results[i][j]['max_slack_var']
+                node['min_slack']=results[i][j]['min_slack_var']
+                route['nodes'].append(node)    
+            routes.append(route)
+        print(routes)
         # route={}
         # route['bus']="NH123"
         # route['color']="red"
@@ -212,7 +230,8 @@ class RouteView(View):
         # print(routes[0]['nodes'][0]['name'])
         # print(routes[0]['nodes'][0]['name'].replace(", ", "+"))
         # print("ROUTES=============OVER=================")   
-        data['name']='anurag'       
+        data={}
+        data['routes']=routes       
         return JsonResponse(data)
 
 
