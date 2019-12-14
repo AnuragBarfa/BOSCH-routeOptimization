@@ -164,7 +164,7 @@
                     <tbody>
                        </tbody>
                 </table>
-                <i id="hide_no_bus_available">NO BUS AVAILABLE</i>
+                <div id="hide_no_bus_available">  <i >NO BUS AVAILABLE</i></div>
                 </div>
                 <!-- <i id="hide_no_loc_available2">NO BUS AVAILABLE</i> -->
                   </div>
@@ -224,7 +224,7 @@
               $('#bus_searchresult > table > tbody > tr').each(function() {
                 $(this).children('td:nth-child(1)').each(function(){
                   var data = $(this).html();
-                console.log(data);
+                // alert("BUS"+data);
                 bustostore.push(data);
                 })
               });
@@ -287,12 +287,12 @@
                   console.log(response['routes'][0]['nodes'][0]);
                   for(var i =0;i<response['routes'].length;i++)
                     {  
-                      calcRoute(response['routes'][i]);
-
+                      //calcRoute(response['routes'][i]);
+                      calcRoute2(response['routes'][i])
                       console.log(response['routes'][i]['nodes']);
                     }
                   
-                  boundall();
+                  // boundall();
                distancematrix(responsestore,responsestore);
 
                },
@@ -328,7 +328,59 @@
                 map: map
             });
           }
+          
+          function calcRoute2(response) {
+            var start = new google.maps.LatLng(response['nodes'][0]["lat"],response['nodes'][0]["lng"]);
+            var k=response['nodes'].length-1;
+            var end = new google.maps.LatLng(response['nodes'][k]["lat"],response['nodes'][k]["lng"]);
+            var request = {
+                origin: start,
+                waypoints:[],
+                destination: end,
+                travelMode: google.maps.TravelMode.DRIVING
+            };
+            for(var i=1;i<response['nodes'].length-1;i++){
+            marker2 = new google.maps.Marker({
+              map: map,
+              position: new google.maps.LatLng(response['nodes'][i]["lat"],response['nodes'][i]["lng"]),
+            });
 
+            request.waypoints.push({
+              location: marker2.getPosition(),
+              stopover: true
+            });
+
+          }
+            var directionsDisplay9 = new google.maps.DirectionsRenderer({
+                suppressMarkers: false,
+                suppressInfoWindows: false,
+                preserveViewport: true
+              });
+              
+          //COLOUR
+            directionsDisplay9.setOptions({
+              polylineOptions: {
+              strokeColor: 'red'
+              }
+            });
+
+            directionsDisplay9.setMap(map);
+            var directionsService9 = new google.maps.DirectionsService();
+            directionsService9.route(request, function(result, status) {
+              if (status == google.maps.DirectionsStatus.OK) {
+                directionsDisplay9.setDirections(result);
+              }
+            });
+
+        
+        for(var i=0;i<response['nodes'].length;i++){
+          var e=new google.maps.LatLng(response['nodes'][i]["lat"], response['nodes'][i]["lng"]);
+        bounds.extend(e);
+        }
+        
+        map.fitBounds(bounds);
+        }  
+  
           function calcRoute(response) {
             var locations2 = [
             //];
@@ -423,13 +475,13 @@
   <script type="text/javascript">
 
     function boundall(){
-      
+      bounds = new google.maps.LatLngBounds();
 
-      // for(key in storeLocationDetails)
-      //           {
-      //               var e = new google.maps.LatLng(storeLocationDetails[key].getPosition().lat(),storeLocationDetails[key].getPosition().lng());
-      //               bounds.extend(e);
-      //           }
+      for(key in storeLocationDetails)
+                {
+                    var e = new google.maps.LatLng(storeLocationDetails[key].getPosition().lat(),storeLocationDetails[key].getPosition().lng());
+                    bounds.extend(e);
+                }
            
       //       console.log(storeLocationDetails);
       //       var store=Object.keys(storeLocationDetails);
@@ -439,15 +491,15 @@
       //     }
 
         
-      for(var j=0;j<responsestore.length;j++)
-         for(var i=0;i<responsestore[j]['nodes'].length;i++)
-         {  
-            // console.log("LAT");
-            // console.log(responsestore[j]['nodes'][i]["lat"]);
-            var e=new google.maps.LatLng(responsestore[j]['nodes'][i]["lat"],responsestore[j]['nodes'][i]["lng"]);
-            bounds.extend(e);
+      // for(var j=0;j<responsestore.length;j++)
+      //    for(var i=0;i<responsestore[j]['nodes'].length;i++)
+      //    {  
+      //       // console.log("LAT");
+      //       // console.log(responsestore[j]['nodes'][i]["lat"]);
+      //       var e=new google.maps.LatLng(responsestore[j]['nodes'][i]["lat"],responsestore[j]['nodes'][i]["lng"]);
+      //       bounds.extend(e);
 
-         }
+      //}
             map.fitBounds(bounds);
       }
 
@@ -524,8 +576,18 @@
     }
 
     function hide_or_show_no_bus(){
-      if(bustostore.length==0)
-        document.getElementById("hide_no_bus_available").style.display = "block";
+      bustostore=[];
+      $('#bus_searchresult > table > tbody > tr').each(function() {
+        $(this).children('td:nth-child(1)').each(function(){
+          var data = $(this).html();
+        alert("BUS"+data);
+        bustostore.push(data);
+        })
+      });
+    
+      if(!isEmpty(bustostore)==0)
+        {document.getElementById("hide_no_bus_available").style.display = "block";
+        }
       else
         document.getElementById("hide_no_bus_available").style.display = "none";
     }
@@ -551,8 +613,8 @@
         '</tr>';
         
         // $(this).closest('card').find('i').hide();
-          
-
+          $('#hide_no_bus_available > div > i ').hide();
+        hide_or_show_no_bus();
         var currTable = $(this).closest('table');
         currTable.prepend(row);  
         currTable.find('tbody').find('tr').eq(0).find(".add, .edit").toggle();
@@ -642,7 +704,7 @@
                 // });
 
                 storeLocationDetails[address]=marker;
-                 // boundall();
+                boundall();
                
               }
             });
@@ -665,15 +727,18 @@
       $(document).on("click", ".delete", function(){
         console.log(storeLocationDetails);
         // hide_or_show_no_location();
-        //$(this).closest('card').find('i').hide();
+        $('#hide_no_bus_available > div > i ').hide();
+        // $(this).closest('card').find('#hide_no_bus_available').hide();
           
         var address=$(this).parents("tr").find("td:first-child").text();
         if($(this.closest('.collapse')).attr('id')==="collapseExample1"){
           storeLocationDetails[address].setMap(null);      
         
           delete storeLocationDetails[address]; 
-
+          boundall();
+          
           hide_or_show_no_location();
+          hide_or_show_no_bus();
           console.log(storeLocationDetails);
         }
         $(this).parents("tr").remove();
