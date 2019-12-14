@@ -20,14 +20,8 @@ def FrontView(request):
     users=CrudUser.objects.all()
     # mySolver()
     return render(request,'front_page.html',{'users':users})
-def create_data(datakac):
-    print("DATA['addresses']")
-    print(datakac['addresses'])
-    print(datakac)
-    return datakac
 
-def create_distance_matrix(data,datakac):
-    data = create_data(datakac)  
+def create_distance_matrix(data): 
     addresses = data["addresses"]
     API_key = data["API_key"]
     # Distance Matrix API only accepts 100 elements per request, so get rows in multiple requests.
@@ -79,110 +73,145 @@ def build_distance_matrix(response):
         distance_matrix.append(row_list)
     return distance_matrix  
 
-def main(datakac):
-    data = create_data(datakac)
-    addresses = data['addresses']
-    API_key = data['API_key']
-    distance_matrix = create_distance_matrix(data,datakac)
-    print(distance_matrix)
-    solver(distance_matrix,count,buscap,len(buscap))
-    #data['num_vehicles'] = 4
-    #data['vehicle_capacities']
-
 class RouteView(View):
     def post(self, request):
-        print("in view")
-        print(request.POST)
         locations=json.loads(request.POST['locations'])
         busdetails=json.loads(request.POST['busdetails'])
-        # print(locations)
+        print(locations)
         print("BUS=====================")
         print(busdetails)
+        passengerPerStop=[]
+        busCapacity=[]
+        dataForSolver={}
+        dataForDistanceMatrix = {}
+        dataForDistanceMatrix['API_key'] = 'AIzaSyDmwBs8dSuwg56fTWsbJyMdrvXYU3_Pim4'
+        dataForDistanceMatrix['addresses']=[]
+        for i in range(0,len(locations)):
+            x=locations[i]['name'].replace(", ", "+").replace(" ","+").replace(".","+")
+            dataForDistanceMatrix['addresses'].append(x)
+            passengerPerStop.append(int(locations[i]['count']))
+        dataForDistanceMatrix['addresses']=list(set(dataForDistanceMatrix['addresses']))    
+        print(dataForDistanceMatrix)
+        distance_matrix = create_distance_matrix(dataForDistanceMatrix)   
+        print(distance_matrix)
+        for i in range(0,len(busdetails)):
+            busCapacity.append(int(busdetails[i]['buscapacity']))
+        dataForSolver['distance_matrix']=distance_matrix
+        dataForSolver['passengerCount']=passengerPerStop
+        dataForSolver['busCapacity']=busCapacity
+        dataForSolver['time_windows']=[(0,200)]*len(locations)
+        
+        # dataForSolver['distance_matrix']=distance_matrix
+    #     dataForSolver['distance_matrix'] = [
+    #     [
+    #         0, 548, 776, 696, 582, 274, 502, 194, 308, 194, 536, 502, 388, 354,
+    #         468, 776, 662
+    #     ],
+    #     [
+    #         548, 0, 684, 308, 194, 502, 730, 354, 696, 742, 1084, 594, 480, 674,
+    #         1016, 868, 1210
+    #     ],
+    #     [
+    #         776, 684, 0, 992, 878, 502, 274, 810, 468, 742, 400, 1278, 1164,
+    #         1130, 788, 1552, 754
+    #     ],
+    #     [
+    #         696, 308, 992, 0, 114, 650, 878, 502, 844, 890, 1232, 514, 628, 822,
+    #         1164, 560, 1358
+    #     ],
+    #     [
+    #         582, 194, 878, 114, 0, 536, 764, 388, 730, 776, 1118, 400, 514, 708,
+    #         1050, 674, 1244
+    #     ],
+    #     [
+    #         274, 502, 502, 650, 536, 0, 228, 308, 194, 240, 582, 776, 662, 628,
+    #         514, 1050, 708
+    #     ],
+    #     [
+    #         502, 730, 274, 878, 764, 228, 0, 536, 194, 468, 354, 1004, 890, 856,
+    #         514, 1278, 480
+    #     ],
+    #     [
+    #         194, 354, 810, 502, 388, 308, 536, 0, 342, 388, 730, 468, 354, 320,
+    #         662, 742, 856
+    #     ],
+    #     [
+    #         308, 696, 468, 844, 730, 194, 194, 342, 0, 274, 388, 810, 696, 662,
+    #         320, 1084, 514
+    #     ],
+    #     [
+    #         194, 742, 742, 890, 776, 240, 468, 388, 274, 0, 342, 536, 422, 388,
+    #         274, 810, 468
+    #     ],
+    #     [
+    #         536, 1084, 400, 1232, 1118, 582, 354, 730, 388, 342, 0, 878, 764,
+    #         730, 388, 1152, 354
+    #     ],
+    #     [
+    #         502, 594, 1278, 514, 400, 776, 1004, 468, 810, 536, 878, 0, 114,
+    #         308, 650, 274, 844
+    #     ],
+    #     [
+    #         388, 480, 1164, 628, 514, 662, 890, 354, 696, 422, 764, 114, 0, 194,
+    #         536, 388, 730
+    #     ],
+    #     [
+    #         354, 674, 1130, 822, 708, 628, 856, 320, 662, 388, 730, 308, 194, 0,
+    #         342, 422, 536
+    #     ],
+    #     [
+    #         468, 1016, 788, 1164, 1050, 514, 514, 662, 320, 274, 388, 650, 536,
+    #         342, 0, 764, 194
+    #     ],
+    #     [
+    #         776, 868, 1552, 560, 674, 1050, 1278, 742, 1084, 810, 1152, 274,
+    #         388, 422, 764, 0, 798
+    #     ],
+    #     [
+    #         662, 1210, 754, 1358, 1244, 708, 480, 856, 514, 468, 354, 844, 730,
+    #         536, 194, 798, 0
+    #     ],
+    # ]
+
+        # dataForSolver['passengerCount']= [0, 0, 1, 2, 4, 2, 4, 8, 8, 1, 2, 1, 2, 4, 4, 8, 8]
+        # dataForSolver['busCapacity']=[20, 5, 10, 35]
+        # dataForSolver['time_windows']=[(0,200)]*17
+        results=solver(dataForSolver)
+        print("printing optimal route")
+        print(results)
+        # main(datakac)
         #print(x[0]["name"])
         #x[{},{}]
 
         # data={'lat':22.2,'lng':77.8,'arr':12,'depa':32,'count':20}
-        routes=[]
+        # routes=[]
         data={}
-        route={}
-        route['bus']="NH123"
-        route['color']="red"
-        route['type']="pickup/drop"
-        route['nodes']=[]
-        # route['nodes']=[{"lat":12.9216579,"lng":77.55992140000001},
-        # #                 {"lat":12.930428,"lng": 77.53736}]
-        #                 # {"lat":12.9021902,"lng": 77.51858199999992}]
-                        # # {"lat":12.929655,"lng": 77.551214},
-                        # {"lat":12.9233054,"lng":77.55334479999999},
-                        # {"lat":12.859117,"lng":77.66167799999994},
-                        # {"lat":12.9252588,"lng":77.5477436}]
-                        # {"lat":17.4940497,"lng":78.40006399999993},
-                        # {"lat":12.924475,"lng":77.5396084},
-                        # {"lat":12.9304185,"lng":77.5149308},
-                        # {"lat":12.928443,"lng":77.54591200000004},
-                        # {"lat":12.9571219,"lng":77.5904727},
-                        # {"lat":12.9149751,"lng":77.5185754},
-                        # {"lat":12.9355867,"lng":77.5593574},
-                        # {"lat":12.9292117,"lng":77.5696025},
-                        # {"lat":12.916499,"lng":77.5603895},
-                        # {"lat":12.9364473,"lng":77.58721119999996},
-                        # {"lat":12.9039598,"lng":77.52598590000002},
-                        # {"lat":12.9100928,"lng":77.48686399999997}]
-        # print(route['nodes'])               
+        # route={}
+        # route['bus']="NH123"
+        # route['color']="red"
+        # route['type']="pickup/drop"
+        # route['nodes']=[]
+        # for i in range(0,len(locations)):
+        #     route['nodes'].append(locations[i])
+        #     count.append(int(locations[i]['count']))
+        # print("PSNGR NO ================")    
+        # print(count)
+        # for i in range(0,len(busdetails)):
+        #     # route['bus'].append(busdetails[i])
+        #     buscap.append(int(busdetails[i]['buscapacity']))
+        # print("buscapacity================")    
+        # print(buscap)
+        # num_vehicles=len(buscap)
         # routes.append(route)
-        for i in range(0,len(locations)):
-            route['nodes'].append(locations[i])
-            count.append(int(locations[i]['count']))
-        print("PSNGR NO ================")    
-        print(count)
-        for i in range(0,len(busdetails)):
-            # route['bus'].append(busdetails[i])
-            buscap.append(int(busdetails[i]['buscapacity']))
-        print("buscapacity================")    
-        print(buscap)
-        num_vehicles=len(buscap)
-        routes.append(route)
-        # route2={}    
-        # route2['bus']="NK324"
-        # route2['color']="green"
-        # route2['type']="pickup/drop"
-        # route2['nodes']=[{'name': "k1", 'count': "20",'arr':"1",'depa':"1", 'lat': 22, 'lng': 79},{'name': "d1", 'count': "30",'arr':"1",'depa':"1", 'lat': 24, 'lng': 83},{'name': "M1", 'count': "20",'arr':"1",'depa':"1", 'lat': 21, 'lng': 81}]
-        
-        # routes.append(route2)
+        # data['routes']=routes
+        # # data['routes']=route['nodes'] 
 
-        # route3={}    
-        # route3['bus']="NK324"
-        # route3['color']="black"
-        # route3['type']="pickup/drop"
-        # route3['nodes']=[{'name': "k2", 'count': "20",'arr':"1",'depa':"1", 'lat': 12, 'lng': 77},{'name': "d2", 'count': "30",'arr':"1",'depa':"1", 'lat': 13, 'lng': 80}]
-        
-        # routes.append(route3)
-
-        # route4={}
-        # route4['bus']="NH123"
-        # route4['color']="red"
-        # route4['type']="pickup/drop"
-        # route4['nodes']=[{'name': "k", 'count': "20",'arr':"1",'depa':"1", 'lat': 22.6018382, 'lng': 88.38306550000004},{'name': "d", 'count': "30",'arr':"1",'depa':"1", 'lat': 28.7040592, 'lng': 77.10249019999992},{'name': "M", 'count': "20",'arr':"1",'depa':"1", 'lat': 19.0759837, 'lng': 72.87765590000004}]
-        # routes.append(route4)
-        data['routes']=routes
-        # data['routes']=route['nodes'] 
-
-        print("ROUTES==================================")
-        # print(routes[len(routes)]['nodes'][len(routes[0]['nodes'])]['name'])
-        print(routes[0]['nodes'][0]['name'])
-        print(routes[0]['nodes'][0]['name'].replace(", ", "+"))
-        print("ROUTES=============OVER=================")   
-
-        datakac = {}
-        datakac['API_key'] = 'AIzaSyDmwBs8dSuwg56fTWsbJyMdrvXYU3_Pim4'
-        datakac['addresses']=[]
-        for i in range(0,len(routes[0]['nodes'])):
-            x=routes[0]['nodes'][i]['name'].replace(", ", "+").replace(" ","+").replace(".","+")
-            datakac['addresses'].append(x)
-        datakac['addresses']=list(set(datakac['addresses']))    
-        print(datakac)   
-        main(datakac)
-        # data['name']='anurag'       
+        # print("ROUTES==================================")
+        # # print(routes[len(routes)]['nodes'][len(routes[0]['nodes'])]['name'])
+        # print(routes[0]['nodes'][0]['name'])
+        # print(routes[0]['nodes'][0]['name'].replace(", ", "+"))
+        # print("ROUTES=============OVER=================")   
+        data['name']='anurag'       
         return JsonResponse(data)
 
 
