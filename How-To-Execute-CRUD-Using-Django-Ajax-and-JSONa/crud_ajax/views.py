@@ -13,6 +13,7 @@ import json
 import urllib
 from urllib.request import urlopen
 import pandas as pd
+import random 
 buscap=[]
 count=[]
 num_vehicles=0
@@ -279,16 +280,38 @@ class UpdateCrudUser(View):
         }
         return JsonResponse(data)
 
+def SimulationView(request):  
+    data=pd.read_csv("data.csv",header=None)     
+    df=pd.read_csv("data.csv", nrows=1,header=None)     
+    print("INSIDE CSV:")
+    print(data)     
+    print("OFFSET:================")    
+    offset=df[0][0]
+    print(offset)
+    return render(request,'simulation.html',)
+
 class SimulatorView(View):
     def post(self, request):
+        index=request.POST['index']
         print("in view")
         print(request.POST)
-
+        #Displays ONE DATA contains how many rows
+        data=pd.read_csv("data.csv")     
+        # print(data)
+        previndex=index
+        x=random.choice([0,1])
+        if x>0 :
+            index=index+1
+        
+        print("index",index)
+        # data=pd.read_csv("data.csv")
+        # data=pd.read_csv("data.csv",usecols=[1])    
+       
+        #random>0.5
+        #index0
+        #offset1=>Memory
         data={}
         data['updated']=False
         data['name']='anurag'
+        data['index']=index
         return JsonResponse(data)
-
-def SimulationView(request):   
-    # pd.read_csv("data.csv")     
-    return render(request,'simulation.html',)
