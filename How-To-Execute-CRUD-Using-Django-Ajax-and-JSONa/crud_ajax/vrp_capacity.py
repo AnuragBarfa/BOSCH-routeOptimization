@@ -263,7 +263,7 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
             route2['max_time_var']=plan_output1['time_var']['max_time_var'][i]
             route2['min_time_var']=plan_output1['time_var']['min_time_var'][i]
             route2['max_slack_var']=plan_output1['slack_var']['max_slack_var'][i]
-            route2['max_slcak_var']=plan_output1['slack_var']['max_slack_var'][i]
+            route2['min_slack_var']=plan_output1['slack_var']['min_slack_var'][i]
             route.append(route2)
 
         print("WORK1")    
