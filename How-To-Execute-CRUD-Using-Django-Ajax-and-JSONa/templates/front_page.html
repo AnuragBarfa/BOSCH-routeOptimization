@@ -105,7 +105,7 @@
               Route Optimizer
             </button>
           </p>
-    			<div class="table-wrapper">
+    			<div class="table-wrapper" style="overflow-y: auto; max-height: 300px;  height: auto; padding-right : 15px">
                 <div class="table-title">
                     <div class="row">
                         <div class="col-sm-8">
@@ -126,8 +126,7 @@
                             <th><button type="button" class="btn btn-info add-new"><!-- <i class="fa fa-plus"></i> -->Add Loc</button></th>
                           </tr>
                     </thead>
-                    <tbody>
-
+                    <tbody >
                       </tbody>
                 </table>
               </div>
@@ -139,7 +138,7 @@
 
     			
     			<br/>
-              <div class="table-wrapper">
+              <div class="table-wrapper" style="overflow-y: auto; max-height: 300px;  height: auto; padding-right : 15px">
                 <div class="table-title">
                     <div class="row">
                         <div class="col-sm-8">
@@ -161,7 +160,7 @@
                             <th><button type="button" class="btn btn-info add-new" id="bus"><!-- <i class="fa fa-plus"></i> -->Add Bus</button></th>
                         </tr>     
                     </thead>
-                    <tbody>
+                    <tbody >
                        </tbody>
                 </table>
                 <div id="hide_no_bus_available">  <i >NO BUS AVAILABLE</i></div>
@@ -618,7 +617,7 @@
         var currTable = $(this).closest('table');
         currTable.prepend(row);  
         currTable.find('tbody').find('tr').eq(0).find(".add, .edit").toggle();
-        
+
         // hide_or_show_no_bus();
         // $("table tbody tr").eq(0).find(".add, .edit").toggle();
         $('[data-toggle="tooltip"]').tooltip();
