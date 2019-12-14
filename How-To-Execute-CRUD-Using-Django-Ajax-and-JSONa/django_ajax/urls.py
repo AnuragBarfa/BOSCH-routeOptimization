@@ -21,7 +21,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 # from simple_ajax.views import UserSignUpView, ValidateUsername
-from crud_ajax.views import CreateCrudUser, CrudView, DeleteCrudUser, UpdateCrudUser, FrontView , RouteView
+from crud_ajax.views import CreateCrudUser, CrudView, DeleteCrudUser, UpdateCrudUser, FrontView , RouteView, SimulationView, SimulatorView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,7 +30,9 @@ urlpatterns = [
     path('', FrontView, name='home'),
 
     path('route/', RouteView.as_view(), name='routeOpt'),
-
+    path('simulator/', SimulatorView.as_view(), name='simulatorView'),
+    path('simulation/', SimulationView, name='simulation'),
+    
     # Simple Ajax Example
     # path('simpleajax/', UserSignUpView.as_view(), name='simple_ajax'),
     # path('ajax/validate-username/', ValidateUsername.as_view(), name='simple_ajax_validate'),

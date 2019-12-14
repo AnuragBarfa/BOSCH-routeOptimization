@@ -12,7 +12,7 @@ import requests
 import json
 import urllib
 from urllib.request import urlopen
-
+import pandas as pd
 buscap=[]
 count=[]
 num_vehicles=0
@@ -249,3 +249,17 @@ class UpdateCrudUser(View):
             'user': user
         }
         return JsonResponse(data)
+
+class SimulatorView(View):
+    def post(self, request):
+        print("in view")
+        print(request.POST)
+
+        data={}
+        data['updated']=False
+        data['name']='anurag'
+        return JsonResponse(data)
+
+def SimulationView(request):   
+    # pd.read_csv("data.csv")     
+    return render(request,'simulation.html',)
