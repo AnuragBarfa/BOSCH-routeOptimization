@@ -580,7 +580,7 @@
       $('#bus_searchresult > table > tbody > tr').each(function() {
         $(this).children('td:nth-child(1)').each(function(){
           var data = $(this).html();
-        alert("BUS"+data);
+        // alert("BUS"+data);
         bustostore.push(data);
         })
       });
@@ -618,7 +618,7 @@
         var currTable = $(this).closest('table');
         currTable.prepend(row);  
         currTable.find('tbody').find('tr').eq(0).find(".add, .edit").toggle();
-
+        
         // hide_or_show_no_bus();
         // $("table tbody tr").eq(0).find(".add, .edit").toggle();
         $('[data-toggle="tooltip"]').tooltip();
