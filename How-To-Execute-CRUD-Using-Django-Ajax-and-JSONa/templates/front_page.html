@@ -222,7 +222,7 @@
               console.log("STORING BUS NAME");
               
               $('#bus_searchresult > table > tbody > tr').each(function() {
-                $(this).children('td:nth-child(2)').each(function(){
+                $(this).children('td:nth-child(1)').each(function(){
                   var data = $(this).html();
                 console.log(data);
                 bustostore.push(data);

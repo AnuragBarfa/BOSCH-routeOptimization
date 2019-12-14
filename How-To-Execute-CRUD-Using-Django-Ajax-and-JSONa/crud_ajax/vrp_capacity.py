@@ -33,91 +33,94 @@ def create_data_model(datamatrix,psngr_no,buscap,num_vehicles):
     print(data['distance_matrix'])
 
     # data['distance_matrix']=x[0];
-    # data['distance_matrix'] = [
-    #     [
-    #         0, 548, 776, 696, 582, 274, 502, 194, 308, 194, 536, 502, 388, 354,
-    #         468, 776, 662
-    #     ],
-    #     [
-    #         548, 0, 684, 308, 194, 502, 730, 354, 696, 742, 1084, 594, 480, 674,
-    #         1016, 868, 1210
-    #     ],
-    #     [
-    #         776, 684, 0, 992, 878, 502, 274, 810, 468, 742, 400, 1278, 1164,
-    #         1130, 788, 1552, 754
-    #     ],
-    #     [
-    #         696, 308, 992, 0, 114, 650, 878, 502, 844, 890, 1232, 514, 628, 822,
-    #         1164, 560, 1358
-    #     ],
-    #     [
-    #         582, 194, 878, 114, 0, 536, 764, 388, 730, 776, 1118, 400, 514, 708,
-    #         1050, 674, 1244
-    #     ],
-    #     [
-    #         274, 502, 502, 650, 536, 0, 228, 308, 194, 240, 582, 776, 662, 628,
-    #         514, 1050, 708
-    #     ],
-    #     [
-    #         502, 730, 274, 878, 764, 228, 0, 536, 194, 468, 354, 1004, 890, 856,
-    #         514, 1278, 480
-    #     ],
-    #     [
-    #         194, 354, 810, 502, 388, 308, 536, 0, 342, 388, 730, 468, 354, 320,
-    #         662, 742, 856
-    #     ],
-    #     [
-    #         308, 696, 468, 844, 730, 194, 194, 342, 0, 274, 388, 810, 696, 662,
-    #         320, 1084, 514
-    #     ],
-    #     [
-    #         194, 742, 742, 890, 776, 240, 468, 388, 274, 0, 342, 536, 422, 388,
-    #         274, 810, 468
-    #     ],
-    #     [
-    #         536, 1084, 400, 1232, 1118, 582, 354, 730, 388, 342, 0, 878, 764,
-    #         730, 388, 1152, 354
-    #     ],
-    #     [
-    #         502, 594, 1278, 514, 400, 776, 1004, 468, 810, 536, 878, 0, 114,
-    #         308, 650, 274, 844
-    #     ],
-    #     [
-    #         388, 480, 1164, 628, 514, 662, 890, 354, 696, 422, 764, 114, 0, 194,
-    #         536, 388, 730
-    #     ],
-    #     [
-    #         354, 674, 1130, 822, 708, 628, 856, 320, 662, 388, 730, 308, 194, 0,
-    #         342, 422, 536
-    #     ],
-    #     [
-    #         468, 1016, 788, 1164, 1050, 514, 514, 662, 320, 274, 388, 650, 536,
-    #         342, 0, 764, 194
-    #     ],
-    #     [
-    #         776, 868, 1552, 560, 674, 1050, 1278, 742, 1084, 810, 1152, 274,
-    #         388, 422, 764, 0, 798
-    #     ],
-    #     [
-    #         662, 1210, 754, 1358, 1244, 708, 480, 856, 514, 468, 354, 844, 730,
-    #         536, 194, 798, 0
-    #     ],
-    # ]
-    # # [START demands_capacities]
-    # # data['demands'] = [0, 0, 1, 2, 4, 2, 4, 8, 8, 1, 2, 1, 2, 4, 4, 8, 8]
-    data['demands']=[]
-    data['demands'].append(0)
-    data['demands'].append(0)
-    data['demands']=psngr_no
+    data['distance_matrix'] = [
+        [
+            0, 548, 776, 696, 582, 274, 502, 194, 308, 194, 536, 502, 388, 354,
+            468, 776, 662
+        ],
+        [
+            548, 0, 684, 308, 194, 502, 730, 354, 696, 742, 1084, 594, 480, 674,
+            1016, 868, 1210
+        ],
+        [
+            776, 684, 0, 992, 878, 502, 274, 810, 468, 742, 400, 1278, 1164,
+            1130, 788, 1552, 754
+        ],
+        [
+            696, 308, 992, 0, 114, 650, 878, 502, 844, 890, 1232, 514, 628, 822,
+            1164, 560, 1358
+        ],
+        [
+            582, 194, 878, 114, 0, 536, 764, 388, 730, 776, 1118, 400, 514, 708,
+            1050, 674, 1244
+        ],
+        [
+            274, 502, 502, 650, 536, 0, 228, 308, 194, 240, 582, 776, 662, 628,
+            514, 1050, 708
+        ],
+        [
+            502, 730, 274, 878, 764, 228, 0, 536, 194, 468, 354, 1004, 890, 856,
+            514, 1278, 480
+        ],
+        [
+            194, 354, 810, 502, 388, 308, 536, 0, 342, 388, 730, 468, 354, 320,
+            662, 742, 856
+        ],
+        [
+            308, 696, 468, 844, 730, 194, 194, 342, 0, 274, 388, 810, 696, 662,
+            320, 1084, 514
+        ],
+        [
+            194, 742, 742, 890, 776, 240, 468, 388, 274, 0, 342, 536, 422, 388,
+            274, 810, 468
+        ],
+        [
+            536, 1084, 400, 1232, 1118, 582, 354, 730, 388, 342, 0, 878, 764,
+            730, 388, 1152, 354
+        ],
+        [
+            502, 594, 1278, 514, 400, 776, 1004, 468, 810, 536, 878, 0, 114,
+            308, 650, 274, 844
+        ],
+        [
+            388, 480, 1164, 628, 514, 662, 890, 354, 696, 422, 764, 114, 0, 194,
+            536, 388, 730
+        ],
+        [
+            354, 674, 1130, 822, 708, 628, 856, 320, 662, 388, 730, 308, 194, 0,
+            342, 422, 536
+        ],
+        [
+            468, 1016, 788, 1164, 1050, 514, 514, 662, 320, 274, 388, 650, 536,
+            342, 0, 764, 194
+        ],
+        [
+            776, 868, 1552, 560, 674, 1050, 1278, 742, 1084, 810, 1152, 274,
+            388, 422, 764, 0, 798
+        ],
+        [
+            662, 1210, 754, 1358, 1244, 708, 480, 856, 514, 468, 354, 844, 730,
+            536, 194, 798, 0
+        ],
+    ]
+    # [START demands_capacities]
+    data['demands'] = [0, 0, 1, 2, 4, 2, 4, 8, 8, 1, 2, 1, 2, 4, 4, 8, 8]
+    # data['demands']=[]
+    # # data['demands'].append(0)
+    # data['demands'].append(0)
+    # data['demands']=psngr_no
+    # data['demands'][0]=0
+    # data['demands'][1]=0
+    
     print("psngr_no======================")
     print(data['demands'])
-    #data['vehicle_capacities'] = [20, 5, 10, 35]
-    data['vehicle_capacities']=[]
-    data['vehicle_capacities']=buscap
-    print("vehicle_capacities======================")
-    print(data['vehicle_capacities'])
-    # # [END demands_capacities]
-    data['num_vehicles'] = len(buscap)
+    data['vehicle_capacities'] = [20, 5, 10, 35]
+    # data['vehicle_capacities']=[]
+    # # data['vehicle_capacities']=buscap
+    # print("vehicle_capacities======================")
+    # print(data['vehicle_capacities'])
+    # # # [END demands_capacities]
+    data['num_vehicles'] = 4
     data['time_per_demand_unit'] = 5  # 5 minutes/unit
     data['num_locations'] = len(data['distance_matrix'])
     # data['depot']=0
@@ -210,14 +213,45 @@ def add_time_window_constraints(routing, manager, data, time_evaluator_index):
 def print_solution(data, manager, routing, assignment):  # pylint:disable=too-many-locals
     """Prints assignment on console"""
     # Display dropped nodes.
+    dropped_nodes1=[]
+    Objective1=[]
+    routes=[]
+    route=[]
+    total={}
+    total['total_distance']=[]
+    total['total_load']=[]
+    total['total_time']=[]
+
+    plan_output1={}
+    plan_output1['vehicle_id']=[]
+    
+    plan_output1['index']=[]
+    plan_output1['load_var']=[]
+
+    plan_output1['time_var']={}
+    plan_output1['time_var']['max_time_var']=[]
+    plan_output1['time_var']['min_time_var']=[]
+    
+    plan_output1['slack_var']={}
+    plan_output1['slack_var']['max_slack_var']=[]
+    plan_output1['slack_var']['min_slack_var']=[]
+    
+
+    
     dropped_nodes = 'Dropped nodes:'
     for node in range(routing.Size()):
         if routing.IsStart(node) or routing.IsEnd(node):
             continue
         if assignment.Value(routing.NextVar(node)) == node:
             dropped_nodes += ' {}'.format(manager.IndexToNode(node))
+            dropped_nodes1.append(manager.IndexToNode(node))
     print(dropped_nodes)
+    print("Dropped Nodes=================")
+    print(dropped_nodes1)
+    
     print('Objective: {}'.format(assignment.ObjectiveValue()))
+    Objective1.append(assignment.ObjectiveValue())
+
     total_distance = 0
     total_load = 0
     total_time = 0
@@ -237,6 +271,20 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
                 assignment.Min(time_var),
                 assignment.Max(time_var),
                 assignment.Min(slack_var), assignment.Max(slack_var))
+
+            ###DECLARED VARIABLES
+            
+            ###OVER DECLARE
+
+            plan_output1['index'].append(manager.IndexToNode(index))
+            plan_output1['load_var'].append(assignment.Value(load_var))       
+            plan_output1['time_var']['min_time_var'].append(assignment.Min(time_var))
+            plan_output1['time_var']['max_time_var'].append(assignment.Max(time_var))
+            plan_output1['slack_var']['min_slack_var'].append(assignment.Min(slack_var))
+            plan_output1['slack_var']['max_slack_var'].append(assignment.Max(slack_var))
+            plan_output1['vehicle_id'].append(vehicle_id)
+
+
             previous_index = index
             index = assignment.Value(routing.NextVar(index))
             distance += routing.GetArcCostForVehicle(previous_index, index,
@@ -248,6 +296,7 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
             manager.IndexToNode(index),
             assignment.Value(load_var),
             assignment.Min(time_var), assignment.Max(time_var))
+
         plan_output += 'Distance of the route: {0}m\n'.format(distance)
         plan_output += 'Load of the route: {}\n'.format(
             assignment.Value(load_var))
@@ -257,9 +306,65 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
         total_distance += distance
         total_load += assignment.Value(load_var)
         total_time += assignment.Value(time_var)
+        total['total_distance'].append(total_distance)
+        total['total_load'].append(total_load)
+        total['total_time'].append(total_time)
+        
+        
+        
+        route2={}
+        route2['index']=[]
+        route2['load_var']=[]
+        route2['max_time_var']=[]
+        route2['min_time_var']=[]
+
+        
+        for i in range(0,len(plan_output1['index'])):
+            route2={}    
+            route2['index']=plan_output1['index'][i]
+            route2['load_var']=plan_output1['load_var'][i]
+            route2['max_time_var']=plan_output1['time_var']['max_time_var'][i]
+            route2['min_time_var']=plan_output1['time_var']['min_time_var'][i]
+            route2['max_slack_var']=plan_output1['slack_var']['max_slack_var'][i]
+            route2['max_slcak_var']=plan_output1['slack_var']['max_slack_var'][i]
+            route.append(route2)
+
+        print("WORK1")    
+        
+        routes.append(route)
+        
+        print("WORK2")
+
+        total={}
+        total['total_distance']=[]
+        total['total_load']=[]
+        total['total_time']=[]
+
+        plan_output1={}
+        plan_output1['vehicle_id']=[]
+        
+        plan_output1['index']=[]
+        plan_output1['load_var']=[]
+
+        plan_output1['time_var']={}
+        plan_output1['time_var']['max_time_var']=[]
+        plan_output1['time_var']['min_time_var']=[]
+        
+        plan_output1['slack_var']={}
+        plan_output1['slack_var']['max_slack_var']=[]
+        plan_output1['slack_var']['min_slack_var']=[]
+
+        print("SAVED NEW ROUTES==========================")
+        print(routes)
+        print("OVER NEW ROUTES==========================")
+
     print('Total Distance of all routes: {0}m'.format(total_distance))
     print('Total Load of all routes: {}'.format(total_load))
     print('Total Time of all routes: {0}min'.format(total_time))
+    route=[]
+    
+
+    
     #return data['routes']=[{"Bus no",[{},{},{}]},{}]
     #route['Bus_no']=3 route['nodes']=[{},{},{}]
     #route['Total']=
