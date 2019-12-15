@@ -33,6 +33,9 @@ def create_distance_matrix(data):
     # num_addresses = q * max_rows + r (q = 2 and r = 4 in this example).
     q, r = divmod(num_addresses, max_rows)
     dest_addresses = addresses
+    print("DEST===========================")
+    print(dest_addresses)
+
     distance_matrix = []
     # Send q requests, returning max_rows rows per request.
     for i in range(q):
@@ -68,8 +71,12 @@ def send_request(origin_addresses, dest_addresses, API_key):
 
 
 def build_distance_matrix(response):
+    print("response===================")
+    print(response)
     distance_matrix = []
     for row in response['rows']:
+        print("row===================")
+        print(row['elements'])
         row_list = [row['elements'][j]['distance']['value'] for j in range(len(row['elements']))]
         distance_matrix.append(row_list)
     return distance_matrix  
@@ -94,25 +101,32 @@ class RouteView(View):
         busCapacity=[]
         dataForSolver={}
         dataForDistanceMatrix = {}
+
         dataForDistanceMatrix['API_key'] = 'AIzaSyDmwBs8dSuwg56fTWsbJyMdrvXYU3_Pim4'
         dataForDistanceMatrix['addresses']=[]
 
         for i in range(0,len(locations)):
             x=locations[i]['name'].replace(", ", "+").replace(" ","+").replace(".","+")
             dataForDistanceMatrix['addresses'].append(x)
-            print("LOCATIONS ",i)
-            print("======================")
-            print(locations[i])
-            print("=========COUNT=============")
-            print(locations[i]['count'])
             passengerPerStop.append(int(locations[i]['count']))
 
         dataForDistanceMatrix['addresses']=list(set(dataForDistanceMatrix['addresses']))    
+        
         print(dataForDistanceMatrix)
+        
         distance_matrix = create_distance_matrix(dataForDistanceMatrix)   
         print(distance_matrix)
+
+            
+        
         for i in range(0,len(busdetails)):
+            print("BUS ",i)
+            print("======================")
+            print(busdetails[i])
+            print("=========COUNT=============")
+            print(busdetails[i]['buscapacity'])
             busCapacity.append(int(busdetails[i]['buscapacity']))
+
         dataForSolver['distance_matrix']=distance_matrix
         dataForSolver['passengerCount']=passengerPerStop
         dataForSolver['busCapacity']=busCapacity

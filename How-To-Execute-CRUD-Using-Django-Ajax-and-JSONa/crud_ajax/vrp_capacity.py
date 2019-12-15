@@ -298,7 +298,7 @@ def solver(inputData):
                                            data['ends']
                                         )
     # [END index_manager]
-
+    print("ERRROR")
     # Create Routing Model.
     # [START routing_model]
     routing = pywrapcp.RoutingModel(manager)
