@@ -221,6 +221,11 @@
       var citytostore=[],sendtocity=[];
       var passengernotostore=[],citylattostore=[],citylngtostore=[];
       var bustostore=[],capacitytostore=[];
+      var start;
+      var end;
+      var bus_starts;
+      var bus_ends;
+      var officeloc, officeloc2;
       var officeloc,officeloc2;
       var count = 0;
       
@@ -228,12 +233,15 @@
 
       function office(){
           addMarker(officeloc);
+          start = 0;
+        
       officeloc="";
       }
       function office2(){
           
           console.log(officeloc2);
           addMarker2(officeloc2);
+          end = 1;
           
         officeloc2="";
       }
@@ -271,6 +279,8 @@
             var data = $(this).html();
           // alert("BUS"+data);
           bustostore.push(data);
+          starts.push(0);
+          ends.push(1);
           })
         });    
         console.log("STORING BUS Capacity");
@@ -314,7 +324,11 @@
         // console.log(locations);
         $.ajax({
           url: "route/",
-          data: {'csrfmiddlewaretoken':'{{csrf_token}}','locations':JSON.stringify(locations),'busdetails':JSON.stringify(busdetails)},
+          data: {'csrfmiddlewaretoken':'{{csrf_token}}','locations':JSON.stringify(locations),
+          'busdetails':JSON.stringify(busdetails),
+          'starts':JSON.stringify(bus_starts),
+          'ends' : JSON.stringify(bus_ends)
+          },
           cache: false,
           type: "POST",
           success: function(response) {
@@ -786,7 +800,9 @@ $(document).ready(function()
     var address=$(this).parents("tr").find("td:first-child").text();
     if($(this.closest('.collapse')).attr('id')==="collapseExample1"){
       storeLocationDetails[address].setMap(null);      
-    
+      
+      // delete indexToAdress[addressToIndex[address]];
+      // delete addressToIndex[address];
       delete storeLocationDetails[address]; 
       
       if (stoplocations.indexOf(address) > -1) {

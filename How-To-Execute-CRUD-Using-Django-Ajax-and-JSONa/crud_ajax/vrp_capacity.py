@@ -1,18 +1,3 @@
-# Copyright 2010-2018 Google LLC
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-# [START program]
-"""Capacited Vehicles Routing Problem (CVRP)."""
-
 # [START import]
 from __future__ import print_function
 from functools import partial
@@ -28,55 +13,23 @@ def create_data_model(inputData):
     """Stores the data for the problem."""
     data = {}
     data['distance_matrix']=inputData['distance_matrix']
-
-    print("DIST MATRIX============")
-    print(data['distance_matrix'])
-
-    # data['distance_matrix'] = [
-    #  [0, 141099, 9528, 11708, 4359, 1590, 5806, 5261, 412373, 6962, 591816, 22617, 9144, 792, 4056, 4586, 6381, 6027],
-    #  [141102, 0, 156102, 156027, 151283, 142486, 153469, 153475, 343114, 151434, 737372, 155464, 155025, 141879, 137062, 150571, 151293, 151592],
-    #  [9734, 154652, 0, 3671, 5631, 10293, 4458, 5087, 410413, 4711, 584708, 15650, 475, 8996, 14828, 7453, 4800, 4102], 
-    #  [10805, 157778, 5160, 0, 7952, 11365, 5228, 5951, 412733, 8978, 588010, 11978, 5546, 10067, 16782, 9774, 7121, 6767], 
-    #  [4359, 150265, 6093, 8614, 0, 4918, 3460, 3466, 406026, 2983, 588685, 27231, 5016, 3621, 8400, 1440, 1674, 1478], 
-    #  [1714, 142013, 10029, 12209, 4860, 0, 6307, 5762, 409511, 5998, 593633, 24123, 9645, 2044, 5562, 4288, 5942, 6528],
-    #  [5802, 152511, 3813, 5993, 3491, 6361, 0, 1187, 408272, 4517, 587474, 15105, 3430, 5064, 9843, 5313, 2660, 2307], 
-    #  [5336, 146420, 4913, 7093, 3525, 5895, 1191, 0, 408306, 4559, 588023, 14415, 4529, 4598, 9377, 5074, 2694, 2340], 
-    #  [412157, 343311, 411222, 413743, 406403, 413541, 408589, 408595, 0, 406554, 740487, 421556, 410145, 412183, 404015, 406134, 406414, 406712], 
-    #  [6935, 150342, 4452, 7497, 3199, 5943, 4515, 4547, 406103, 0, 584652, 27308, 3950, 6197, 10573, 3399, 2368, 2798],
-    #  [595465, 738014, 586070, 587696, 593068, 594132, 588611, 588840, 736898, 586738, 0, 614795, 584865, 596242, 595440, 592799, 593079, 588019], 
-    #  [24018, 150627, 15269, 13389, 29236, 25402, 14539, 14530, 421856, 29387, 615206, 0, 15654, 24044, 22214, 28524, 29247, 16078],
-    #  [9259, 154177, 524, 4150, 5156, 9818, 4004, 4633, 409938, 3784, 584186, 16128, 0, 8521, 14581, 6978, 4325, 3627], 
-    #  [792, 141876, 8790, 10970, 3621, 1920, 5068, 4523, 412411, 6224, 592594, 22655, 8406, 0, 4834, 3848, 5643, 5289], 
-    #  [4041, 137043, 15219, 17533, 8385, 5424, 9832, 9286, 404540, 10551, 592211, 20964, 14142, 4818, 0, 8612, 10411, 10709], 
-    #  [4586, 149835, 7850, 10371, 1440, 4497, 5217, 5223, 405596, 3663, 588254, 26800, 6773, 3848, 8627, 0, 3607, 2928], 
-    #  [5083, 150625, 6340, 8861, 714, 5642, 2508, 3010, 406386, 3343, 589045, 27591, 5263, 4345, 9124, 2164, 0, 1329]
-    #  ]
-    # [START demands_capacities]
-    # data['demands'] = [0, 0, 1, 2, 4, 2, 4, 8, 8, 1, 2, 1, 2, 4, 4, 8, 8]
-    # data['demands'].append(0)
-    # data['demands'].append(0)
     data['demands']=inputData['passengerCount']
-    data['demands'][0]=0
-    data['demands'][1]=0
-    
-    print("psngr_no======================")
-    print(data['demands'])
-    # data['vehicle_capacities'] = [20, 5, 10, 35]
+    # data['demands'][0]=0
+    # data['demands'][1]=0
     data['vehicle_capacities']=inputData['busCapacity']
-    # print("vehicle_capacities======================")
-    # print(data['vehicle_capacities'])
-    # # # [END demands_capacities]
     data['num_vehicles'] = len(inputData['busCapacity'])
-    data['time_per_demand_unit'] = 5  # 5 minutes/unit
+    data['time_per_demand_unit'] = .5 
+    data['lower_stop']  = 1
     data['num_locations'] = len(inputData['distance_matrix'])
-    # data['depot']=0
-    data['starts'] = [0]*data['num_vehicles']
-    data['ends'] = [1]*data['num_vehicles']
-    
+    data['starts'] = inputData['starts']
+    data['ends'] = inputData['ends']
     data['time_windows'] = inputData['time_windows']
-
-    data['vehicle_speed'] = 83  # Travel speed: 5km/h converted in m/min
-
+    data['soft_time_windows'] = inputData['soft_time_windows']
+    data['max_allowed_time']  = inputData['max_allowed_time']
+    data['vehicle_speed'] = 830  # Travel speed: 5km/h converted in m/min
+    data['drop_penalty'] = 80000
+    data['min_occ_penalty'] = 20000
+    data['soft_time_penalty'] = 2000
     return data
     # [END data_model]
 
@@ -85,7 +38,7 @@ def create_time_evaluator(data):
 
     def service_time(data, node):
         """Gets the service time for the specified location."""
-        return data['demands'][node] * data['time_per_demand_unit']
+        return data['lower_stop'] + data['demands'][node] * data['time_per_demand_unit']
 
     def travel_time(data, from_node, to_node):
         """Gets the travel times between two locations."""
@@ -119,7 +72,11 @@ def create_time_evaluator(data):
 def add_time_window_constraints(routing, manager, data, time_evaluator_index):
     """Add Global Span constraint"""
     time = 'Time'
+<<<<<<< HEAD
+    horizon = data['max_allowed_time']
+=======
     horizon = 3000
+>>>>>>> 2fd7728e151029bff14c7c36778472e2a6ef72cf
     routing.AddDimension(
         time_evaluator_index,
         horizon,  # allow waiting time
@@ -135,6 +92,8 @@ def add_time_window_constraints(routing, manager, data, time_evaluator_index):
             continue
         time_dimension.CumulVar(index).SetRange(time_window[0], time_window[1])
         routing.AddToAssignment(time_dimension.SlackVar(index))
+    
+
     # Add time window constraints for each vehicle start node
     # and 'copy' the slack var in the solution object (aka Assignment) to print it
     for vehicle_id in xrange(data['num_vehicles']):
@@ -144,7 +103,16 @@ def add_time_window_constraints(routing, manager, data, time_evaluator_index):
         routing.AddToAssignment(time_dimension.SlackVar(index))
         # Warning: Slack var is not defined for vehicle's end node
         #routing.AddToAssignment(time_dimension.SlackVar(self.routing.End(vehicle_id)))
-
+    
+    ## soft constraint
+    soft_time_penalty = data['soft_time_peanlty']
+    for location_idx,soft_time_window in enumerate(data['soft_time_windows']):
+        index = manager.NodeToIndex(location_idx)
+        if index == -1:
+            continue
+        time_dimension.SetCumulVarSoftLowerBound(index, time_window[0], soft_time_penalty)
+        time_dimension.SetCumulVarSoftUpperBound(index, time_window[1], soft_time_penalty)
+        
 
 
 def print_solution(data, manager, routing, assignment):  # pylint:disable=too-many-locals
@@ -153,6 +121,9 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
     dropped_nodes1=[]
     Objective1=[]
     routes=[]
+    empty_vehicle =[]
+    dropped_nodes = []
+    status = routing.status()
     route=[]
     total={}
     total['total_distance']=[]
@@ -198,7 +169,9 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
         index = routing.Start(vehicle_id)
         plan_output = 'Route for vehicle {}:\n'.format(vehicle_id)
         distance = 0
+        no_of_nodes = 0
         while not routing.IsEnd(index):
+            no_of_nodes = no_of_nodes + 1
             load_var = capacity_dimension.CumulVar(index)
             time_var = time_dimension.CumulVar(index)
             slack_var = time_dimension.SlackVar(index)
@@ -224,8 +197,10 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
 
             previous_index = index
             index = assignment.Value(routing.NextVar(index))
-            distance += routing.GetArcCostForVehicle(previous_index, index,
-                                                     vehicle_id)
+            distance += routing.GetArcCostForVehicle(previous_index, index,  vehicle_id)
+
+        if no_of_nodes == 1:
+            empty_vehicle.append(vehicle_id)                                           
         load_var = capacity_dimension.CumulVar(index)
         time_var = time_dimension.CumulVar(index)
         slack_var = time_dimension.SlackVar(index)
@@ -246,9 +221,6 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
         total['total_distance'].append(total_distance)
         total['total_load'].append(total_load)
         total['total_time'].append(total_time)
-        
-        
-        
         route2={}
         route2['index']=[]
         route2['load_var']=[]
@@ -297,9 +269,12 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
     print('Total Load of all routes: {}'.format(total_load))
     print('Total Time of all routes: {0}min'.format(total_time))
     route=[]
-    return routes
-    
-
+    output = {}
+    output['routes'] = routes
+    output['empty_vehicle'] = empty_vehicle
+    output['dropped_nodes'] = dropped_nodes1
+    output['status'] = status
+    return output    
     
     #return data['routes']=[{"Bus no",[{},{},{}]},{}]
     #route['Bus_no']=3 route['nodes']=[{},{},{}]
@@ -352,18 +327,21 @@ def solver(inputData):
 
     # [END arc_cost]
 
- # Add Distance constraint.
-    # dimension_name = 'Distance'
-    # routing.AddDimension(
-    #     transit_callback_index,
-    #     0,  # no slack
-    #     3000,  # vehicle maximum travel distance
-    #     True,  # start cumul to zero
-    #     dimension_name)
-    # distance_dimension = routing.GetDimensionOrDie(dimension_name)
-    # distance_dimension.SetGlobalSpanCostCoefficient(100)
+ #  Add Distance constraint.
+#     dist_dimension_name = 'Distance'
+#     routing.AddDimension(
+#         transit_callback_index,
+#         0,  # no slack
+#         3000,  # vehicle maximum travel distance
+#         True,  # start cumul to zero
+#         dist_dimension_name)
+#     # distance_dimension = routing.GetDimensionOrDie(dist_dimension_name)
+#     # distance_dimension.SetGlobalSpanCostCoefficient(100)    
 
 
+    # distance_dimension.SetCumulVarSoftUpperBound(index, time_window[1], soft_time_penalty)            
+    
+    
     # Add Capacity constraint.
     # [START capacity_constraint]
     def demand_callback(from_index):
@@ -382,16 +360,24 @@ def solver(inputData):
         'Capacity')
     # [END capacity_constraint]
 
+    demand_dimension = routing.GetDimensionOrDie('Capacity')
+    
+    soft_min_occ_penalty = data['soft_min_occ_penalty']
+    index = manager.NodeToIndex(data['ends'][0])
+    for vehicle_id in range(data['num_vehicles']):
+        index = routing.End(vehicle_id)
+        demand_dimension.SetCumulVarSoftLowerBound(index,data['soft_min_occupancy'][vehicle_id], soft_min_occ_penalty)
+
     # Add Time Window constraint
     time_evaluator_index = routing.RegisterTransitCallback(
         partial(create_time_evaluator(data), manager))
     add_time_window_constraints(routing, manager, data, time_evaluator_index)
 
-    penalty = 20000
+    drop_penalty = data['drop_penalty']
     for node in range(0, len(data['distance_matrix'])):
         if manager.NodeToIndex(node) == -1:
             continue
-        routing.AddDisjunction([manager.NodeToIndex(node)], penalty)
+        routing.AddDisjunction([manager.NodeToIndex(node)], drop_penalty)
 
 
 
@@ -400,7 +386,8 @@ def solver(inputData):
     # Setting first solution heuristic (cheapest addition).
     search_parameters = pywrapcp.DefaultRoutingSearchParameters()
     search_parameters.first_solution_strategy = (
-        routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC)  # pylint: disable=no-membe
+        routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC)  # pylint: disable=no-member
+    search_parameters.time_limit.seconds = 100
     # [END parameters]
 
     # Solve the problem.
