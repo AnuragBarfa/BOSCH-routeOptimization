@@ -119,35 +119,17 @@
             <div class="collapse" id="collapseExample3">
               <div class="card card-body">
                   <input type="text" name="office" id="officeval" style="margin: 5px;" autocomplete="on"> 
-                  <button  class="btn btn-primary" aria-expanded="false" style="margin: 5px;" onclick="office(1)" id="office"> Save </button>
+                  <button  class="btn btn-primary" aria-expanded="false" style="margin: 5px;" onclick="office()" id="office"> Save </button>
             <!-- <i id="hide_no_loc_available2">NO BUS AVAILABLE</i> -->
+                   <input type="text" name="office2" id="officeval2" style="margin: 5px;" autocomplete="on"> 
+                  <button  class="btn btn-primary" id="office2" aria-expanded="false" style="margin: 5px;" onclick="office2()"> Save </button>
               </div>
             </div>
             
         </div>
 <br/>
 
-           <div class="table-wrapper" >
-            <div class="table-title">
-                <div class="row">
-                    <div class="col-sm-8">
-                        <h2><a data-toggle="collapse" href="#collapseExample4" role="button" aria-expanded="false" aria-controls="collapseExample4">Office2:</a></h2>
-                    </div>
-                    <div class="col-sm-4">
-                        
-                    </div>
-                </div>
-            </div>
-            <div class="collapse" id="collapseExample4">
-              <div class="card card-body">
-                  <input type="text" name="office" id="officeval2" style="margin: 5px;" autocomplete="on"> 
-                  <button  class="btn btn-primary" aria-expanded="false" style="margin: 5px;" onclick="office(2)"> Save </button>
-            <!-- <i id="hide_no_loc_available2">NO BUS AVAILABLE</i> -->
-              </div>
-            </div>
-            
-        </div>       
-        
+          
       
       </p>
 			<div class="table-wrapper" style="overflow-y: auto; max-height: 300px;  height: auto; padding-right : 15px">
@@ -241,16 +223,17 @@
 
       var officeloc,officeloc2;
 
-      function office(x){
-        if(x==1)
-        {
+      function office(){
+        
           console.log(officeloc);
           addMarker(officeloc);
-        }
-        else{
+        
+      }
+      function office2(){
+        
           console.log(officeloc2);
-          addMarker(officeloc2);
-        }
+          addMarker2(officeloc2);
+        
       }
       function routeopt(){
         citytostore=[];
@@ -366,17 +349,17 @@
               
           });
 
-        var inputof = document.getElementById('officeval2');
-        var autocomplete = new google.maps.places.Autocomplete(inputof);
-        google.maps.event.addListener(autocomplete, 'place_changed', function () {
-            var place = autocomplete.getPlace();
+        var inputof2 = document.getElementById('officeval2');
+        var autocomplete2 = new google.maps.places.Autocomplete(inputof2);
+        google.maps.event.addListener(autocomplete2, 'place_changed', function () {
+            var place2 = autocomplete2.getPlace();
               // document.getElementById('city2').value = place.name;
-              officeloc2 = place.geometry.location;
+              officeloc2 = place2.geometry.location;
               
           });
 
-        var inp=inputof.value;
-        if(inp != "")document.getElementById('office').disabled = false;
+        var inp=inputof2.value;
+        if(inp != "")document.getElementById('office2').disabled = false;
 
       }
       function addMarker(location) {
@@ -390,7 +373,7 @@
 
         });
       }
-      function addMarker(location) {
+      function addMarker2(location) {
         console.log("in marker");
         marker = new google.maps.Marker({
             position: location,
