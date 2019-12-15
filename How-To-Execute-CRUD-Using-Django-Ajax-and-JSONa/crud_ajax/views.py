@@ -71,8 +71,6 @@ def build_distance_matrix(response):
     distance_matrix = []
     for row in response['rows']:
         row_list = [row['elements'][j]['distance']['value'] for j in range(len(row['elements']))]
-        row_listtime = [row['elements'][j]['duration']['value'] for j in range(len(row['elements']))]
-        time_matrix.append(row_listtime)
         distance_matrix.append(row_list)
     return distance_matrix  
 
