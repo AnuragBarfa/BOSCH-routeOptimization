@@ -221,11 +221,10 @@
       var citytostore=[],sendtocity=[];
       var passengernotostore=[],citylattostore=[],citylngtostore=[];
       var bustostore=[],capacitytostore=[];
-      var start;
-      var end;
-      var bus_starts;
-      var bus_ends;
-      var officeloc, officeloc2;
+      var start=[];
+      var end=[];
+      var bus_starts={};
+      var bus_ends={};
       var officeloc,officeloc2;
       var count = 0;
       
@@ -233,7 +232,7 @@
 
       function office(){
           addMarker(officeloc);
-          start = 0;
+          start.push(0);
         
       officeloc="";
       }
@@ -241,7 +240,7 @@
           
           console.log(officeloc2);
           addMarker2(officeloc2);
-          end = 1;
+          end.push(1);
           
         officeloc2="";
       }
@@ -279,8 +278,8 @@
             var data = $(this).html();
           // alert("BUS"+data);
           bustostore.push(data);
-          starts.push(0);
-          ends.push(1);
+          start.push(0);
+          end.push(1);
           })
         });    
         console.log("STORING BUS Capacity");
@@ -292,13 +291,15 @@
           })
         });
         // for(key in storeLocationDetails)
-        for(var key=0;key<stoplocations.length;i++)
+        alert("START");
+        for(var key=0;key<stoplocations.length;key++)
      {    alert(stoplocations[key]);
           citytostore.push(stoplocations[key]);
           // text += (key + ' = ' + FtionDetailskey].getPosition().lat() + '\n');
           citylattostore.push(storeLocationDetails[stoplocations[key]].getPosition().lat());
           citylngtostore.push(storeLocationDetails[stoplocations[key]].getPosition().lng());
         }
+        alert("END");
         var locations=[];
         var busdetails=[];
         for(var i=0;i<bustostore.length;i++){
@@ -318,6 +319,8 @@
           currLocation['depa']="1";
           locations.push(currLocation);
         }
+        bus_starts['starts']=start;
+        bus_ends['ends']=end;
         console.log(locations)
         console.log(busdetails)
         console.log("ADDRESS:");
@@ -326,8 +329,8 @@
           url: "route/",
           data: {'csrfmiddlewaretoken':'{{csrf_token}}','locations':JSON.stringify(locations),
           'busdetails':JSON.stringify(busdetails),
-          'starts':JSON.stringify(bus_starts),
-          'ends' : JSON.stringify(bus_ends)
+          'starts':JSON.stringify(bus_starts['starts']),
+          'ends' : JSON.stringify(bus_ends['ends'])
           },
           cache: false,
           type: "POST",
@@ -644,6 +647,8 @@ function hide_or_show_no_bus(){
       var data = $(this).html();
     // alert("BUS"+data);
     bustostore.push(data);
+    start.push(0);
+    end.push(0);
     })
   });
 

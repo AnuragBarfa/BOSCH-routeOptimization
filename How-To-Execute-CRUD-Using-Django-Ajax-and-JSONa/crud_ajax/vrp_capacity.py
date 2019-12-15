@@ -72,11 +72,7 @@ def create_time_evaluator(data):
 def add_time_window_constraints(routing, manager, data, time_evaluator_index):
     """Add Global Span constraint"""
     time = 'Time'
-<<<<<<< HEAD
     horizon = data['max_allowed_time']
-=======
-    horizon = 3000
->>>>>>> 2fd7728e151029bff14c7c36778472e2a6ef72cf
     routing.AddDimension(
         time_evaluator_index,
         horizon,  # allow waiting time
