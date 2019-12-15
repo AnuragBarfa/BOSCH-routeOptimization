@@ -100,8 +100,13 @@ class RouteView(View):
         for i in range(0,len(locations)):
             x=locations[i]['name'].replace(", ", "+").replace(" ","+").replace(".","+")
             dataForDistanceMatrix['addresses'].append(x)
+            print("LOCATIONS ",i)
+            print("======================")
+            print(locations[i])
+            print("=========COUNT=============")
+            print(locations[i]['count'])
             passengerPerStop.append(int(locations[i]['count']))
-            
+
         dataForDistanceMatrix['addresses']=list(set(dataForDistanceMatrix['addresses']))    
         print(dataForDistanceMatrix)
         distance_matrix = create_distance_matrix(dataForDistanceMatrix)   

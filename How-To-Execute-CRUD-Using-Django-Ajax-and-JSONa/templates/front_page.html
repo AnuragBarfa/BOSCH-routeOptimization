@@ -307,11 +307,16 @@
           currLocation['buscapacity']=capacitytostore[i];
           busdetails.push(currLocation);
         }
-
+        passengernotostore.reverse();
         for(var i=0;i<citytostore.length;i++){
           var currLocation={};
           currLocation['name']=citytostore[i];
-          currLocation['count']=passengernotostore[i];
+          if (i==0 || i==1){
+            currLocation['count']=0;  
+          }
+          else{
+            currLocation['count']=passengernotostore[i-2];
+          }
           currLocation['lat']=citylattostore[i];
           currLocation['lng']=citylngtostore[i];
           currLocation['arr']="1";
@@ -417,6 +422,8 @@
         });
         storeLocationDetails[location.name]=marker;
         stoplocations.push(location.name);
+        // passengernotostore.push(0);
+        // alert(passengernotostore);
         //storeOfficeDetails[location]=marker;
 
       }
@@ -433,6 +440,8 @@
         });
         storeLocationDetails[location.name]=marker;
         stoplocations.push(location.name);
+        // passengernotostore.push(0);
+        // alert(passengernotostore);
         //storeOffice2Details[location]=marker;
       }
       function calcRoute2(response) {
