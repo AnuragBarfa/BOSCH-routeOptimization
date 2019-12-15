@@ -305,8 +305,8 @@
             console.log(response['routes'][0]['nodes'][0]);
             for(var i =0;i<response['routes'].length;i++){  
               //calcRoute(response['routes'][i]);
-              calcRoute2(response['routes'][i]['name']);
-              deleteMarkers(storeLocationDetails[response['routes'][i]])
+              calcRoute2(response['routes'][i]);
+              
               console.log(response['routes'][i]['nodes']);
             }
             // boundall();
@@ -411,7 +411,7 @@
         }
         console.log("LOC===========");
         console.log(locations2);
-        alert(locations2);
+        // alert(locations2);
         console.log("LOC=====OVER======");
         
         var marker2, i;
@@ -661,7 +661,7 @@ $(document).ready(function()
             // var infowindow = new google.maps.InfoWindow({
             //    content: contentString
             //  });
-            alert(results[0].geometry.location);
+            // alert(results[0].geometry.location);
 
             var marker = new google.maps.Marker({
               map: map,
