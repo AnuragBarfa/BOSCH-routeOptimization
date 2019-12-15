@@ -232,7 +232,6 @@
 
       function office(){
           addMarker(officeloc);
-          start.push(0);
         
       officeloc="";
       }
@@ -240,7 +239,6 @@
           
           console.log(officeloc2);
           addMarker2(officeloc2);
-          end.push(1);
           
         officeloc2="";
       }
@@ -280,6 +278,9 @@
           bustostore.push(data);
           start.push(0);
           end.push(1);
+          console.log("printing data");
+          console.log(start);
+          console.log(end);
           })
         });    
         console.log("STORING BUS Capacity");
@@ -651,13 +652,15 @@ function hide_or_show_no_location(){
 
 function hide_or_show_no_bus(){
   bustostore=[];
+  // start=[];
+  // end=[];
   $('#bus_searchresult > table > tbody > tr').each(function() {
     $(this).children('td:nth-child(1)').each(function(){
       var data = $(this).html();
     // alert("BUS"+data);
     bustostore.push(data);
-    start.push(0);
-    end.push(0);
+    // start.push(0);
+    // end.push(1);
     })
   });
 

@@ -291,6 +291,8 @@ def solver(inputData):
     print("in solver")
     # Create the routing index manager.
     # [START index_manager]
+    print(data['starts'])
+    print(data['num_vehicles'])
     manager = pywrapcp.RoutingIndexManager(len(data['distance_matrix']),
                                            data['num_vehicles'],
                                         #    data['depot'],
