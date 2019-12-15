@@ -255,20 +255,18 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
         route2['max_time_var']=[]
         route2['min_time_var']=[]
 
-        
-        for i in range(0,len(plan_output1['index'])):
-            route2={}    
-            route2['index']=plan_output1['index'][i]
-            route2['load_var']=plan_output1['load_var'][i]
-            route2['max_time_var']=plan_output1['time_var']['max_time_var'][i]
-            route2['min_time_var']=plan_output1['time_var']['min_time_var'][i]
-            route2['max_slack_var']=plan_output1['slack_var']['max_slack_var'][i]
-            route2['min_slack_var']=plan_output1['slack_var']['min_slack_var'][i]
-            route.append(route2)
-
-        print("WORK1")    
-
-        routes.append(route)
+        if len(plan_output1['index'])>1:
+            for i in range(0,len(plan_output1['index'])):
+                route2={}    
+                route2['index']=plan_output1['index'][i]
+                route2['load_var']=plan_output1['load_var'][i]
+                route2['max_time_var']=plan_output1['time_var']['max_time_var'][i]
+                route2['min_time_var']=plan_output1['time_var']['min_time_var'][i]
+                route2['max_slack_var']=plan_output1['slack_var']['max_slack_var'][i]
+                route2['min_slack_var']=plan_output1['slack_var']['min_slack_var'][i]
+                route.append(route2)
+            routes.append(route)
+        print("WORK1")      
         
         print("WORK2")
 

@@ -101,9 +101,34 @@
 		<div id="map" style="position:relative;width:100%;height: 800px;float:left;"></div>
 		<div id="over_map" class="pull-right">
       <p>
-        <button class="btn btn-primary" aria-expanded="false" onclick="routeopt()">
-          Route Optimizer
-        </button>
+          <button class="btn btn-primary" aria-expanded="false" onclick="routeopt()">
+            Route Optimizer
+          </button>
+        
+           <div class="table-wrapper" >
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-8">
+                        <h2><a data-toggle="collapse" href="#collapseExample3" role="button" aria-expanded="false" aria-controls="collapseExample3">Office:</a></h2>
+                    </div>
+                    <div class="col-sm-4">
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="collapse" id="collapseExample3">
+              <div class="card card-body">
+                  <input type="text" name="office" id="officeval" style="margin: 5px;">
+                  <button  class="btn btn-primary" aria-expanded="false" style="margin: 5px;" onclick="office()"> Save </button>
+            <!-- <i id="hide_no_loc_available2">NO BUS AVAILABLE</i> -->
+              </div>
+            </div>
+            
+        </div>
+
+       
+        
+      
       </p>
 			<div class="table-wrapper" style="overflow-y: auto; max-height: 300px;  height: auto; padding-right : 15px">
             <div class="table-title">
@@ -193,6 +218,20 @@
       var citytostore=[],sendtocity=[];
       var passengernotostore=[],citylattostore=[],citylngtostore=[];
       var bustostore=[],capacitytostore=[];
+      function office(){
+        var officeval=document.getElementById('officeval').val;
+        alert(officeval+" 1");
+         var inputof = document.getElementById('officeval');
+      // console.log(input);
+      var autocomplete = new google.maps.places.Autocomplete(inputof);
+      google.maps.event.addListener(autocomplete, 'place_changed', function () {
+          var place = autocomplete.getPlace();
+          alert(place);
+          // document.getElementById('city2').value = place.name;
+          // Lat = place.geometry.location.lat();
+          // Lng = place.geometry.location.lng();
+      });
+      }
       function routeopt(){
         citytostore=[];
         passengernotostore=[];
@@ -266,11 +305,14 @@
             console.log(response['routes'][0]['nodes'][0]);
             for(var i =0;i<response['routes'].length;i++){  
               //calcRoute(response['routes'][i]);
-              calcRoute2(response['routes'][i])
+              calcRoute2(response['routes'][i]['name']);
+              deleteMarkers(storeLocationDetails[response['routes'][i]])
               console.log(response['routes'][i]['nodes']);
             }
             // boundall();
-            // distancematrix(responsestore,responsestore);
+            distancematrix(responsestore,responsestore);
+
+            
            },
             error: function(xhr) {
               console.log("FAILED");
@@ -300,9 +342,11 @@
         });
       }
       function calcRoute2(response) {
+        
         var start = new google.maps.LatLng(response['nodes'][0]["lat"],response['nodes'][0]["lng"]);
         var k=response['nodes'].length-1;
         var end = new google.maps.LatLng(response['nodes'][k]["lat"],response['nodes'][k]["lng"]);
+
         var request = {
             origin: start,
             waypoints:[],
@@ -310,7 +354,11 @@
             travelMode: google.maps.TravelMode.DRIVING
         };
         for(var i=1;i<response['nodes'].length-1;i++){
-          marker2 = new google.maps.Marker({
+            console.log(i+"===========================");
+            console.log(response['nodes'][i]);
+
+
+            marker2 = new google.maps.Marker({
             map: map,
             position: new google.maps.LatLng(response['nodes'][i]["lat"],response['nodes'][i]["lng"]),
           });
@@ -338,6 +386,11 @@
           }
         });
         for(var i=0;i<response['nodes'].length;i++){
+
+            console.log("LOC "+i+" ===========");
+            console.log(response['nodes'][i]["lat"] + response['nodes'][i]["lng"] );
+            console.log("LOC=====OVER======");
+
           var e=new google.maps.LatLng(response['nodes'][i]["lat"], response['nodes'][i]["lng"]);
           bounds.extend(e);
         }
@@ -358,6 +411,9 @@
         }
         console.log("LOC===========");
         console.log(locations2);
+        alert(locations2);
+        console.log("LOC=====OVER======");
+        
         var marker2, i;
         var request = {
           travelMode: google.maps.TravelMode.DRIVING
@@ -592,7 +648,7 @@ $(document).ready(function()
           {
             // map.setCenter(results[0].geometry.location);
             //   var contentString = '<div id="content">'+
-            // '<div id="siteNotice">'+
+            // '<div id="siteNotice">'+1
             // '</div>'+
             // '<h4 id="firstHeading" class="firstHeading">'+address +'</h4>'+
             // '<div id="bodyContent">'+
@@ -605,6 +661,7 @@ $(document).ready(function()
             // var infowindow = new google.maps.InfoWindow({
             //    content: contentString
             //  });
+            alert(results[0].geometry.location);
 
             var marker = new google.maps.Marker({
               map: map,
@@ -628,7 +685,8 @@ $(document).ready(function()
   
 
   // Edit row on edit button click
-  $(document).on("click", ".edit", function(){    
+  $(document).on("click", ".edit", function(){ 
+
     $(this).parents("tr").find("td:not(:last-child):not(:first-child)").each(function(){
       $(this).html('<input type="text" class="form-control" value="' + $(this).text() + '">');
     });   
