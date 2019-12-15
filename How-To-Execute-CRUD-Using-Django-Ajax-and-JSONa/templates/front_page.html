@@ -118,7 +118,7 @@
             </div>
             <div class="collapse" id="collapseExample3">
               <div class="card card-body">
-                  <input type="text" name="office" id="officeval" style="margin: 5px;">
+                  <input type="text" name="office" id="officeval" style="margin: 5px;" autocomplete="on"> 
                   <button  class="btn btn-primary" aria-expanded="false" style="margin: 5px;" onclick="office()"> Save </button>
             <!-- <i id="hide_no_loc_available2">NO BUS AVAILABLE</i> -->
               </div>
@@ -218,19 +218,11 @@
       var citytostore=[],sendtocity=[];
       var passengernotostore=[],citylattostore=[],citylngtostore=[];
       var bustostore=[],capacitytostore=[];
-      function office(){
-        var officeval=document.getElementById('officeval').val;
-        alert(officeval+" 1");
-         var inputof = document.getElementById('officeval');
-      // console.log(input);
-      var autocomplete = new google.maps.places.Autocomplete(inputof);
-      google.maps.event.addListener(autocomplete, 'place_changed', function () {
-          var place = autocomplete.getPlace();
-          alert(inputof);
-          // document.getElementById('city2').value = place.name;
-          // Lat = place.geometry.location.lat();
-          // Lng = place.geometry.location.lng();
-      });
+
+      
+
+      function office(officeloc){
+        addMarker(officeloc);
       }
       function routeopt(){
         citytostore=[];
@@ -333,12 +325,26 @@
         service = new google.maps.DistanceMatrixService;
         directionsDisplay.setMap(map);
         bounds = new google.maps.LatLngBounds();
+
+        var inputof = document.getElementById('officeval');
+        var autocomplete = new google.maps.places.Autocomplete(inputof);
+        google.maps.event.addListener(autocomplete, 'place_changed', function () {
+            var place = autocomplete.getPlace();
+              // document.getElementById('city2').value = place.name;
+              officeloc = place.geometry.location;
+              office(officeloc);      
+          });
+
       }
       function addMarker(location) {
         console.log("in marker");
         marker = new google.maps.Marker({
             position: location,
-            map: map
+            map: map,
+            icon: {
+              url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+            }
+
         });
       }
       function calcRoute2(response) {
