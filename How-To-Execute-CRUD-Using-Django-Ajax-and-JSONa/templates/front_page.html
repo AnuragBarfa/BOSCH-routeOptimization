@@ -118,10 +118,10 @@
             </div>
             <div class="collapse" id="collapseExample3">
               <div class="card card-body">
-                  <input type="text" name="office" id="officeval" style="margin: 5px;" autocomplete="on"> 
+                  <input type="text" name="office" id="officeval" placeholder="START POINT" style="margin: 5px;" autocomplete="on"> 
                   <button  class="btn btn-primary" aria-expanded="false" style="margin: 5px;" onclick="office()" id="office"> Save </button>
             <!-- <i id="hide_no_loc_available2">NO BUS AVAILABLE</i> -->
-                   <input type="text" name="office2" id="officeval2" style="margin: 5px;" autocomplete="on"> 
+                   <input type="text" name="office2" id="officeval2" placeholder="DEPOT POINT" style="margin: 5px;" autocomplete="on"> 
                   <button  class="btn btn-primary" id="office2" aria-expanded="false" style="margin: 5px;" onclick="office2()"> Save </button>
               </div>
             </div>
@@ -214,28 +214,35 @@
       var service;
       var geocoder;
       var storeLocationDetails=new Map();
+      var storeOfficeDetails=new Map();
       var directionsDisplay;
       var directionsService;
       var bounds;
       var citytostore=[],sendtocity=[];
       var passengernotostore=[],citylattostore=[],citylngtostore=[];
       var bustostore=[],capacitytostore=[];
-
       var officeloc,officeloc2;
+      var count = 0;
+      
+      var stoplocations=[];
 
       function office(){
-        
-          console.log(officeloc);
           addMarker(officeloc);
-        
+      officeloc="";
       }
       function office2(){
-        
+          
           console.log(officeloc2);
           addMarker2(officeloc2);
-        
+          
+        officeloc2="";
       }
       function routeopt(){
+        console.log("storeLocationDetails");
+        console.log(storeLocationDetails);
+        console.log("stoplocations");
+        console.log(stoplocations);
+        
         citytostore=[];
         passengernotostore=[];
         citylattostore=[];
@@ -243,6 +250,13 @@
         bustostore=[];
         capacitytostore=[];
         var data={};  
+        // $('#loc_searchresult > table > tbody > tr').each(function() {
+        //   $(this).children('td:nth-child(1)').each(function(){
+        //     var data = $(this).html();
+        //     console.log(data);
+        //     citytostore.push(data);
+        //   })
+        // });
         console.log("STORING PSNG NO");
         $('#loc_searchresult > table > tbody > tr').each(function() {
           $(this).children('td:nth-child(2)').each(function(){
@@ -267,11 +281,13 @@
           capacitytostore.push(data);
           })
         });
-       for(key in storeLocationDetails){
-          citytostore.push(key);
-          // text += (key + ' = ' + storeLocationDetailskey].getPosition().lat() + '\n');
-          citylattostore.push(storeLocationDetails[key].getPosition().lat());
-          citylngtostore.push(storeLocationDetails[key].getPosition().lng());
+        // for(key in storeLocationDetails)
+        for(var key=0;key<stoplocations.length;i++)
+     {
+          citytostore.push(stoplocations[key]);
+          // text += (key + ' = ' + FtionDetailskey].getPosition().lat() + '\n');
+          citylattostore.push(storeLocationDetails[stoplocations[key]].getPosition().lat());
+          citylngtostore.push(storeLocationDetails[stoplocations[key]].getPosition().lng());
         }
         var locations=[];
         var busdetails=[];
@@ -345,7 +361,7 @@
         google.maps.event.addListener(autocomplete, 'place_changed', function () {
             var place = autocomplete.getPlace();
               // document.getElementById('city2').value = place.name;
-              officeloc = place.geometry.location;
+              officeloc = place;
               
           });
 
@@ -354,7 +370,7 @@
         google.maps.event.addListener(autocomplete2, 'place_changed', function () {
             var place2 = autocomplete2.getPlace();
               // document.getElementById('city2').value = place.name;
-              officeloc2 = place2.geometry.location;
+              officeloc2 = place2;
               
           });
 
@@ -362,27 +378,46 @@
         if(inp != "")document.getElementById('office2').disabled = false;
 
       }
+      function counter(address){
+        var c=0;
+       for(key in storeLocationDetails){
+         c++;
+          if (key == address)break;
+
+       }
+       return c;
+     }
       function addMarker(location) {
+
         console.log("in marker");
         marker = new google.maps.Marker({
-            position: location,
+            position: location.geometry.location,
             map: map,
             icon: {
               url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
-            }
+            },
+            animation: google.maps.Animation.DROP
 
         });
+        storeLocationDetails[location.name]=marker;
+        stoplocations.push(location.name);
+        //storeOfficeDetails[location]=marker;
+
       }
       function addMarker2(location) {
         console.log("in marker");
         marker = new google.maps.Marker({
-            position: location,
+            position: location.geometry.location,
             map: map,
             icon: {
               url: "http://maps.google.com/mapfiles/ms/icons/purple-dot.png"
-            }
+            },
+            animation: google.maps.Animation.DROP
 
         });
+        storeLocationDetails[location.name]=marker;
+        stoplocations.push(location.name);
+        //storeOffice2Details[location]=marker;
       }
       function calcRoute2(response) {
         
@@ -718,6 +753,9 @@ $(document).ready(function()
             // });
 
             storeLocationDetails[address]=marker;
+            stoplocations.push(address);
+
+
             boundall();
            
           }
@@ -750,6 +788,11 @@ $(document).ready(function()
       storeLocationDetails[address].setMap(null);      
     
       delete storeLocationDetails[address]; 
+      
+      if (stoplocations.indexOf(address) > -1) {
+        stoplocations.splice(stoplocations.indexOf(address), 1);
+      }
+
       boundall();
       
       hide_or_show_no_location();
