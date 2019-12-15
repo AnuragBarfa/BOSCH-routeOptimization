@@ -291,15 +291,14 @@
           })
         });
         // for(key in storeLocationDetails)
-        alert("START");
+        
         for(var key=0;key<stoplocations.length;key++)
-     {    alert(stoplocations[key]);
+     {  
           citytostore.push(stoplocations[key]);
           // text += (key + ' = ' + FtionDetailskey].getPosition().lat() + '\n');
           citylattostore.push(storeLocationDetails[stoplocations[key]].getPosition().lat());
           citylngtostore.push(storeLocationDetails[stoplocations[key]].getPosition().lng());
         }
-        alert("END");
         var locations=[];
         var busdetails=[];
         for(var i=0;i<bustostore.length;i++){

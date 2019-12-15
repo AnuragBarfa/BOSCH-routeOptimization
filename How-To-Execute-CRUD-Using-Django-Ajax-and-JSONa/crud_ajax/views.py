@@ -85,8 +85,8 @@ class RouteView(View):
     def post(self, request):
         locations=json.loads(request.POST['locations'])
         busdetails=json.loads(request.POST['busdetails'])
-        starts = busdetails.loads(request.POST['starts'])
-        ends = busdetails.loads(request.POST['ends'])
+        starts = json.loads(request.POST['starts'])
+        ends = json.loads(request.POST['ends'])
         print(locations)
         print("BUS=====================")
         print(busdetails)
@@ -100,8 +100,8 @@ class RouteView(View):
         for i in range(0,len(locations)):
             x=locations[i]['name'].replace(", ", "+").replace(" ","+").replace(".","+")
             dataForDistanceMatrix['addresses'].append(x)
-
             passengerPerStop.append(int(locations[i]['count']))
+            
         dataForDistanceMatrix['addresses']=list(set(dataForDistanceMatrix['addresses']))    
         print(dataForDistanceMatrix)
         distance_matrix = create_distance_matrix(dataForDistanceMatrix)   
