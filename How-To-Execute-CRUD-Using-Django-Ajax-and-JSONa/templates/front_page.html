@@ -118,15 +118,35 @@
             </div>
             <div class="collapse" id="collapseExample3">
               <div class="card card-body">
-                  <input type="text" name="office" id="officeval" style="margin: 5px;">
-                  <button  class="btn btn-primary" aria-expanded="false" style="margin: 5px;" onclick="office()"> Save </button>
+                  <input type="text" name="office" id="officeval" style="margin: 5px;" autocomplete="on"> 
+                  <button  class="btn btn-primary" aria-expanded="false" style="margin: 5px;" onclick="office(1)" id="office"> Save </button>
             <!-- <i id="hide_no_loc_available2">NO BUS AVAILABLE</i> -->
               </div>
             </div>
             
         </div>
+<br/>
 
-       
+           <div class="table-wrapper" >
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-8">
+                        <h2><a data-toggle="collapse" href="#collapseExample4" role="button" aria-expanded="false" aria-controls="collapseExample4">Office2:</a></h2>
+                    </div>
+                    <div class="col-sm-4">
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="collapse" id="collapseExample4">
+              <div class="card card-body">
+                  <input type="text" name="office" id="officeval2" style="margin: 5px;" autocomplete="on"> 
+                  <button  class="btn btn-primary" aria-expanded="false" style="margin: 5px;" onclick="office(2)"> Save </button>
+            <!-- <i id="hide_no_loc_available2">NO BUS AVAILABLE</i> -->
+              </div>
+            </div>
+            
+        </div>       
         
       
       </p>
@@ -218,19 +238,19 @@
       var citytostore=[],sendtocity=[];
       var passengernotostore=[],citylattostore=[],citylngtostore=[];
       var bustostore=[],capacitytostore=[];
-      function office(){
-        var officeval=document.getElementById('officeval').val;
-        alert(officeval+" 1");
-         var inputof = document.getElementById('officeval');
-      // console.log(input);
-      var autocomplete = new google.maps.places.Autocomplete(inputof);
-      google.maps.event.addListener(autocomplete, 'place_changed', function () {
-          var place = autocomplete.getPlace();
-          alert(inputof);
-          // document.getElementById('city2').value = place.name;
-          // Lat = place.geometry.location.lat();
-          // Lng = place.geometry.location.lng();
-      });
+
+      var officeloc,officeloc2;
+
+      function office(x){
+        if(x==1)
+        {
+          console.log(officeloc);
+          addMarker(officeloc);
+        }
+        else{
+          console.log(officeloc2);
+          addMarker(officeloc2);
+        }
       }
       function routeopt(){
         citytostore=[];
@@ -321,7 +341,10 @@
           });
          return false;
       }
+      
+      document.getElementById('office').disabled = false;
       function initMap() {  
+
         var myLatLng = {lat: 20, lng: 78};
         directionsService = new google.maps.DirectionsService();
         map = new google.maps.Map(document.getElementById('map'), {
@@ -333,12 +356,49 @@
         service = new google.maps.DistanceMatrixService;
         directionsDisplay.setMap(map);
         bounds = new google.maps.LatLngBounds();
+
+        var inputof = document.getElementById('officeval');
+        var autocomplete = new google.maps.places.Autocomplete(inputof);
+        google.maps.event.addListener(autocomplete, 'place_changed', function () {
+            var place = autocomplete.getPlace();
+              // document.getElementById('city2').value = place.name;
+              officeloc = place.geometry.location;
+              
+          });
+
+        var inputof = document.getElementById('officeval2');
+        var autocomplete = new google.maps.places.Autocomplete(inputof);
+        google.maps.event.addListener(autocomplete, 'place_changed', function () {
+            var place = autocomplete.getPlace();
+              // document.getElementById('city2').value = place.name;
+              officeloc2 = place.geometry.location;
+              
+          });
+
+        var inp=inputof.value;
+        if(inp != "")document.getElementById('office').disabled = false;
+
       }
       function addMarker(location) {
         console.log("in marker");
         marker = new google.maps.Marker({
             position: location,
-            map: map
+            map: map,
+            icon: {
+              url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+            }
+
+        });
+      }
+      function addMarker(location) {
+        console.log("in marker");
+        marker = new google.maps.Marker({
+            position: location,
+            map: map,
+            icon: {
+              url: "http://maps.google.com/mapfiles/ms/icons/purple-dot.png"
+            }
+
         });
       }
       function calcRoute2(response) {
