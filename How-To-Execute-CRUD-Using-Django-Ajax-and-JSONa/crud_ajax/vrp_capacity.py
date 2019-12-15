@@ -193,9 +193,10 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
 
             previous_index = index
             index = assignment.Value(routing.NextVar(index))
-            distance += routing.GetArcCostForVehicle(previous_index, index,
+            distance += routing.GetArcCostForVehicle(previous_index, index,  vehicle_id)
+            
         if no_of_nodes == 1:
-            empty_vehicle.append(vehicle_id)                                             vehicle_id)
+            empty_vehicle.append(vehicle_id)                                           
         load_var = capacity_dimension.CumulVar(index)
         time_var = time_dimension.CumulVar(index)
         slack_var = time_dimension.SlackVar(index)
