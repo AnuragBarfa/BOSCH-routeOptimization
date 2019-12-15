@@ -85,6 +85,8 @@ class RouteView(View):
     def post(self, request):
         locations=json.loads(request.POST['locations'])
         busdetails=json.loads(request.POST['busdetails'])
+        starts = busdetails.loads(request.POST['starts'])
+        ends = busdetails.loads(request.POST['ends'])
         print(locations)
         print("BUS=====================")
         print(busdetails)
@@ -108,7 +110,8 @@ class RouteView(View):
         dataForSolver['passengerCount']=passengerPerStop
         dataForSolver['busCapacity']=busCapacity
         dataForSolver['time_windows']=[(0,200)]*len(locations)
-        
+        dataForSolver['starts'] = starts
+        dataForSolver['ends'] = ends
         # dataForSolver['distance_matrix']=distance_matrix
     #     dataForSolver['distance_matrix'] = [
     #     [
@@ -184,7 +187,8 @@ class RouteView(View):
         # dataForSolver['passengerCount']= [0, 0, 1, 2, 4, 2, 4, 8, 8, 1, 2, 1, 2, 4, 4, 8, 8]
         # dataForSolver['busCapacity']=[20, 5, 10, 35]
         # dataForSolver['time_windows']=[(0,200)]*17
-        results=solver(dataForSolver)
+        output=solver(dataForSolver)
+        results = output['routes']
         print("printing optimal route")
         print(results)
         # main(datakac)
@@ -238,7 +242,10 @@ class RouteView(View):
         # print(routes[0]['nodes'][0]['name'].replace(", ", "+"))
         # print("ROUTES=============OVER=================")   
         data={}
-        data['routes']=routes       
+        data['routes']=routes
+        data['empty_vehicle'] = output['empty_vehicle']
+        data['dropped_routes'] = output['dropped_routes']
+        data['status'] = output['status']       
         print("DATAROUTES++++++++=========================")
         print(data['routes'][0]['nodes'])
         return JsonResponse(data)

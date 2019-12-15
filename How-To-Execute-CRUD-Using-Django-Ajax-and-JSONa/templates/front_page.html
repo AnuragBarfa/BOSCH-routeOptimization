@@ -220,20 +220,23 @@
       var citytostore=[],sendtocity=[];
       var passengernotostore=[],citylattostore=[],citylngtostore=[];
       var bustostore=[],capacitytostore=[];
-
-      var officeloc,officeloc2;
-
+      var start;
+      var end;
+      var bus_starts;
+      var bus_ends;
+      var officeloc, officeloc2;
       function office(){
         
           console.log(officeloc);
           addMarker(officeloc);
+          start = 0;
         
       }
       function office2(){
         
           console.log(officeloc2);
           addMarker2(officeloc2);
-        
+          end = 1;
       }
       function routeopt(){
         citytostore=[];
@@ -298,7 +301,11 @@
         // console.log(locations);
         $.ajax({
           url: "route/",
-          data: {'csrfmiddlewaretoken':'{{csrf_token}}','locations':JSON.stringify(locations),'busdetails':JSON.stringify(busdetails)},
+          data: {'csrfmiddlewaretoken':'{{csrf_token}}','locations':JSON.stringify(locations),
+          'busdetails':JSON.stringify(busdetails),
+          'starts':JSON.stringify(bus_starts),
+          'ends' : JSON.stringify(bus_ends)
+          },
           cache: false,
           type: "POST",
           success: function(response) {
@@ -345,7 +352,7 @@
         google.maps.event.addListener(autocomplete, 'place_changed', function () {
             var place = autocomplete.getPlace();
               // document.getElementById('city2').value = place.name;
-              officeloc = place.geometry.location;
+              officeloc = place;
               
           });
 
@@ -354,7 +361,7 @@
         google.maps.event.addListener(autocomplete2, 'place_changed', function () {
             var place2 = autocomplete2.getPlace();
               // document.getElementById('city2').value = place.name;
-              officeloc2 = place2.geometry.location;
+              officeloc2 = place2;
               
           });
 
@@ -365,24 +372,26 @@
       function addMarker(location) {
         console.log("in marker");
         marker = new google.maps.Marker({
-            position: location,
+            position: location.geometry.location,
             map: map,
             icon: {
               url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
             }
 
         });
+        storeLocationDetails[location.name] = marker;
       }
       function addMarker2(location) {
         console.log("in marker");
         marker = new google.maps.Marker({
-            position: location,
+            position: location.geometry.location,
             map: map,
             icon: {
               url: "http://maps.google.com/mapfiles/ms/icons/purple-dot.png"
             }
 
         });
+        storeLocationDetails[location.name] = marker;
       }
       function calcRoute2(response) {
         
@@ -718,6 +727,8 @@ $(document).ready(function()
             // });
 
             storeLocationDetails[address]=marker;
+            // indexToAdress[bus_stop_count] = address;
+            // addressToIndex[address] = storeLocationDetails.size -1;
             boundall();
            
           }
@@ -748,7 +759,9 @@ $(document).ready(function()
     var address=$(this).parents("tr").find("td:first-child").text();
     if($(this.closest('.collapse')).attr('id')==="collapseExample1"){
       storeLocationDetails[address].setMap(null);      
-    
+      
+      // delete indexToAdress[addressToIndex[address]];
+      // delete addressToIndex[address];
       delete storeLocationDetails[address]; 
       boundall();
       
