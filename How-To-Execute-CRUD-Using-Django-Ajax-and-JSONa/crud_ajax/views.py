@@ -143,7 +143,7 @@ class RouteView(View):
         dataForSolver['ends'] = ends
         dataForSolver['max_allowed_time'] = 700
         dataForSolver['soft_time_windows'] = dataForSolver['time_windows']
-        dataForSolver['soft_min_occupancy'] = 85
+        dataForSolver['soft_min_occupancy'] = [85]*len(dataForSolver['starts'])
     #     dataForSolver['distance_matrix']=distance_matrix
     #     dataForSolver['distance_matrix'] = [
     #     [
