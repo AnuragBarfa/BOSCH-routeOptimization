@@ -337,7 +337,8 @@
           data: {'csrfmiddlewaretoken':'{{csrf_token}}','locations':JSON.stringify(locations),
           'busdetails':JSON.stringify(busdetails),
           'starts':JSON.stringify(start),
-          'ends' : JSON.stringify(end)
+          'ends' : JSON.stringify(end),
+          'pickup' :JSON.stringify(pickup),
           },
           cache: false,
           type: "POST",
