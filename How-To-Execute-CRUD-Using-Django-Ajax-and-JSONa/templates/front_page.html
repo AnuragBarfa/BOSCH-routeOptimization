@@ -292,7 +292,8 @@
           })
         });
         // for(key in storeLocationDetails)
-        
+        alert(stoplocations+" LENGTH="+stoplocations.length);
+
         for(var key=0;key<stoplocations.length;key++)
      {  
           citytostore.push(stoplocations[key]);
@@ -424,7 +425,7 @@
         });
 
         // var inputof2 = document.getElementById('officeval2');
-        storeLocationDetails[location.name]=marker;
+        storeLocationDetails[document.getElementById('officeval').value]=marker;
         stoplocations.push(document.getElementById('officeval').value);
         // passengernotostore.push(0);
         // alert(passengernotostore);
@@ -442,7 +443,7 @@
             animation: google.maps.Animation.DROP
 
         });
-        storeLocationDetails[location.name]=marker;
+        storeLocationDetails[document.getElementById('officeval2').value]=marker;
         stoplocations.push(document.getElementById('officeval2').value);
         // passengernotostore.push(0);
         // alert(passengernotostore);

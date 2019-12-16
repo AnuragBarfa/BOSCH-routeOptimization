@@ -79,7 +79,7 @@ def build_distance_matrix(response):
     for row in response['rows']:
         print("row===================")
         print(row['elements'])
-        row_list = [row['elements'][j]['distance']['value'] for j in range(len(row['elements']))]
+        row_list = [row['elements'][j]['duration']['value'] for j in range(len(row['elements']))]
         distance_matrix.append(row_list)
     return distance_matrix  
 
@@ -109,7 +109,7 @@ class RouteView(View):
         dataForDistanceMatrix['addresses']=[]
 
         for i in range(0,len(locations)):
-            x=locations[i]['name'].replace(", ", "+").replace(" ","+").replace(".","+")
+            x=locations[i]['name'].replace(", ", "+").replace(" ","+").replace(".","+").replace(")","+").replace("(","+").replace("\"","+")
             dataForDistanceMatrix['addresses'].append(x)
             passengerPerStop.append(int(locations[i]['count']))
 
