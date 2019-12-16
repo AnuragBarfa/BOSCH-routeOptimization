@@ -276,8 +276,7 @@
             var data = $(this).html();
           // alert("BUS"+data);
           bustostore.push(data);
-          start.push(0);
-          end.push(1);
+          
           console.log("printing data");
           console.log(start);
           console.log(end);
@@ -303,11 +302,15 @@
         }
         var locations=[];
         var busdetails=[];
+        start=[];
+        end=[];
         for(var i=0;i<bustostore.length;i++){
           var currLocation={};
           currLocation['busname']=bustostore[i];
           currLocation['buscapacity']=capacitytostore[i];
           busdetails.push(currLocation);
+          start.push(0);
+          end.push(1);
         }
         busdetails.reverse();
         passengernotostore.reverse();
@@ -337,7 +340,8 @@
           data: {'csrfmiddlewaretoken':'{{csrf_token}}','locations':JSON.stringify(locations),
           'busdetails':JSON.stringify(busdetails),
           'starts':JSON.stringify(start),
-          'ends' : JSON.stringify(end)
+          'ends' : JSON.stringify(end),
+          'pickup' :JSON.stringify(pickup),
           },
           cache: false,
           type: "POST",
