@@ -194,7 +194,6 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
             emptyVehicle.append(vehicle_id)
         else:    
             routes.append(route)
-    # print(routes)
     data2={}
     data2['routes']=routes
     data2['status'] = routing.status()
@@ -208,6 +207,8 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
     print('Total Load of all routes: {}'.format(total_load))
     print('Total Time of all routes: {0}min'.format(total_time))
     # print(data)
+    print("ROUTES=====================FINAL====")        
+    print(routes)
     return data2
 
 

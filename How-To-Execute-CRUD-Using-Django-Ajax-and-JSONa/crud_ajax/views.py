@@ -145,106 +145,35 @@ class RouteView(View):
         dataForSolver['max_allowed_time'] = 100
         dataForSolver['soft_time_windows'] = dataForSolver['time_windows']
         dataForSolver['soft_min_occupancy'] = [int((85/100)*x) for x in dataForSolver['busCapacity']]
-    #     dataForSolver['distance_matrix']=distance_matrix
-    #     dataForSolver['distance_matrix'] = [
-    #     [
-    #         0, 548, 776, 696, 582, 274, 502, 194, 308, 194, 536, 502, 388, 354,
-    #         468, 776, 662
-    #     ],
-    #     [
-    #         548, 0, 684, 308, 194, 502, 730, 354, 696, 742, 1084, 594, 480, 674,
-    #         1016, 868, 1210
-    #     ],
-    #     [
-    #         776, 684, 0, 992, 878, 502, 274, 810, 468, 742, 400, 1278, 1164,
-    #         1130, 788, 1552, 754
-    #     ],
-    #     [
-    #         696, 308, 992, 0, 114, 650, 878, 502, 844, 890, 1232, 514, 628, 822,
-    #         1164, 560, 1358
-    #     ],
-    #     [
-    #         582, 194, 878, 114, 0, 536, 764, 388, 730, 776, 1118, 400, 514, 708,
-    #         1050, 674, 1244
-    #     ],
-    #     [
-    #         274, 502, 502, 650, 536, 0, 228, 308, 194, 240, 582, 776, 662, 628,
-    #         514, 1050, 708
-    #     ],
-    #     [
-    #         502, 730, 274, 878, 764, 228, 0, 536, 194, 468, 354, 1004, 890, 856,
-    #         514, 1278, 480
-    #     ],
-    #     [
-    #         194, 354, 810, 502, 388, 308, 536, 0, 342, 388, 730, 468, 354, 320,
-    #         662, 742, 856
-    #     ],
-    #     [
-    #         308, 696, 468, 844, 730, 194, 194, 342, 0, 274, 388, 810, 696, 662,
-    #         320, 1084, 514
-    #     ],
-    #     [
-    #         194, 742, 742, 890, 776, 240, 468, 388, 274, 0, 342, 536, 422, 388,
-    #         274, 810, 468
-    #     ],
-    #     [
-    #         536, 1084, 400, 1232, 1118, 582, 354, 730, 388, 342, 0, 878, 764,
-    #         730, 388, 1152, 354
-    #     ],
-    #     [
-    #         502, 594, 1278, 514, 400, 776, 1004, 468, 810, 536, 878, 0, 114,
-    #         308, 650, 274, 844
-    #     ],
-    #     [
-    #         388, 480, 1164, 628, 514, 662, 890, 354, 696, 422, 764, 114, 0, 194,
-    #         536, 388, 730
-    #     ],
-    #     [
-    #         354, 674, 1130, 822, 708, 628, 856, 320, 662, 388, 730, 308, 194, 0,
-    #         342, 422, 536
-    #     ],
-    #     [
-    #         468, 1016, 788, 1164, 1050, 514, 514, 662, 320, 274, 388, 650, 536,
-    #         342, 0, 764, 194
-    #     ],
-    #     [
-    #         776, 868, 1552, 560, 674, 1050, 1278, 742, 1084, 810, 1152, 274,
-    #         388, 422, 764, 0, 798
-    #     ],
-    #     [
-    #         662, 1210, 754, 1358, 1244, 708, 480, 856, 514, 468, 354, 844, 730,
-    #         536, 194, 798, 0
-    #     ],
-    # ]
-
-    #     dataForSolver['passengerCount']= [0, 0, 1, 2, 4, 2, 4, 8, 8, 1, 2, 1, 2, 4, 4, 8, 8]
-    #     dataForSolver['busCapacity']=[20, 5, 10, 35]
-    #     dataForSolver['time_windows']=[(0,200)]*17
+    
         results=solver(dataForSolver)
         print("printing optimal route")
         print(results)
-        # main(datakac)
         #print(x[0]["name"])
         #x[{},{}]
 
         # data={'lat':22.2,'lng':77.8,'arr':12,'depa':32,'count':20}
         routes=[]
-        for i in range(0,len(results)):
+        for i in range(0,len(results['routes'])):
             route={}
             route['bus']="NH123"
-            route['color']="red"
+            route['color']="red"    
             route['type']="pickup/drop"
             route['nodes']=[]
-            for j in range(0,len(results[i])):
+            for j in range(0,len(results['routes'][i]['nodes'])):
                 node={}
-                stopIndex=results[i][j]['index']
+                stopIndex=results['routes'][i]['nodes'][j]['index']
                 node['lat']=locations[stopIndex]['lat']
                 node['lng']=locations[stopIndex]['lng']
-                node['load']=results[i][j]['load_var']
-                node['max_time']=results[i][j]['max_time_var']
-                node['min_time']=results[i][j]['min_time_var']
-                node['max_slack']=results[i][j]['max_slack_var']
-                node['min_slack']=results[i][j]['min_slack_var']
+                node['load']=results['routes'][i]['nodes'][j]['load_var']
+                try:
+                    node['max_slack']=results['routes'][i]['nodes'][j]['max_slack_var']
+                    node['min_slack']=results['routes'][i]['nodes'][j]['min_slack_var']
+                except:
+                    node['max_slack']=0
+                    node['min_slack']=0
+                node['max_time']=results['routes'][i]['nodes'][j]['max_time_var']
+                node['min_time']=results['routes'][i]['nodes'][j]['min_time_var']
                 route['nodes'].append(node)    
             routes.append(route)
         print(routes)
@@ -276,7 +205,7 @@ class RouteView(View):
         data={}
         data['routes']=routes
         data['empty_vehicle'] = results['empty_vehicle']
-        data['dropped_routes'] = results['dropped_routes']
+        data['dropped_nodes'] = results['dropped_nodes']
         data['status'] = results['status']
         data['pickup'] = results['pickup']      
         print("DATAROUTES++++++++=========================")
@@ -407,7 +336,8 @@ class SimulatorView(View):
 
         output=solver(dataForSolver)
         result=output['routes']
-        # print(result)
+        print("RESult=========")
+        print(result)
         data={}
         routes=[]
         for i in range(0,len(result)):
