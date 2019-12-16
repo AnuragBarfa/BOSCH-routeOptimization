@@ -21,7 +21,7 @@ def create_data_model(inputData):
     data['time_per_demand_unit'] = .5 
     data['lower_stop']  = 1
     data['num_locations'] = len(inputData['distance_matrix'])
-    if data['pickup'] == 1:
+    if inputData['pickup'] == 1:
         data['starts'] = inputData['starts']
         data['ends'] = inputData['ends']
     else:

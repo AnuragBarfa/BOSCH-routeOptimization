@@ -272,9 +272,9 @@ class RouteView(View):
         # print("ROUTES=============OVER=================")   
         data={}
         data['routes']=routes
-        data['empty_vehicle'] = output['empty_vehicle']
-        data['dropped_routes'] = output['dropped_routes']
-        data['status'] = output['status']       
+        data['empty_vehicle'] = results['empty_vehicle']
+        data['dropped_routes'] = results['dropped_routes']
+        data['status'] = results['status']       
         print("DATAROUTES++++++++=========================")
         print(data['routes'][0]['nodes'])
         return JsonResponse(data)
