@@ -20,6 +20,7 @@ def create_data_model(inputData):
     data['num_vehicles'] = len(inputData['busCapacity'])
     data['time_per_demand_unit'] = .5 
     data['lower_stop']  = 1
+    data['pickup'] = inputData['pickup']
     data['num_locations'] = len(inputData['distance_matrix'])
     if inputData['pickup'] == 1:
         data['starts'] = inputData['starts']
