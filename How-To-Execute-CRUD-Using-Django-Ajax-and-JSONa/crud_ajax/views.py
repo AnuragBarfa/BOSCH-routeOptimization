@@ -84,8 +84,8 @@ def build_distance_matrix(response):
     print(response)
     distance_matrix = []
     for row in response['rows']:
-        print("row===================")
-        print(row['elements'])
+        # print("row===================")
+        # print(row['elements'])
         row_list = [row['elements'][j]['distance']['value'] for j in range(len(row['elements']))]
         distance_matrix.append(row_list)
     return distance_matrix  
@@ -114,7 +114,7 @@ class RouteView(View):
         dataForDistanceMatrix['addresses']=[]
 
         for i in range(0,len(locations)):
-            x=locations[i]['name'].replace(", ", "+").replace(" ","+").replace(".","+").replace(")","+").replace("(","+").replace("\"","+")
+            x=locations[i]['name'].replace(", ", "+").replace(" ","+").replace(".","+").replace(")","+").replace("(","+")
             dataForDistanceMatrix['addresses'].append(x)
             passengerPerStop.append(int(locations[i]['count']))
 
@@ -206,10 +206,12 @@ class RouteView(View):
         data['routes']=routes
         data['empty_vehicle'] = results['empty_vehicle']
         data['dropped_nodes'] = results['dropped_nodes']
+        print("DROPPED NODE==================================")
+        print(data['dropped_nodes'])
         data['status'] = results['status']
         data['pickup'] = results['pickup']      
-        print("DATAROUTES++++++++=========================")
-        print(data['routes'][0]['nodes'])
+        # print("DATAROUTES++++++++=========================")
+        # print(data['routes'][0]['nodes'])
         return JsonResponse(data)
 
 
