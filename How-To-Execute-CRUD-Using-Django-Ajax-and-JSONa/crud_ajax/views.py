@@ -98,6 +98,8 @@ class RouteView(View):
         busdetails=json.loads(request.POST['busdetails'])
         starts = json.loads(request.POST['starts'])
         ends = json.loads(request.POST['ends'])
+        # pickup = json.loads(request.POST['pickup'])
+        pickup = 1
         print(locations)
         print("BUS=====================")
         print(busdetails)
@@ -133,7 +135,7 @@ class RouteView(View):
             busCapacity.append(int(busdetails[i]['buscapacity']))
 
         dataForSolver['distance_matrix']=distance_matrix
-        dataForSolver['pickup'] = 1
+        dataForSolver['pickup'] = pickup
         dataForSolver['passengerCount']=passengerPerStop
         dataForSolver['busCapacity']=busCapacity
         dataForSolver['time_windows']=[(0,200)]*len(locations)
@@ -141,7 +143,7 @@ class RouteView(View):
         dataForSolver['ends'] = ends
         dataForSolver['max_allowed_time'] = 700
         dataForSolver['soft_time_windows'] = dataForSolver['time_windows']
-        
+        dataForSolver['soft_min_occupancy'] = 85
     #     dataForSolver['distance_matrix']=distance_matrix
     #     dataForSolver['distance_matrix'] = [
     #     [
@@ -274,7 +276,8 @@ class RouteView(View):
         data['routes']=routes
         data['empty_vehicle'] = results['empty_vehicle']
         data['dropped_routes'] = results['dropped_routes']
-        data['status'] = results['status']       
+        data['status'] = results['status']
+        data['pickup'] = results['pickup']      
         print("DATAROUTES++++++++=========================")
         print(data['routes'][0]['nodes'])
         return JsonResponse(data)

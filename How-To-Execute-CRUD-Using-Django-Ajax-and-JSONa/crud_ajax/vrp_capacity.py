@@ -34,6 +34,7 @@ def create_data_model(inputData):
     data['drop_penalty'] = 80000
     data['soft_min_occ_penalty'] = 20000
     data['soft_time_penalty'] = 2000
+    data['soft_min_occupancy'] = inputData['soft_min_occupancy']
     return data
     # [END data_model]
 
