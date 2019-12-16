@@ -22,7 +22,7 @@ def FrontView(request):
     # mySolver()
     return render(request,'front_page.html',{'users':users})
 
-def create_distance_matrix(data): 
+def create_distance_matrix(data):
     addresses = data["addresses"]
     API_key = data["API_key"]
     # Distance Matrix API only accepts 100 elements per request, so get rows in multiple requests.
@@ -33,22 +33,26 @@ def create_distance_matrix(data):
     # num_addresses = q * max_rows + r (q = 2 and r = 4 in this example).
     q, r = divmod(num_addresses, max_rows)
     dest_addresses = addresses
-    print("DEST===========================")
-    print(dest_addresses)
-
     distance_matrix = []
     # Send q requests, returning max_rows rows per request.
     for i in range(q):
         origin_addresses = addresses[i * max_rows: (i + 1) * max_rows]
+        print("origin address###############")
+        print(i)
+        print(origin_addresses)
         response = send_request(origin_addresses, dest_addresses, API_key)
         distance_matrix += build_distance_matrix(response)
 
     # Get the remaining remaining r rows, if necessary.
     if r > 0:
         origin_addresses = addresses[q * max_rows: q * max_rows + r]
+        print("origin address###############")
+        # print(i)
+        print(origin_addresses)
         response = send_request(origin_addresses, dest_addresses, API_key)
         distance_matrix += build_distance_matrix(response)
-    return distance_matrix    
+    return distance_matrix
+
 
 def send_request(origin_addresses, dest_addresses, API_key):
     """ Build and send request for the given origin and destination addresses."""
@@ -63,15 +67,19 @@ def send_request(origin_addresses, dest_addresses, API_key):
     request = 'https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial'
     origin_address_str = build_address_str(origin_addresses)
     dest_address_str = build_address_str(dest_addresses)
-    request = request + '&origins=' + origin_address_str + '&destinations=' + dest_address_str + '&key=' + API_key
-    html = urlopen(request).read()
-    # jsonResult = urllib.urlopen(request).read()
-    response = json.loads(html)
+    request = request + '&origins=' + origin_address_str + '&destinations=' + \
+                        dest_address_str + '&key=' + API_key
+    print("request#####")
+    print(request)
+    jsonResult = urlopen(request).read()
+    print("jsonresult")
+    print(jsonResult)
+    response = json.loads(jsonResult)
     return response
 
 
 def build_distance_matrix(response):
-    print("response===================")
+    print("response#############")
     print(response)
     distance_matrix = []
     for row in response['rows']:
@@ -81,16 +89,12 @@ def build_distance_matrix(response):
         distance_matrix.append(row_list)
     return distance_matrix  
 
-def build_time_matrix(response):
-    time_matrix = []
-    for row in response['rows']:
-        row_listtime = [row['elements'][j]['duration']['value'] for j in range(len(row['elements']))]
-        time_matrix.append(row_listtime)
-    return time_matrix  
 
 class RouteView(View):
     def post(self, request):
         locations=json.loads(request.POST['locations'])
+        print("locations#####")
+        print(locations)
         busdetails=json.loads(request.POST['busdetails'])
         starts = json.loads(request.POST['starts'])
         ends = json.loads(request.POST['ends'])
@@ -110,8 +114,8 @@ class RouteView(View):
             dataForDistanceMatrix['addresses'].append(x)
             passengerPerStop.append(int(locations[i]['count']))
 
-        dataForDistanceMatrix['addresses']=list(set(dataForDistanceMatrix['addresses']))    
-        
+        dataForDistanceMatrix['addresses']=list(dataForDistanceMatrix['addresses'])    
+        print("dataForDistanceMatrix")
         print(dataForDistanceMatrix)
         
         distance_matrix = create_distance_matrix(dataForDistanceMatrix)   
@@ -128,6 +132,7 @@ class RouteView(View):
             busCapacity.append(int(busdetails[i]['buscapacity']))
 
         dataForSolver['distance_matrix']=distance_matrix
+        dataForSolver['pickup'] = 1
         dataForSolver['passengerCount']=passengerPerStop
         dataForSolver['busCapacity']=busCapacity
         dataForSolver['time_windows']=[(0,200)]*len(locations)

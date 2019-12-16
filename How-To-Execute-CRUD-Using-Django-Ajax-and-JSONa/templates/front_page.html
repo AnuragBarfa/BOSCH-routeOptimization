@@ -294,7 +294,7 @@
         // for(key in storeLocationDetails)
         
         for(var key=0;key<stoplocations.length;key++)
-     {  
+        {  
           citytostore.push(stoplocations[key]);
           // text += (key + ' = ' + FtionDetailskey].getPosition().lat() + '\n');
           citylattostore.push(storeLocationDetails[stoplocations[key]].getPosition().lat());
@@ -325,18 +325,18 @@
           currLocation['depa']="1";
           locations.push(currLocation);
         }
-        bus_starts['starts']=start;
-        bus_ends['ends']=end;
         console.log(locations)
         console.log(busdetails)
         console.log("ADDRESS:");
         // console.log(locations);
+        console.log("LOCATIONS: ");
+        console.log(locations);
         $.ajax({
           url: "route/",
           data: {'csrfmiddlewaretoken':'{{csrf_token}}','locations':JSON.stringify(locations),
           'busdetails':JSON.stringify(busdetails),
-          'starts':JSON.stringify(bus_starts['starts']),
-          'ends' : JSON.stringify(bus_ends['ends'])
+          'starts':JSON.stringify(start),
+          'ends' : JSON.stringify(end)
           },
           cache: false,
           type: "POST",
