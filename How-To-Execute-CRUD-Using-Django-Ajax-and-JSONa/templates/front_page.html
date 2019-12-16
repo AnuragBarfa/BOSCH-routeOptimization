@@ -238,6 +238,7 @@
       var directionsService9;
       var directionsDisplay9;
       var file,fr;
+      var csvdata=[];
       function office(){
           addMarker(officeloc);
         
@@ -251,12 +252,22 @@
         officeloc2="";
       }
 
-      /////////////////////////
       $("#files").change(function() {
+        for(var i=0;i<csvdata.length;i++){
+          delete storeLocationDetails[csvdata[i]];
+          storeLocationDetails[csvdata[i]].setMap(null);   
+          if (stoplocations.indexOf(csvdata[i]) > -1) {
+            stoplocations.splice(stoplocations.indexOf(csvdata[i]), 1);
+          }
+          if(i==0)
+          alert("DELETED"); 
+        }
+        csvdata=[];
         upload();
       });
+
       function upload()
-      {          
+      {          file=""; fr="";
 
         if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
           alert('The File APIs are not fully supported in this browser.');
@@ -279,35 +290,76 @@
         }
       }
 
+      function countInArray(array, what) {
+        var count = 0;
+        for (var i = 0; i < array.length; i++) {
+            if (array[i] === what) {
+                count++;
+            }
+        }
+        return count;
+      }
       function receivedText() {
-        for(var i=0;i<fr.result.split("\n").length-1;i++){
+        var filepassengerdetails=new Map();
+        var filebusdetails=new Map();
+
+        var NoOfPsngrAtEachBusStop=new Map();
+
+        var noofpsngr=fr.result.split("\n")[0].split(",")[1];
+
+        var noofbus=fr.result.split("\n")[1].split(",")[1];
+
+        var noOfuniqueLocation=[],notUniqueLocation=[];
+       
+        for(var i=5;i<fr.result.split("\n").length;i++){
+          var s=fr.result.split("\n")[i].split("\"");
+          //EMPID=>EMPLOC
+          filepassengerdetails[s[0]]=s[1];
+          //UNIQUELOC
+          if(!(noOfuniqueLocation.indexOf(s[1])>-1))
+            noOfuniqueLocation.push(s[1]);
+          
+          notUniqueLocation.push(s[1]);
+          
+          s[2]=s[2].split(",");
+          //busname=>buscap
+          filebusdetails[s[2][1]]=s[2][2];
+          
+          noOfPsngrAtEachBusStop[s[1]]=countInArray(notUniqueLocation,s[1]);
+        }
+        
+        for(var i=0;i<noOfuniqueLocation.length;i++)
+        for(var i=0;i<noOfuniqueLocation.length;i++){csvdata.push( noOfuniqueLocation[i]);}
+        for(var i=0;i<csvdata.length;i++){
         var geocoder = new google.maps.Geocoder();
-        geocoder.geocode( { 'address': fr.result.split("\n")[i]}, function(results, status) {
+        geocoder.geocode( { 'address': csvdata[i]}, function(results, status) {
           if (status == google.maps.GeocoderStatus.OK)
           {
             var marker = new google.maps.Marker({
               map: map,
-              title: fr.result.split("\n")[i],
+              title: csvdata[i],
               position: results[0].geometry.location,
               provideRouteAlternatives: true,
                animation: google.maps.Animation.DROP
             });
-            storeLocationDetails[fr.result.split("\n")[i]]=marker;
                var contentString = '<div id="content">'+
             '<div id="siteNotice">'+
             '</div>'+
-            '<h4 id="firstHeading" class="firstHeading">'+fr.result.split("\n")[i]+'</h4>'+
+            '<h4 id="firstHeading" class="firstHeading">Hello</h4>'+
             '<div id="bodyContent">'+
             '<p><i>ARRIVAL:</i></p>'+
             '<p><i>DEPARTURE:</i></p>'+
             '<p><i>No. of PSNGR:</i></p>'+
             '</div>'+
             '</div>';
-            addInfoWindow(storeLocationDetails[fr.result.split("\n")[i]],contentString);
-            stoplocations.push(fr.result.split("\n")[i]);
+            addInfoWindow(storeLocationDetails[csvdata[i]],contentString);
+            alert("CSVDATA[i]"+csvdata[i]);
+            storeLocationDetails[csvdata[i]]=marker;
+            console.log(" storeLocationDetails============== ");
+            console.log(storeLocationDetails);
+            stoplocations.push(csvdata[i]);
           boundall();
           }
-
         });
           }
 
