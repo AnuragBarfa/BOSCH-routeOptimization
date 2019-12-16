@@ -20,6 +20,7 @@ def create_data_model(inputData):
     data['num_vehicles'] = len(inputData['busCapacity'])
     data['time_per_demand_unit'] = .5 
     data['lower_stop']  = 1
+    data['pickup'] = inputData['pickup']
     data['num_locations'] = len(inputData['distance_matrix'])
     if inputData['pickup'] == 1:
         data['starts'] = inputData['starts']
@@ -106,7 +107,7 @@ def add_time_window_constraints(routing, manager, data, time_evaluator_index):
         #routing.AddToAssignment(time_dimension.SlackVar(self.routing.End(vehicle_id)))
     
     ## soft constraint
-    soft_time_penalty = data['soft_time_peanlty']
+    soft_time_penalty = data['soft_time_penalty']
     for location_idx,soft_time_window in enumerate(data['soft_time_windows']):
         index = manager.NodeToIndex(location_idx)
         if index == -1:
