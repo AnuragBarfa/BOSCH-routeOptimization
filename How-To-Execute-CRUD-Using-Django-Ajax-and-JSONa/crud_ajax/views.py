@@ -334,8 +334,8 @@ class SimulatorView(View):
 
         output=solver(dataForSolver)
         result=output['routes']
-        print("RESult=========")
-        print(result)
+        # print("RESult=========")
+        # print(result)
         data={}
         routes=[]
         for i in range(0,len(result)):

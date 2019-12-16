@@ -9,6 +9,8 @@ from ortools.constraint_solver import pywrapcp
 
 # [START data_model]
 def create_data_model(inputData):
+    # print("inputData===================")
+    # print(inputData)
     # datamatrix,psngr_no,buscap,num_vehicles
     """Stores the data for the problem."""
     data = {}
@@ -128,7 +130,7 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
         if assignment.Value(routing.NextVar(node)) == node:
             dropped_nodes += ' {}'.format(manager.IndexToNode(node))
             droppedNodes.append(manager.IndexToNode(node))
-    # print(dropped_nodes)
+    print(dropped_nodes)
     print('Objective: {}'.format(assignment.ObjectiveValue()))
     total_distance = 0
     total_load = 0
@@ -207,8 +209,8 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
     print('Total Load of all routes: {}'.format(total_load))
     print('Total Time of all routes: {0}min'.format(total_time))
     # print(data)
-    print("ROUTES=====================FINAL====")        
-    print(routes)
+    # print("ROUTES=====================FINAL====")        
+    # print(routes)
     return data2
 
 
@@ -220,11 +222,11 @@ def solver(inputData):
     data = create_data_model(inputData)
 
     # [END data]
-    print("in solver")
-    # Create the routing index manager.
-    # [START index_manager]
-    print(data['starts'])
-    print(data['num_vehicles'])
+    # print("in solver")
+    # # Create the routing index manager.
+    # # [START index_manager]
+    # print(data['starts'])
+    # print(data['num_vehicles'])
     manager = pywrapcp.RoutingIndexManager(len(data['distance_matrix']),
                                            data['num_vehicles'],
                                         #    data['depot'],
@@ -327,12 +329,12 @@ def solver(inputData):
     data['previous_solution'] = assignment
     # Print solution on console.
     # [START print_solution]
-    print(assignment)
+    # print(assignment)
     if assignment:
         return print_solution(data, manager, routing, assignment)
     # [END print_solution]
 
-    print('\n\n\n')
+    # print('\n\n\n')
     ### Running new instance ####
     # data['demands'][14] = 0
     

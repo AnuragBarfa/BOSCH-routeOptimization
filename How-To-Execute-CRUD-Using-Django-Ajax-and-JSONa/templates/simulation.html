@@ -7,52 +7,24 @@
       <script src="{% static 'js/bootstrap.min.js' %}"></script>
       <script src="{% static 'js/plotly-latest.min.js' %}"></script>
   <script src="{% static 'js/plotly-latest.min.js' %}"></script>
-  <style>
+  <!-- <style>
   canvas{
     -moz-user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
   }
-  </style>
+  </style> -->
 </head>
 
 <body>
-
+  <!-- <canvas id="myCanvas" width="400" height="400"></canvas> -->
   <div id="myDiv" style="height: 620px;"></div>
-  <canvas id="myCanvas" width="400" height="400"></canvas>
+  <!-- <canvas id="myCanvas" width="400" height="400"></canvas> -->
     <!-- sdjkfdddddd
     <p id="demo"></p>
       <button onclick="stopSimulation()">Stop Timer</button> -->
     <script type="text/javascript">
-      function dothis(){
-        var c = document.getElementById("myCanvas");
-        var ctx = c.getContext("2d");
-
-        var Bear = function(xSet, ySet)
-        {
-            this.XPos = xSet;
-            this.YPos = ySet;
-        }
-
-        Bear.prototype.updatePosition = function(xValue, yValue)
-        {
-            this.XPos += xValue;
-            this.YPos += yValue;
-        }
-
-        var bear = new Bear(0,0);
-
-        setInterval( function()
-                    {
-            ctx.fillStyle = "#000";
-            ctx.fillRect(0,0,c.width,c.height);
-            ctx.fillStyle = "#0F0";
-            ctx.fillRect(bear.XPos, bear.YPos, 50,50);
-            
-            bear.updatePosition(0.2, 0.4);
-        } ,1);
-
-      }
+      
         var layout = {
           title: 'BUS ROUTES SIMULATION',
           xaxis: {
@@ -64,12 +36,27 @@
             title: 'y axis distance in km',
             showline: false,
             "gridcolor": "rgb(0,0,0 )"
-          }
+          },
+            images: [
+            {
+              "source": "{% static 'image/bus.png' %}",
+              "xref": "x",
+              "yref": "y",
+              "x": 40,
+              "y": 25,
+              "sizex": 5,
+              "sizey": 10,
+              "sizing": "stretch",
+              "opacity": 1,
+              "layer": "above"
+            },
+            
+          ]
         };
         var myVar;
         var index=0;
-        var starts=[0,0,0];
-        var ends=[0,0,0];
+        var starts=[0,0];
+        var ends=[0,0];
         function getUpdate(){
           $.ajax({
                 url: "/simulator/",
