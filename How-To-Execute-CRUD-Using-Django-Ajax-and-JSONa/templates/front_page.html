@@ -104,6 +104,10 @@
           <button class="btn btn-primary" aria-expanded="false" onclick="routeopt()">
             Route Optimizer
           </button>
+
+          <label for="files" class="btn btn-primary" >Upload File</label>
+          <input type="file" id="files" style="visibility:hidden;"  />
+
         
            <div class="table-wrapper" >
             <div class="table-title">
@@ -227,9 +231,13 @@
       var bus_ends={};
       var officeloc,officeloc2;
       var count = 0;
-      
+      var pickup=[];    
       var stoplocations=[];
-
+      var ch=0;
+      var ch2=0;
+      var directionsService9;
+      var directionsDisplay9;
+      var file,fr;
       function office(){
           addMarker(officeloc);
         
@@ -242,7 +250,74 @@
           
         officeloc2="";
       }
+
+      /////////////////////////
+      $("#files").change(function() {
+        upload();
+      });
+      function upload()
+      {          
+
+        if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
+          alert('The File APIs are not fully supported in this browser.');
+          return;
+        }   
+
+       var input = document.getElementById('files');
+        if (!input) {
+          alert("Um, couldn't find the files element.");
+        }
+        else if (!input.files) {
+          alert("This browser doesn't seem to support the `files` property of file inputs.");
+        }
+        else{
+         file = input.files[0];
+         fr = new FileReader();
+          fr.onload = receivedText;
+          //fr.readAsText(file);
+          fr.readAsText(file);            
+        }
+      }
+
+      function receivedText() {
+        for(var i=0;i<fr.result.split("\n").length-1;i++){
+        var geocoder = new google.maps.Geocoder();
+        geocoder.geocode( { 'address': fr.result.split("\n")[i]}, function(results, status) {
+          if (status == google.maps.GeocoderStatus.OK)
+          {
+            var marker = new google.maps.Marker({
+              map: map,
+              title: fr.result.split("\n")[i],
+              position: results[0].geometry.location,
+              provideRouteAlternatives: true,
+               animation: google.maps.Animation.DROP
+            });
+            storeLocationDetails[fr.result.split("\n")[i]]=marker;
+               var contentString = '<div id="content">'+
+            '<div id="siteNotice">'+
+            '</div>'+
+            '<h4 id="firstHeading" class="firstHeading">'+fr.result.split("\n")[i]+'</h4>'+
+            '<div id="bodyContent">'+
+            '<p><i>ARRIVAL:</i></p>'+
+            '<p><i>DEPARTURE:</i></p>'+
+            '<p><i>No. of PSNGR:</i></p>'+
+            '</div>'+
+            '</div>';
+            addInfoWindow(storeLocationDetails[fr.result.split("\n")[i]],contentString);
+            stoplocations.push(fr.result.split("\n")[i]);
+          boundall();
+          }
+
+        });
+          }
+
+          alert("UPLOADE DONE!!")
+         }           
+
+///////////////////////////////
+
       function routeopt(){
+        ch=1;
         console.log("storeLocationDetails");
         console.log(storeLocationDetails);
         console.log("stoplocations");
@@ -341,7 +416,7 @@
           'busdetails':JSON.stringify(busdetails),
           'starts':JSON.stringify(start),
           'ends' : JSON.stringify(end),
-          'pickup' :JSON.stringify(pickup),
+          // 'pickup' :JSON.stringify(pickup),
           },
           cache: false,
           type: "POST",
@@ -357,7 +432,7 @@
               console.log(response['routes'][i]['nodes']);
             }
             // boundall();
-            distancematrix(responsestore,responsestore);
+           // distancematrix(responsestore,responsestore);
 
 
            },
@@ -366,6 +441,9 @@
               console.log(xhr);
             }
           });
+        
+        
+
          return false;
       }
       
@@ -406,21 +484,30 @@
         if(inp != "")document.getElementById('office2').disabled = false;
 
       }
-      function counter(address){
+      function counter(){
         var c=0;
        for(key in storeLocationDetails){
          c++;
-          if (key == address)break;
-
        }
        return c;
      }
+     function addInfoWindow(marker, message) {
+
+            var infoWindow = new google.maps.InfoWindow({
+                content: message
+            });
+
+            google.maps.event.addListener(marker, 'click', function () {
+                infoWindow.open(map, marker);
+            });
+      }
       function addMarker(location) {
 
         console.log("in marker");
         marker = new google.maps.Marker({
             position: location.geometry.location,
             map: map,
+            text:location.name,
             icon: {
               url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
             },
@@ -434,7 +521,7 @@
         // passengernotostore.push(0);
         // alert(passengernotostore);
         //storeOfficeDetails[location]=marker;
-
+        addInfoWindow(marker,location.name);
       }
       function addMarker2(location) {
         console.log("in marker");
@@ -452,9 +539,10 @@
         // passengernotostore.push(0);
         // alert(passengernotostore);
         //storeOffice2Details[location]=marker;
+        addInfoWindow(marker,location.name);
       }
       function calcRoute2(response) {
-        
+        var storetempmarker=[];
         var start = new google.maps.LatLng(response['nodes'][0]["lat"],response['nodes'][0]["lng"]);
         var k=response['nodes'].length-1;
         var end = new google.maps.LatLng(response['nodes'][k]["lat"],response['nodes'][k]["lng"]);
@@ -465,33 +553,40 @@
             destination: end,
             travelMode: google.maps.TravelMode.DRIVING
         };
+
         for(var i=1;i<response['nodes'].length-1;i++){
             console.log(i+"===========================");
             console.log(response['nodes'][i]);
-
-
             marker2 = new google.maps.Marker({
             map: map,
             position: new google.maps.LatLng(response['nodes'][i]["lat"],response['nodes'][i]["lng"]),
-          });
+            animation: google.maps.Animation.DROP
+          }); 
           request.waypoints.push({
             location: marker2.getPosition(),
             stopover: true
           });
+          storetempmarker.push(marker2);
         }
-        var directionsDisplay9 = new google.maps.DirectionsRenderer({
-          suppressMarkers: false,
-          suppressInfoWindows: false,
+                var color=[];
+        for(var i=0;i<response['nodes'].length;i++)
+          {
+            color.push(response['color']);
+          }
+
+        directionsDisplay9 = new google.maps.DirectionsRenderer({
+          // suppressMarkers: false,
+          // suppressInfoWindows: false,
           preserveViewport: true
         });  
         //COLOUR
         directionsDisplay9.setOptions({
           polylineOptions: {
-          strokeColor: 'green'
+          strokeColor: color[i]
           }
         });
         directionsDisplay9.setMap(map);
-        var directionsService9 = new google.maps.DirectionsService();
+        directionsService9 = new google.maps.DirectionsService();
         directionsService9.route(request, function(result, status) {
           if (status == google.maps.DirectionsStatus.OK) {
             directionsDisplay9.setDirections(result);
@@ -507,6 +602,8 @@
           bounds.extend(e);
         }
         map.fitBounds(bounds);
+
+
       }  
       function calcRoute(response) {
         var locations2 = [
@@ -534,6 +631,7 @@
           marker2 = new google.maps.Marker({
             map: map,
             position: new google.maps.LatLng(locations2[i][1], locations2[i][2]),
+             animation: google.maps.Animation.DROP
           });
           if (i == 1) {
             request.origin = marker2.getPosition(); 
@@ -611,6 +709,7 @@ function distancematrix(response1,response2){
               markersArray.push(new google.maps.Marker({
                 map: map,
                 position: results[0].geometry.location,
+                 animation: google.maps.Animation.DROP
               }));
             } else {
               alert('Geocode was not successful due to: ' + status);
@@ -686,7 +785,7 @@ $(document).ready(function()
   var actions = $("table td:last-child").html();
   // Append table with add row form on add new button click
   $(".add-new").click(function(){
-
+    
     hide_or_show_no_location();  
     console.log(isEmpty(storeLocationDetails));
     
@@ -762,43 +861,39 @@ $(document).ready(function()
         geocoder.geocode( { 'address': address}, function(results, status) {
           if (status == google.maps.GeocoderStatus.OK)
           {
-            // map.setCenter(results[0].geometry.location);
-            //   var contentString = '<div id="content">'+
-            // '<div id="siteNotice">'+1
-            // '</div>'+
-            // '<h4 id="firstHeading" class="firstHeading">'+address +'</h4>'+
-            // '<div id="bodyContent">'+
-            // '<p><i>ARRIVAL:</i></p>'+
-            // '<p><i>DEPARTURE:</i></p>'+
-            // '<p><i>No. of PSNGR:</i></p>'+
-            // '</div>'+
-            // '</div>';
-            //   sendtocity.push(address);
-            // var infowindow = new google.maps.InfoWindow({
-            //    content: contentString
-            //  });
-            // alert(results[0].geometry.location);
-
             var marker = new google.maps.Marker({
               map: map,
               title: address,
               position: results[0].geometry.location,
-              provideRouteAlternatives: true
+              provideRouteAlternatives: true,
+               animation: google.maps.Animation.DROP
             });
-
-            // marker.addListener('click', function() {
-            //   infowindow.open(map, marker);
-            // });
-
+            ch2=counter();
             storeLocationDetails[address]=marker;
+               var contentString = '<div id="content">'+
+            '<div id="siteNotice">'+
+            '</div>'+
+            '<h4 id="firstHeading" class="firstHeading">'+address+'</h4>'+
+            '<div id="bodyContent">'+
+            '<p><i>ARRIVAL:</i></p>'+
+            '<p><i>DEPARTURE:</i></p>'+
+            '<p><i>No. of PSNGR:</i></p>'+
+            '</div>'+
+            '</div>';
+            addInfoWindow(storeLocationDetails[address],contentString);
             stoplocations.push(address);
-
-
             boundall();
-           
+            
           }
         });
+      //   alert("1");
+      // if(ch==1 && ch2>3){
+      //   alert("2");
+      // directionsDisplay9.setMap(null); 
+      //   routeopt();
+      // }
       }
+      
     }   
 });
   

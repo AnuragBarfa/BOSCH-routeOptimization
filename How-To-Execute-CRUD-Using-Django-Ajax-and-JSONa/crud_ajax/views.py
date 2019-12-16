@@ -128,11 +128,6 @@ class RouteView(View):
             
         
         for i in range(0,len(busdetails)):
-            print("BUS ",i)
-            print("======================")
-            print(busdetails[i])
-            print("=========COUNT=============")
-            print(busdetails[i]['buscapacity'])
             busCapacity.append(int(busdetails[i]['buscapacity']))
 
         dataForSolver['distance_matrix']=distance_matrix
@@ -142,7 +137,7 @@ class RouteView(View):
         dataForSolver['time_windows']=[(0,200)]*len(locations)
         dataForSolver['starts'] = starts
         dataForSolver['ends'] = ends
-        dataForSolver['max_allowed_time'] = 1000
+        dataForSolver['max_allowed_time'] = 10000
         dataForSolver['soft_time_windows'] = dataForSolver['time_windows']
         dataForSolver['soft_min_occupancy'] = [int((85/100)*x) for x in dataForSolver['busCapacity']]
     
