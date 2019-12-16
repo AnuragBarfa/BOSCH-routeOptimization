@@ -315,20 +315,22 @@
           var s=fr.result.split("\n")[i].split("\"");
           //EMPID=>EMPLOC
           filepassengerdetails[s[0]]=s[1];
-          //UNIQUELOC
-          if(!(noOfuniqueLocation.indexOf(s[1])>-1))
-            noOfuniqueLocation.push(s[1]);
           
+
           notUniqueLocation.push(s[1]);
           
           s[2]=s[2].split(",");
           //busname=>buscap
           filebusdetails[s[2][1]]=s[2][2];
-          
-          noOfPsngrAtEachBusStop[s[1]]=countInArray(notUniqueLocation,s[1]);
         }
         
-        for(var i=0;i<noOfuniqueLocation.length;i++)
+        for(var i=0;i<noOfuniqueLocation.length;i++){
+          if(!(noOfuniqueLocation.indexOf(s[1])>-1))
+            {//UNIQUELOC
+              noOfuniqueLocation.push(s[1]);
+              noOfPsngrAtEachBusStop[s[1]]=countInArray(notUniqueLocation,s[1]);}
+          }
+
         for(var i=0;i<noOfuniqueLocation.length;i++){csvdata.push( noOfuniqueLocation[i]);}
         for(var i=0;i<csvdata.length;i++){
         var geocoder = new google.maps.Geocoder();
