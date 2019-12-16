@@ -14,6 +14,7 @@ import urllib
 from urllib.request import urlopen
 import pandas as pd
 import random 
+import pickle
 buscap=[]
 count=[]
 num_vehicles=0
@@ -345,37 +346,102 @@ class UpdateCrudUser(View):
         return JsonResponse(data)
 
 def SimulationView(request):  
-    data=pd.read_csv("data.csv",header=None)     
-    df=pd.read_csv("data.csv", nrows=1,header=None)     
-    print("INSIDE CSV:")
-    print(data)     
-    print("OFFSET:================")    
-    offset=df[0][0]
-    print(offset)
     return render(request,'simulation.html',)
 
 class SimulatorView(View):
     def post(self, request):
-        index=request.POST['index']
-        print("in view")
-        print(request.POST)
-        #Displays ONE DATA contains how many rows
-        data=pd.read_csv("data.csv")     
-        # print(data)
-        previndex=index
-        x=random.choice([0,1])
-        if x>0 :
-            index=index+1
+        dataIndex=json.loads(request.POST['index'])
+        starts = json.loads(request.POST['starts'])
+        ends = json.loads(request.POST['ends'])
+        previndex=dataIndex
+        increment=random.choice([0,1])
+        dataIndex=(dataIndex+increment)%3
+        # print("index",dataIndex)
+        dbfile = open('SimulationData', 'rb')      
+        db = pickle.load(dbfile) 
+        dbfile.close() 
+        currData=db[dataIndex]
+        # print(currData)
+        dataForSolver={}
+        routeBetweenIJ=[]
+        allRoutes=[]
         
-        print("index",index)
-        # data=pd.read_csv("data.csv")
-        # data=pd.read_csv("data.csv",usecols=[1])    
-       
-        #random>0.5
-        #index0
-        #offset1=>Memory
+        dataForSolver['distance_matrix']=[]
+        for i in range(0,len(currData['CostMatrix'])):
+            distanceFromI=[]
+            routeFromI=[]
+            for j in range(0,len(currData['CostMatrix'][i])):
+                minCostRouteIJ=100000000000
+                intermediateRoute=[]
+                for k in range(0,len(currData['CostMatrix'][i][j])):
+                    currIntermediateRouteWithBusStop=[]
+                    currIntermediateRouteWithBusStop.append(currData['busStopDetails'][i])
+                    for l in range(0,len(currData['CostMatrix'][i][j][k]['intermediateNodes'])):
+                        currIntermediateRouteWithBusStop.append(currData['CostMatrix'][i][j][k]['intermediateNodes'][l])
+                    if currData['CostMatrix'][i][j][k]['distTotal']<minCostRouteIJ:
+                        minCostRouteIJ=currData['CostMatrix'][i][j][k]['distTotal']
+                        intermediateRoute=currData['CostMatrix'][i][j][k]['intermediateNodes']
+                    currIntermediateRouteWithBusStop.append(currData['busStopDetails'][j])
+                    allRoutes.append(currIntermediateRouteWithBusStop)
+                distanceFromI.append(minCostRouteIJ)
+                routeFromI.append(intermediateRoute)
+            dataForSolver['distance_matrix'].append(distanceFromI)
+            routeBetweenIJ.append(routeFromI)
+        # print(dataForSolver['distance_matrix'])
+        dataForSolver['passengerCount']=[]
+        for i in range(0,len(currData['busStopDetails'])):
+            dataForSolver['passengerCount'].append(currData['busStopDetails'][i]['passengerCount'])
+        dataForSolver['busCapacity']=[]
+        for i in range(0,len(currData['busDetails'])):
+            dataForSolver['busCapacity'].append(currData['busDetails'][i]['capacity'])
+
+        dataForSolver['time_windows']=[(0,200)]*len(currData['busStopDetails'])
+        dataForSolver['pickup'] = 1
+        dataForSolver['starts'] = starts
+        dataForSolver['ends'] = ends
+        dataForSolver['max_allowed_time'] = 700
+        dataForSolver['soft_time_windows'] = dataForSolver['time_windows']
+
+        output=solver(dataForSolver)
+        result=output['routes']
+        # print(result)
         data={}
-        data['updated']=False
-        data['name']='anurag'
-        data['index']=index
+        routes=[]
+        for i in range(0,len(result)):
+            route=[]
+            # print("getting new route")
+            node={}
+            node['type']='busStop'
+            busStopIndex=result[i]['nodes'][0]['index']
+            node['lat']=currData['busStopDetails'][busStopIndex]['lat']
+            node['lng']=currData['busStopDetails'][busStopIndex]['lng']
+            node['load']=result[i]['nodes'][0]['load_var']
+            route.append(node)
+            for j in range(1,len(result[i]['nodes'])):
+                
+                busStopIndex=result[i]['nodes'][j]['index']
+                # print(busStopIndex)
+                intermediateNode=routeBetweenIJ[result[i]['nodes'][j-1]['index']][result[i]['nodes'][j]['index']]
+                for k in range(0,len(intermediateNode)):
+                    node={}    
+                    node['type']='intermediateStop'
+                    node['lat']=intermediateNode[k]['lat']
+                    node['lng']=intermediateNode[k]['lng']
+                    route.append(node)
+                    
+                node={}    
+                node['type']='busStop'
+                node['lat']=currData['busStopDetails'][busStopIndex]['lat']
+                node['lng']=currData['busStopDetails'][busStopIndex]['lng']
+                node['load']=result[i]['nodes'][j]['load_var']
+                route.append(node)
+            routes.append(route)
+        # print(routes)                    
+        # data['updated']=False
+        # if increment:
+        #     data['updated']=True
+        data['updated']=True
+        data['routes']=routes
+        data['allRoutes']=allRoutes
+        data['index']=dataIndex
         return JsonResponse(data)
