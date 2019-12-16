@@ -422,8 +422,10 @@
             animation: google.maps.Animation.DROP
 
         });
+
+        // var inputof2 = document.getElementById('officeval2');
         storeLocationDetails[location.name]=marker;
-        stoplocations.push(location.name);
+        stoplocations.push(document.getElementById('officeval').value);
         // passengernotostore.push(0);
         // alert(passengernotostore);
         //storeOfficeDetails[location]=marker;
@@ -441,7 +443,7 @@
 
         });
         storeLocationDetails[location.name]=marker;
-        stoplocations.push(location.name);
+        stoplocations.push(document.getElementById('officeval2'));
         // passengernotostore.push(0);
         // alert(passengernotostore);
         //storeOffice2Details[location]=marker;

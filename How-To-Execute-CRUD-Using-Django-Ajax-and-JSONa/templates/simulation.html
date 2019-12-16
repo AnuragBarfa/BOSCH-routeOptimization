@@ -81,10 +81,26 @@ var layout = {
     title: 'y axis distance in km',
     showline: false,
     "gridcolor": "rgb(0,0,0	)"
-  }
+  },
+  images: [
+      {
+        "source": "{% static 'image/bus.png' %}",
+        "xref": "x",
+        "yref": "y",
+        "x": 40,
+        "y": 25,
+        "sizex": 10,
+        "sizey": 20,
+        "sizing": "stretch",
+        "opacity": 1,
+        "layer": "above"
+      },
+      
+    ]
+
 };
 
-Plotly.newPlot('myDiv', data, layout, {showSendToCloud: true});
+Plotly.newPlot('myDiv', data, layout, {showSendToCloud: true} );
 	</script>
 	
 
