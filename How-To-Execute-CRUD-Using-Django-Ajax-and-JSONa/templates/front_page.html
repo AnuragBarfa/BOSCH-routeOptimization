@@ -11,7 +11,7 @@
 <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
 
 <style type="text/css">
-    body {
+  body {
         color: #404E67;
         background: #F5F7FA;
     font-family: 'Open Sans', sans-serif;
@@ -101,110 +101,111 @@
 		<div id="map" style="position:relative;width:100%;height: 800px;float:left;"></div>
 		<div id="over_map" class="pull-right">
       <p>
-          <button class="btn btn-primary" aria-expanded="false" onclick="routeopt()">
-            Route Optimizer
-          </button>
-
-          <label for="files" class="btn btn-primary" >Upload File</label>
-          <input type="file" id="files" style="visibility:hidden;"  />
-
-        
-           <div class="table-wrapper" >
-            <div class="table-title">
-                <div class="row">
-                    <div class="col-sm-8">
-                        <h2><a data-toggle="collapse" href="#collapseExample3" role="button" aria-expanded="false" aria-controls="collapseExample3">Office:</a></h2>
-                    </div>
-                    <div class="col-sm-4">
-                        
-                    </div>
+        <button class="btn btn-primary" aria-expanded="false" onclick="routeopt()">
+              Route Optimizer</button>
+        <label for="files" class="btn btn-primary" >Upload File</label>
+        <input type="file" id="files" style="visibility:hidden;"  />
+        <div class="table-wrapper" >
+          <div class="table-title">
+            <div class="row">
+                <div class="col-sm-8">
+                    <h2><a data-toggle="collapse" href="#collapseExample3" role="button" aria-expanded="false" aria-controls="collapseExample3">Office:</a></h2>
+                </div>
+                <div class="col-sm-4">
+                    
                 </div>
             </div>
-            <div class="collapse" id="collapseExample3">
-              <div class="card card-body">
-                  <input type="text" name="office" id="officeval" placeholder="START POINT" style="margin: 5px;" autocomplete="on"> 
-                  <button  class="btn btn-primary" aria-expanded="false" style="margin: 5px;" onclick="office()" id="office"> Save </button>
-            <!-- <i id="hide_no_loc_available2">NO BUS AVAILABLE</i> -->
-                   <input type="text" name="office2" id="officeval2" placeholder="DEPOT POINT" style="margin: 5px;" autocomplete="on"> 
-                  <button  class="btn btn-primary" id="office2" aria-expanded="false" style="margin: 5px;" onclick="office2()"> Save </button>
-              </div>
+          </div>
+          <div class="collapse" id="collapseExample3">
+            <div class="card card-body">
+                <input type="text" name="office" id="officeval" placeholder="START POINT" style="margin: 5px;" autocomplete="on"> 
+                <button  class="btn btn-primary" aria-expanded="false" style="margin: 5px;" onclick="office()" id="office"> Save </button>
+          <!-- <i id="hide_no_loc_available2">NO BUS AVAILABLE</i> -->
+                 <input type="text" name="office2" id="officeval2" placeholder="DEPOT POINT" style="margin: 5px;" autocomplete="on"> 
+                <button  class="btn btn-primary" id="office2" aria-expanded="false" style="margin: 5px;" onclick="office2()"> Save </button>
             </div>
-            
+          </div>     
         </div>
-<br/>
-
-          
-      
+        <br/>
       </p>
 			<div class="table-wrapper" style="overflow-y: auto; max-height: 300px;  height: auto; padding-right : 15px">
-            <div class="table-title">
-                <div class="row">
-                    <div class="col-sm-8">
-                        <h2><a data-toggle="collapse" href="#collapseExample1" role="button" aria-expanded="false" aria-controls="collapseExample1">Location</a></h2>
-                    </div>
-                      <div class="col-sm-4">
-                    </div>
-                </div>
+          <div class="table-title">
+            <div class="row">
+              <div class="col-sm-8">
+                  <h2><a data-toggle="collapse" href="#collapseExample1" role="button" aria-expanded="false" aria-controls="collapseExample1">Location</a></h2>
+              </div>
+                <div class="col-sm-4">
+              </div>
             </div>
-            <div class="collapse" id="collapseExample1">
-              <div class="card card-body">
-                <div id="loc_searchresult">
+          </div>
+          <div class="collapse" id="collapseExample1">
+            <div class="card card-body">
+              <div id="loc_searchresult">
                 <table class="table">
-                <thead>
-                    <tr>
+                  <thead>
+                      <tr>
                         <th>Location</th>
                         <th>P. No.</th>
                         <th><button type="button" class="btn btn-info add-new"><!-- <i class="fa fa-plus"></i> -->Add Loc</button></th>
                       </tr>
-                </thead>
-                <tbody >
+                  </thead>
+                  <tbody >
                   </tbody>
-            </table>
-          </div>
-                  <i id="hide_no_loc_available">NO LOCATION AVAILABLE</i>
+                </table>
               </div>
+              <i id="hide_no_loc_available">NO LOCATION AVAILABLE</i>
             </div>
-            
-        </div>
-
-			
+          </div>  
+      </div>
 			<br/>
-          <div class="table-wrapper" style="overflow-y: auto; max-height: 300px;  height: auto; padding-right : 15px">
-            <div class="table-title">
-                <div class="row">
-                    <div class="col-sm-8">
-                        <h2><a data-toggle="collapse" href="#collapseExample2" role="button" aria-expanded="false" aria-controls="collapseExample2">Buses</a></h2>
-                    </div>
-                    <div class="col-sm-4">
-                        
-                    </div>
-                </div>
+      <div class="table-wrapper" style="overflow-y: auto; max-height: 300px;  height: auto; padding-right : 15px">
+        <div class="table-title">
+          <div class="row">
+            <div class="col-sm-8">
+                <h2><a data-toggle="collapse" href="#collapseExample2" role="button" aria-expanded="false" aria-controls="collapseExample2">Buses</a></h2>
             </div>
-            <div class="collapse" id="collapseExample2">
-              <div class="card card-body">
-                <div id="bus_searchresult">
-                <table class="table">
+            <div class="col-sm-4">
+                
+            </div>
+          </div>
+        </div>
+        <div class="collapse" id="collapseExample2">
+          <div class="card card-body">
+            <div id="bus_searchresult">
+              <table class="table">
                 <thead>
-                    <tr>
-                        <th>Bus No</th>
-                        <th>Capacity</th>
-                        <th><button type="button" class="btn btn-info add-new" id="bus"><!-- <i class="fa fa-plus"></i> -->Add Bus</button></th>
-                    </tr>     
+                  <tr>
+                    <th>Bus No</th>
+                    <th>Capacity</th>
+                    <th><button type="button" class="btn btn-info add-new" id="bus"><!-- <i class="fa fa-plus"></i> -->Add Bus</button></th>
+                  </tr>     
                 </thead>
                 <tbody >
-                   </tbody>
-            </table>
-            <div id="hide_no_bus_available">  <i >NO BUS AVAILABLE</i></div>
+                </tbody>
+              </table>
+              <div id="hide_no_bus_available">  <i >NO BUS AVAILABLE</i></div>
             </div>
-            <!-- <i id="hide_no_loc_available2">NO BUS AVAILABLE</i> -->
-              </div>
-            </div>
-            
-        </div>
-
-
-
+        <!-- <i id="hide_no_loc_available2">NO BUS AVAILABLE</i> -->
+          </div>
+        </div>      
+      </div>
 		</div>
+    <div id="passanger_detail">
+      <table class="table">
+        <thead>
+            <tr>
+              <th>Employee ID</th>
+              <th>Pickup Address</th>
+              <th>Pickup Time</th>
+              <th>Drop Adress</th>
+              <th>Drop Time</th>
+              <th><button type="button" class="btn btn-info add-new"><!-- <i class="fa fa-plus"></i> -->Add Loc</button></th>
+            </tr>
+        </thead>
+        <tbody >
+        </tbody>
+      </table>
+    </div>
 	</div>
 {% endblock %}
 
@@ -240,19 +241,17 @@
       var file,fr;
       var csvdata=[];
       function office(){
-          addMarker(officeloc);
-        
-      officeloc="";
+        addMarker(officeloc);
+        officeloc="";
       }
       function office2(){
-          
-          console.log(officeloc2);
-          addMarker2(officeloc2);
-          
+        console.log(officeloc2);
+        addMarker2(officeloc2);
         officeloc2="";
       }
 
       $("#files").change(function() {
+        console.log("in change file");
         for(var i=0;i<csvdata.length;i++){
           delete storeLocationDetails[csvdata[i]];
           storeLocationDetails[csvdata[i]].setMap(null);   
@@ -267,8 +266,9 @@
       });
 
       function upload()
-      {          file=""; fr="";
-
+      {          
+        console.log("in upload");
+        file=""; fr="";
         if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
           alert('The File APIs are not fully supported in this browser.');
           return;
@@ -300,71 +300,64 @@
         return count;
       }
       function receivedText() {
+        console.log("in receivedText");
+        // console.log(fr.result);
+        dataRows=fr.result.split("\n");
+
+        console.log(dataRows);
+        var noOfPsngr=parseInt(dataRows[0].split(",")[1]);
+        var noOfBus=parseInt(dataRows[1].split(",")[1]);
+        // var uniqueBusStop;
+        var headPosition=4;
+
+        // console.log(noOfPsngr);
         var filepassengerdetails=new Map();
         var filebusdetails=new Map();
-
         var NoOfPsngrAtEachBusStop=new Map();
-
-        var noofpsngr=fr.result.split("\n")[0].split(",")[1];
-
-        var noofbus=fr.result.split("\n")[1].split(",")[1];
-
         var noOfuniqueLocation=[],notUniqueLocation=[];
-       
-        for(var i=5;i<fr.result.split("\n").length;i++){
-          var s=fr.result.split("\n")[i].split("\"");
-          //EMPID=>EMPLOC
-          filepassengerdetails[s[0]]=s[1];
-          //UNIQUELOC
-          if(!(noOfuniqueLocation.indexOf(s[1])>-1))
-            noOfuniqueLocation.push(s[1]);
-          
-          notUniqueLocation.push(s[1]);
-          
-          s[2]=s[2].split(",");
-          //busname=>buscap
-          filebusdetails[s[2][1]]=s[2][2];
-          
-          noOfPsngrAtEachBusStop[s[1]]=countInArray(notUniqueLocation,s[1]);
-        }
-        
-        for(var i=0;i<noOfuniqueLocation.length;i++)
-        for(var i=0;i<noOfuniqueLocation.length;i++){csvdata.push( noOfuniqueLocation[i]);}
-        for(var i=0;i<csvdata.length;i++){
-        var geocoder = new google.maps.Geocoder();
-        geocoder.geocode( { 'address': csvdata[i]}, function(results, status) {
-          if (status == google.maps.GeocoderStatus.OK)
-          {
-            var marker = new google.maps.Marker({
-              map: map,
-              title: csvdata[i],
-              position: results[0].geometry.location,
-              provideRouteAlternatives: true,
-               animation: google.maps.Animation.DROP
-            });
-               var contentString = '<div id="content">'+
-            '<div id="siteNotice">'+
-            '</div>'+
-            '<h4 id="firstHeading" class="firstHeading">Hello</h4>'+
-            '<div id="bodyContent">'+
-            '<p><i>ARRIVAL:</i></p>'+
-            '<p><i>DEPARTURE:</i></p>'+
-            '<p><i>No. of PSNGR:</i></p>'+
-            '</div>'+
-            '</div>';
-            addInfoWindow(storeLocationDetails[csvdata[i]],contentString);
-            alert("CSVDATA[i]"+csvdata[i]);
-            storeLocationDetails[csvdata[i]]=marker;
-            console.log(" storeLocationDetails============== ");
-            console.log(storeLocationDetails);
-            stoplocations.push(csvdata[i]);
-          boundall();
-          }
-        });
-          }
+        var passangerDetailsTill=headPosition+noOfPsngr;
+        // console.log(passangerDetailsTill);
+        for(headPosition;headPosition<passangerDetailsTill;headPosition++){
+          var currPsngr=dataRows[headPosition].split(",");
 
-          alert("UPLOADE DONE!!")
-         }           
+        }
+        var x=[{'busStopName':'Devegowda petrol bunk, Gowdanapalya, Uttarahalli Hobli, Bengaluru,','psngrCount':10},{'busStopName':'RNSIT, Channasandra, RR Nagar, Bengaluru,','psngrCount':20}];
+        var geocoder = new google.maps.Geocoder();
+        for(var i=0;i<x.length;i++){
+          var currStop=x[i];
+          console.log(currStop);
+          geocoder.geocode( { 'address': x[i]['busStopName']}, makeCallback(currStop));
+          console.log(storeLocationDetails);
+        }
+        function makeCallback(currStop) {
+          var geocodeCallBack=function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK){
+              // console.log(results[0].formatted_address);
+              // console.log(currStop);
+              var marker = new google.maps.Marker({
+                map: map,
+                title: results[0].formatted_address,
+                position: results[0].geometry.location,
+                provideRouteAlternatives: true,
+                animation: google.maps.Animation.DROP
+              });
+              storeLocationDetails[currStop]=marker;
+              var row = '<tr>' +
+                    '<td>'+currStop['busStopName']+'</td>' +
+                    '<td>'+currStop['psngrCount']+'</td>' +
+                '<td><a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a><a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a><a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a></td>'+
+                '</tr>';
+                
+              // $(this).closest('card').find('i').hide();
+              var currTable = $('#collapseExample1').find('tbody');
+              // console.log(currTable);
+              currTable.prepend(row); 
+            }
+          }
+          return geocodeCallBack;
+        }
+        alert("UPLOADE DONE!!");
+      }           
 
 ///////////////////////////////
 
@@ -507,7 +500,7 @@
         map = new google.maps.Map(document.getElementById('map'), {
           zoom: 4,
           center: myLatLng,
-          disableDefaultUI: true
+          // disableDefaultUI: true
         });
         directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
         service = new google.maps.DistanceMatrixService;
@@ -538,23 +531,20 @@
       }
       function counter(){
         var c=0;
-       for(key in storeLocationDetails){
+        for(key in storeLocationDetails){
          c++;
-       }
-       return c;
-     }
+        }
+        return c;
+      }
      function addInfoWindow(marker, message) {
-
-            var infoWindow = new google.maps.InfoWindow({
-                content: message
-            });
-
-            google.maps.event.addListener(marker, 'click', function () {
-                infoWindow.open(map, marker);
-            });
+        var infoWindow = new google.maps.InfoWindow({
+            content: message
+        });
+        google.maps.event.addListener(marker, 'click', function () {
+            infoWindow.open(map, marker);
+        });
       }
       function addMarker(location) {
-
         console.log("in marker");
         marker = new google.maps.Marker({
             position: location.geometry.location,
