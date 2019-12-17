@@ -1,7 +1,5 @@
-{% extends 'base.html' %}
-{% load static %}
-{% block title %}Django Ajax Example{% endblock %}
-{% block stylesheet %}
+<html>
+<head>
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <style type="text/css">
@@ -9,100 +7,9 @@
    	#over_map { position: absolute; top: 10px; right: 1%; z-index: 99;  }
 </style>
 <link href="D:\INTERIIT\BOSCH-routeOptimization-master\BOSCH-routeOptimization\How-To-Execute-CRUD-Using-Django-Ajax-and-JSONa\static\css\bootstrap.min.css" rel="stylesheet">
-
-<style type="text/css">
-    body {
-        color: #404E67;
-        background: #F5F7FA;
-    font-family: 'Open Sans', sans-serif;
-  }
-  .table-wrapper {
-    width: 300px;
-    background: #f2f2f2; 
-    box-shadow: 0 1px 1px rgba(0,0,0,.05);
-    }
-    .table-title {
-        padding-left: 10px;
-        padding-bottom: 2px;
-        margin: 0 0 10px;
-    }
-    .table-title h2 {
-        margin: 6px 0 0;
-        font-size: 22px;
-    }
-    .table-title .add-new {
-        float: right;
-    height: 30px;
-    font-weight: bold;
-    font-size: 12px;
-    text-shadow: none;
-    min-width: 100px;
-    border-radius: 50px;
-    line-height: 13px;
-    }
-  .table-title .add-new i {
-    margin-right: 4px;
-  }
-    table.table {
-        table-layout: fixed;
-    }
-    table.table tr th, table.table tr td {
-        border-color: #e9e9e9;
-    }
-    table.table th i {
-        font-size: 13px;
-        margin: 0 5px;
-        cursor: pointer;
-    }
-    table.table th:last-child {
-        width: 100px;
-    }
-    table.table td a {
-    cursor: pointer;
-        display: inline-block;
-        margin: 0 2px;
-    min-width: 24px;
-    }    
-  table.table td a.add {
-        color: #27C46B;
-    }
-    table.table td a.edit {
-        color: #FFC107;
-    }
-    table.table td a.delete {
-        color: #E34724;
-    }
-    table.table td i {
-        font-size: 19px;
-    }
-  table.table td a.add i {
-        font-size: 24px;
-      margin-right: -1px;
-        position: relative;
-        top: 3px;
-    }    
-    table.table .form-control {
-        height: 32px;
-        line-height: 32px;
-        box-shadow: none;
-        border-radius: 2px;
-    }
-  table.table .form-control.error {
-    border-color: #f50000;
-  }
-  table.table td .add {
-    display: none;
-  }
-</style>
-{% endblock %}
-
-{% block content %}
-	<div class="container-fluid" style="padding: 0px;">
+</head>
+<body>
 		<div id="map" style="position:relative;width:100%;height: 800px;float:left;"></div>
-			</div>
-{% endblock %}
-
-{% block javascript %}
 <!-- </script> -->
   <script>
       var globa;
@@ -115,7 +22,8 @@
       var storeOfficeDetails=new Map();
       var directionsDisplay;
       var directionsService;
-     
+      var markers = [];
+      
 
       function initMap() {  
 
@@ -145,7 +53,6 @@
         addMarker(from3,to3,'blue');
         google.maps.event.addDomListener(window, 'load', initMap);
       }
-      var markers = [];
       
       function addMarker(pos, dest,color) {
         var marker = new google.maps.Marker({
@@ -194,5 +101,5 @@
 </script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmwBs8dSuwg56fTWsbJyMdrvXYU3_Pim4&libraries=places&callback=initMap">
 </script>
-
-{% endblock %}
+</body>
+</html>
