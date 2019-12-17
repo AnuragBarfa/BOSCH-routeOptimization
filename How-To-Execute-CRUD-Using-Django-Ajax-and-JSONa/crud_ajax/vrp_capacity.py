@@ -229,6 +229,7 @@ def solver(inputData):
     """Solve the CVRP problem."""
     # Instantiate the data problem.
     # [START data]
+    print(inputData)
     data = create_data_model(inputData)
     print("after data model")
     # [END data]

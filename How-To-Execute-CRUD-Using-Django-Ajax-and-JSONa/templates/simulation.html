@@ -33,6 +33,7 @@
   
       
     <script type="text/javascript">
+      var previous_result={'ga':false};
       var layout2 = {
 
   xaxis: {
@@ -88,7 +89,7 @@
         function getUpdate(){
           $.ajax({
                 url: "/simulator/",
-                data: {'csrfmiddlewaretoken':'{{csrf_token}}','updates':'ifUIisusedforupdatepassdatafromhere','index':index,'starts':JSON.stringify(starts),'ends':JSON.stringify(ends)},
+                data: {'csrfmiddlewaretoken':'{{csrf_token}}','updates':'ifUIisusedforupdatepassdatafromhere','index':index,'starts':JSON.stringify(starts),'ends':JSON.stringify(ends),'previous_result2':JSON.stringify(previous_result)},
                 cache: false,
                 type: "POST",
                 success: function(response) {
@@ -235,7 +236,7 @@
   
   
                   randomize(loc,12000);
-                  
+                  previous_result['status'] = true;
                   //////////
                  },
                 error: function(xhr) {
