@@ -8,11 +8,9 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from .RouteOptimization import mySolver
 from .vrp_capacity import solver
-import requests
 import json
 import urllib
 from urllib.request import urlopen
-import pandas as pd
 import random 
 import pickle
 from .ga_sbrp import run_gavrptw
@@ -71,11 +69,11 @@ def send_request(origin_addresses, dest_addresses, API_key):
     dest_address_str = build_address_str(dest_addresses)
     request = request + '&origins=' + origin_address_str + '&destinations=' + \
                         dest_address_str + '&key=' + API_key
-    print("request#####")
-    print(request)
+    # print("request#####")
+    # print(request)
     jsonResult = urlopen(request).read()
-    print("jsonresult")
-    print(jsonResult)
+    # print("jsonresult")
+    # print(jsonResult)
     response = json.loads(jsonResult)
     return response
 
@@ -94,6 +92,7 @@ def build_distance_matrix(response):
 
 class RouteView(View):
     def post(self, request):
+        print(request.POST)
         locations=json.loads(request.POST['locations'])
         print("locations#####")
         print(locations)
