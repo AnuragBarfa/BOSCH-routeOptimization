@@ -142,9 +142,9 @@ class RouteView(View):
         dataForSolver['previous_result'] = previous_result
         results = {}
         if previous_result:
-            results=solver(dataForSolver)
-        else:
             results = run_gavrptw(dataForSolver,0.85,0.02,100,True,previous_result)
+        else:
+            results=solver(dataForSolver)
         print("printing optimal route")
         print(results)
         #print(x[0]["name"])
