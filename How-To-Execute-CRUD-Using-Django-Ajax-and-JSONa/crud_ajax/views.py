@@ -68,11 +68,11 @@ def send_request(origin_addresses, dest_addresses, API_key):
     dest_address_str = build_address_str(dest_addresses)
     request = request + '&origins=' + origin_address_str + '&destinations=' + \
                         dest_address_str + '&key=' + API_key
-    print("request#####")
-    print(request)
+    # print("request#####")
+    # print(request)
     jsonResult = urlopen(request).read()
-    print("jsonresult")
-    print(jsonResult)
+    # print("jsonresult")
+    # print(jsonResult)
     response = json.loads(jsonResult)
     return response
 
