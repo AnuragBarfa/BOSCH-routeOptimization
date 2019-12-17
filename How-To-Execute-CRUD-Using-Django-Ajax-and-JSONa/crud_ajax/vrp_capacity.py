@@ -41,7 +41,7 @@ def create_data_model(inputData):
     data['soft_min_occ_penalty'] = 20000
     data['soft_time_penalty'] = 2000
     data['soft_min_occupancy'] = inputData['soft_min_occupancy']
-    
+    data['hard_min_occupancy'] = inputData['hard_min_occupancy']
     return data
     # [END data_model]
 
@@ -310,7 +310,8 @@ def solver(inputData):
     for vehicle_id in range(data['num_vehicles']):
         index = routing.End(vehicle_id)
         demand_dimension.SetCumulVarSoftLowerBound(index,data['soft_min_occupancy'][vehicle_id], soft_min_occ_penalty)
-
+        if data['hard_min_occupancy']:
+            demand_dimension.CumulVar(routing.End(vehicle_id)).RemoveInterval(1, data['hard_min_occupancy'][vehicle_id])
     # Add Time Window constraint
     time_evaluator_index = routing.RegisterTransitCallback(
         partial(create_time_evaluator(data), manager))
