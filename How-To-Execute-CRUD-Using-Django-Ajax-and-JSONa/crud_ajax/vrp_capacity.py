@@ -4,6 +4,7 @@ from functools import partial
 from six.moves import xrange
 from ortools.constraint_solver import routing_enums_pb2
 from ortools.constraint_solver import pywrapcp
+
 # [END import]
 
 
@@ -44,7 +45,7 @@ def create_time_evaluator(data):
 
     def service_time(data, node):
         """Gets the service time for the specified location."""
-        return data['lower_stop'] + data['demands'][node] * data['time_per_demand_unit']
+        return data['lower_stop'] + int(data['demands'][node] * data['time_per_demand_unit'])
 
     def travel_time(data, from_node, to_node):
         """Gets the travel times between two locations."""
@@ -54,6 +55,7 @@ def create_time_evaluator(data):
             # travel_time = manhattan_distance(data['locations'][from_node], data[
             #     'locations'][to_node]) / data['vehicle_speed']
             travel_time = data['distance_matrix'][from_node][to_node]/data['vehicle_speed']
+            # travel_time = data['distance_matrix'][from_node][to_node]
         return travel_time
 
     _total_time = {}
@@ -99,7 +101,11 @@ def add_time_window_constraints(routing, manager, data, time_evaluator_index):
     # Add time window constraints for each vehicle start node
     # and 'copy' the slack var in the solution object (aka Assignment) to print it
     for vehicle_id in xrange(data['num_vehicles']):
-        index = routing.Start(vehicle_id)
+        index =  0
+        if data['pickup'] == 1:
+            index = routing.End(vehicle_id)
+        else:
+            index = routing.Start(vehicle_id) 
         time_dimension.CumulVar(index).SetRange(data['time_windows'][data['starts'][vehicle_id]][0],
                                                 data['time_windows'][data['starts'][vehicle_id]][1])
         routing.AddToAssignment(time_dimension.SlackVar(index))
@@ -108,12 +114,12 @@ def add_time_window_constraints(routing, manager, data, time_evaluator_index):
     
     ## soft constraint
     soft_time_penalty = data['soft_time_penalty']
-    for location_idx,soft_time_window in enumerate(data['soft_time_windows']):
+    for location_idx, soft_time_window in enumerate(data['soft_time_windows']):
         index = manager.NodeToIndex(location_idx)
         if index == -1:
             continue
-        time_dimension.SetCumulVarSoftLowerBound(index, time_window[0], soft_time_penalty)
-        time_dimension.SetCumulVarSoftUpperBound(index, time_window[1], soft_time_penalty)
+        time_dimension.SetCumulVarSoftLowerBound(index, soft_time_window[0], soft_time_penalty)
+        # time_dimension.SetCumulVarSoftUpperBound(index, soft_time_window[1], soft_time_penalty)
         
 def print_solution(data, manager, routing, assignment):  # pylint:disable=too-many-locals
     """Prints assignment on console"""
@@ -197,8 +203,8 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
     data2={}
     data2['routes']=routes
     data2['status'] = routing.status()
-    data2['dropped_nodes']=droppedNodes
-    data2['totalDistace']=total_distance
+    data2['dropped_nodes']= droppedNodes
+    data2['totalDistace']= total_distance
     data2['totalLoad']=total_load
     data2['totalTime']=total_time    
     data2['empty_vehicle'] = emptyVehicle

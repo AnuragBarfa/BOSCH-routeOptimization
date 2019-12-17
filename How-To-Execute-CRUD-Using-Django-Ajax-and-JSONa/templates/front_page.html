@@ -238,6 +238,7 @@
       var directionsService9;
       var directionsDisplay9;
       var file,fr;
+      var previous_result;
       function office(){
           addMarker(officeloc);
         
@@ -417,6 +418,7 @@
           'starts':JSON.stringify(start),
           'ends' : JSON.stringify(end),
           // 'pickup' :JSON.stringify(pickup),
+          'previous_result':JSON.stringify(previous_result)
           },
           cache: false,
           type: "POST",
@@ -434,7 +436,7 @@
             // boundall();
            // distancematrix(responsestore,responsestore);
 
-
+            previous_result = response;
            },
             error: function(xhr) {
               console.log("FAILED");

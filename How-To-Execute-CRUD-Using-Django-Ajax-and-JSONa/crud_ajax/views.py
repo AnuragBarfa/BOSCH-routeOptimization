@@ -15,6 +15,7 @@ from urllib.request import urlopen
 import pandas as pd
 import random 
 import pickle
+from .ga_sbrp import run_gavrptw
 buscap=[]
 count=[]
 num_vehicles=0
@@ -101,6 +102,7 @@ class RouteView(View):
         ends = json.loads(request.POST['ends'])
         # pickup = json.loads(request.POST['pickup'])
         pickup = 1
+        previous_result = json.loads(request.POST['previous_result'])
         print(locations)
         print("BUS=====================")
         print(busdetails)
@@ -124,8 +126,6 @@ class RouteView(View):
         
         distance_matrix = create_distance_matrix(dataForDistanceMatrix)   
         print(distance_matrix)
-
-            
         
         for i in range(0,len(busdetails)):
             busCapacity.append(int(busdetails[i]['buscapacity']))
@@ -140,8 +140,11 @@ class RouteView(View):
         dataForSolver['max_allowed_time'] = 10000
         dataForSolver['soft_time_windows'] = dataForSolver['time_windows']
         dataForSolver['soft_min_occupancy'] = [int((85/100)*x) for x in dataForSolver['busCapacity']]
-    
-        results=solver(dataForSolver)
+        dataForSolver['previous_result'] = previous_result
+        if previous_result:
+            results=solver(dataForSolver)
+        else:
+            result = run_gavrptw(dataForSolver,0.85,0.02,100,True,previous_result)
         print("printing optimal route")
         print(results)
         #print(x[0]["name"])
