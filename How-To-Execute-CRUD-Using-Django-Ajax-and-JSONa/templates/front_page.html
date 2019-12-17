@@ -128,7 +128,7 @@
                 <!-- <button  class="btn btn-primary" id="appt" aria-expanded="false" style="margin: 5px;" onclick="mintirp()"> Save </button> -->
                 <input type="time" id="appt2" name="appt2" min="00:00" max="23:00" placeholder="Max time window">
                 <!-- <button  class="btn btn-primary" id="appt2" aria-expanded="false" style="margin: 5px;" onclick="maxtirp()"> Save </button> -->
-                <input type="number" name="tirp_time" min="1" max="10000" placeholder="Trip Time">
+                <input type="number" id="trip_time" name="tirp_time" min="1" max="10000" placeholder="Trip Time">
                 <button  class="btn btn-primary" id="trip_time" aria-expanded="false" style="margin: 5px;" onclick="triptime()"> Pickup </button>
                 <button  class="btn btn-primary" id="trip_time" aria-expanded="false" style="margin: 5px;" onclick="triptime2()"> Drop </button>
             </div>
@@ -234,6 +234,8 @@
       var citytostore=[],sendtocity=[];
       var passengernotostore=[],citylattostore=[],citylngtostore=[];
       var bustostore=[],capacitytostore=[];
+      var end_times=[];
+      var start_times=[];
       var start=[];
       var end=[];
       var bus_starts={};
@@ -263,19 +265,31 @@
 
       function triptime(){
         var start_time =  document.getElementById('appt').value;
-        var end_time = document.getElementById('appt').value;
-        max_trip_time = document.getElementById('trip_time').value;
-        var s = moment.duration(end_time);
-        s.subtract(max_trip_time,'minutes')
-        realtiveToAbsolute = moment.utc(+s).format('H:mm');
+        var end_time = document.getElementById('appt2').value;
+        max_trip_time = Number(document.getElementById('trip_time').value);
+        var s = moment.duration(end_time,"HH:mm");
+        var diff = moment.duration(end_time,"HH:mm");
+        var ss  = moment.duration(start_time,"HH:mm");
+        var lo = moment.duration(diff.subtract(ss)).asMinutes();
+        s.subtract(max_trip_time,'minutes');
+        realtiveToAbsolute = moment.utc(+s).format('HH:mm');
+        end_times.push(max_trip_time - lo);
+        end_times.push(max_trip_time);
+        pickup =1;
       }
       function triptime2(){
         var start_time =  document.getElementById('appt').value;
-        var end_time = document.getElementById('appt').value;
-        max_trip_time = document.getElementById('trip_time').value;
-        var s = moment.duration(start_time);
-        // s.add(max_trip_time,'minutes')
-        realtiveToAbsolute = moment.utc(+s).format('H:mm');
+        var end_time = document.getElementById('appt2').value;
+        max_trip_time = Number(document.getElementById('trip_time').value);
+        var s = moment.duration(end_time,"HH:mm");
+        var diff = moment.duration(end_time,"HH:mm");
+        var ss  = moment.duration(start_time,"HH:mm");
+        var lo = moment.duration(diff.subtract(ss)).asMinutes();
+        s.subtract(max_trip_time,'minutes');
+        realtiveToAbsolute = moment.utc(+ss).format('HH:mm');
+        start_times.push(0);
+        start_times.push(lo);
+        pickup =0;
       }
       $("#files").change(function() {
         console.log("in change file");
