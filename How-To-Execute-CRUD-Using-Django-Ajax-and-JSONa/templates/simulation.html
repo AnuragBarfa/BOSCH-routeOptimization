@@ -373,16 +373,18 @@
                   }
                 }
               );
-              setInterval(function(){
-              console.log("BUS1 IS AT STOP"+i+"th :"+loc['xCord'][i-1]+" "+loc['yCord'][i-1]);
-              console.log(i+"th STOP FOR BUS1 IS:"+loc['xCord'][i]+" "+loc['yCord'][i]);
-
-              // console.log("BUS2 IS AT STOP :"+loc2['xCord'][i-1]+" "+loc['yCord'][i-1]);
+              
               // console.log("NEXT STOP FOR BUS2 IS:"+loc2['xCord'][i]+" "+loc['yCord'][i]);  
-              },2500);
-
+              
                }
-            
+          for(var i=1;i<loc['xCord'].length;i++){
+              console.log("BUS1 STOP "+i+"th :"+loc['xCord'][i-1]+" "+loc['yCord'][i-1]);
+              // console.log(i+"th STOP FOR BUS1 IS:"+loc['xCord'][i]+" "+loc['yCord'][i]);
+          }            
+          for(var i=1;i<loc['xCord'].length;i++){
+          
+              console.log("BUS2 STOP "+i+"th :"+loc2['xCord'][i-1]+" "+loc['yCord'][i-1]);
+          }
         }
         function startSimulation(){
             var d = new Date();
