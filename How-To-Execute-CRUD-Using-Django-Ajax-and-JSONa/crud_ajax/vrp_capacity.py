@@ -240,7 +240,6 @@ def solver(inputData):
     # print(data['num_vehicles'])
     manager = pywrapcp.RoutingIndexManager(len(data['duration_matrix']),
                                            data['num_vehicles'],
-                                        #    data['depot'],
                                            data['starts'],
                                            data['ends']
                                         )
@@ -287,23 +286,26 @@ def solver(inputData):
     # [START capacity_constraint]
     # Create and register a transit callback.
     # [START transit_callback]
-    def distance_callback(from_index, to_index):
-        """Returns the distance between the two nodes."""
-        # Convert from routing variable Index to distance matrix NodeIndex.
-        from_node = manager.IndexToNode(from_index)
-        to_node = manager.IndexToNode(to_index)
-        return data['duration_matrix'][from_node][to_node]
+    # print("before distance")
+    # def distance_callback(from_index, to_index):
+    #     """Returns the distance between the two nodes."""
+    #     # Convert from routing variable Index to distance matrix NodeIndex.
+    #     from_node = manager.IndexToNode(from_index)
+    #     to_node = manager.IndexToNode(to_index)
+    #     return data['distance_matrix'][from_node][to_node]
 
-    distance_callback_index = routing.RegisterUnaryTransitCallback(
-        distance_callback)
-    routing.AddDimension(
-        distance_callback_index,
-        0,  # null capacity slack
-        200000,  # vehicle maximum capacities
-        True,  # start cumul to zero
-        'distance')
+    # distance_callback_index = routing.RegisterTransitCallback(
+    #     distance_callback)
+    # routing.AddDimension(
+    #     distance_callback_index,
+    #     0,  # null capacity slack
+    #     2000000,  # vehicle maximum capacities
+    #     True,  # start cumul to zero
+    #     'distance')
+    # distance_dimension = routing.GetDimensionOrDie('dimension')
+    # distance_dimension.SetGlobalSpanCostCoefficient(0)
     # [END capacity_constraint]
-    
+    print("after dist ")
     # Add Capacity constraint.
     # [START capacity_constraint]
     def demand_callback(from_index):
@@ -323,6 +325,7 @@ def solver(inputData):
     # [END capacity_constraint]
 
     demand_dimension = routing.GetDimensionOrDie('Capacity')
+    
     print("before hard demand")
     soft_min_occ_penalty = data['soft_min_occ_penalty']
     index = manager.NodeToIndex(data['ends'][0])
@@ -330,6 +333,7 @@ def solver(inputData):
         index = routing.End(vehicle_id)
         demand_dimension.SetCumulVarSoftLowerBound(index,data['soft_min_occupancy'][vehicle_id], soft_min_occ_penalty)
         if data['hard_min_occupancy']:
+            print("HARD#######################")
             demand_dimension.CumulVar(routing.End(vehicle_id)).RemoveInterval(1, data['hard_min_occupancy'][vehicle_id])
     print("after hard demand")
     # Add Time Window constraint
@@ -338,7 +342,7 @@ def solver(inputData):
     add_time_window_constraints(routing, manager, data, time_evaluator_index)
     print("after time wi")
     drop_penalty = data['drop_penalty']
-    for node in range(0, len(data['distance_matrix'])):
+    for node in range(0, len(data['duration_matrix'])):
         if manager.NodeToIndex(node) == -1:
             continue
         routing.AddDisjunction([manager.NodeToIndex(node)], drop_penalty)
