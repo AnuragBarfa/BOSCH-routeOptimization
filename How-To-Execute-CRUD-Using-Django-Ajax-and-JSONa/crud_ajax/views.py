@@ -37,6 +37,7 @@ def create_distance_matrix(data):
     q, r = divmod(num_addresses, max_rows)
     dest_addresses = addresses
     distance_matrix = []
+    duration_matrix =[]
     # Send q requests, returning max_rows rows per request.
     for i in range(q):
         origin_addresses = addresses[i * max_rows: (i + 1) * max_rows]
@@ -88,10 +89,11 @@ def build_distance_matrix(response):
     print(response)
     distance_matrix = []
     for row in response['rows']:
-        # print("row===================")
-        # print(row['elements'])
+        print("row===================")
+        print(row['elements'])
         row_list = [row['elements'][j]['distance']['value'] for j in range(len(row['elements']))]
         distance_matrix.append(row_list)
+    print("build complete")
     return distance_matrix  
 
 
@@ -100,10 +102,11 @@ def build_duration_matrix(response):
     print(response)
     distance_matrix = []
     for row in response['rows']:
-        # print("row===================")
-        # print(row['elements'])
+        print("row2===================")
+        print(row['elements'])
         row_list = [row['elements'][j]['duration']['value'] for j in range(len(row['elements']))]
         distance_matrix.append(row_list)
+    print("build2 complete")
     return distance_matrix  
 
 
@@ -141,6 +144,7 @@ class RouteView(View):
         print(dataForDistanceMatrix)
         
         distance_matrix,duration_matrix = create_distance_matrix(dataForDistanceMatrix)   
+        print("dist")
         print(distance_matrix)
         
         for i in range(0,len(busdetails)):
@@ -158,11 +162,14 @@ class RouteView(View):
         dataForSolver['soft_min_occupancy'] = [int((85/100)*x) for x in dataForSolver['busCapacity']]
         dataForSolver['previous_result'] = previous_result
         dataForSolver['duration_matrix'] = duration_matrix
+        dataForSolver['hard_min_occupancy'] = []
         results = {}
-        if previous_result:
+        if previous_result['ga'] == True:
             results = run_gavrptw(dataForSolver,0.85,0.02,100,True,previous_result)
         else:
+            print("before solver")
             results=solver(dataForSolver)
+            print("after solver")
         print("printing optimal route")
         print(results)
         new_results = run_gavrptw(data = dataForSolver, cx_pb=0.85, mut_pb=0.02, n_gen=50, time_p=0, hor_p=0, initRoute=False, base_solution = results)
@@ -180,6 +187,8 @@ class RouteView(View):
 
 
         routes=[]
+        print("results")
+        print(results)
         for i in range(0,len(results['routes'])):
             route={}
             route['bus']="NH123"

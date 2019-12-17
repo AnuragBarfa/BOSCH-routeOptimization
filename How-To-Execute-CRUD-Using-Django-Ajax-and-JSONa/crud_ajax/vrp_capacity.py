@@ -103,21 +103,17 @@ def add_time_window_constraints(routing, manager, data, time_evaluator_index):
         time_dimension.CumulVar(index).SetRange(time_window[0], time_window[1])
         routing.AddToAssignment(time_dimension.SlackVar(index))
     
-
+    print("1st")
     # Add time window constraints for each vehicle start node
     # and 'copy' the slack var in the solution object (aka Assignment) to print it
     for vehicle_id in xrange(data['num_vehicles']):
-        index =  0
-        if data['pickup'] == 1:
-            index = routing.End(vehicle_id)
-        else:
-            index = routing.Start(vehicle_id) 
+        index = routing.Start(vehicle_id) 
         time_dimension.CumulVar(index).SetRange(data['time_windows'][data['starts'][vehicle_id]][0],
                                                 data['time_windows'][data['starts'][vehicle_id]][1])
         routing.AddToAssignment(time_dimension.SlackVar(index)) 
         # Warning: Slack var is not defined for vehicle's end node
         #routing.AddToAssignment(time_dimension.SlackVar(self.routing.End(vehicle_id)))
-    
+    print("2st")
     ## soft constraint
     soft_time_penalty = data['soft_time_penalty']
     for location_idx, soft_time_window in enumerate(data['soft_time_windows']):
@@ -232,7 +228,7 @@ def solver(inputData):
     # Instantiate the data problem.
     # [START data]
     data = create_data_model(inputData)
-
+    print("after data model")
     # [END data]
     # print("in solver")
     # # Create the routing index manager.
@@ -305,7 +301,7 @@ def solver(inputData):
     # [END capacity_constraint]
 
     demand_dimension = routing.GetDimensionOrDie('Capacity')
-    
+    print("before hard demand")
     soft_min_occ_penalty = data['soft_min_occ_penalty']
     index = manager.NodeToIndex(data['ends'][0])
     for vehicle_id in range(data['num_vehicles']):
@@ -313,11 +309,12 @@ def solver(inputData):
         demand_dimension.SetCumulVarSoftLowerBound(index,data['soft_min_occupancy'][vehicle_id], soft_min_occ_penalty)
         if data['hard_min_occupancy']:
             demand_dimension.CumulVar(routing.End(vehicle_id)).RemoveInterval(1, data['hard_min_occupancy'][vehicle_id])
+    print("after hard demand")
     # Add Time Window constraint
     time_evaluator_index = routing.RegisterTransitCallback(
         partial(create_time_evaluator(data), manager))
     add_time_window_constraints(routing, manager, data, time_evaluator_index)
-
+    print("after time wi")
     drop_penalty = data['drop_penalty']
     for node in range(0, len(data['distance_matrix'])):
         if manager.NodeToIndex(node) == -1:
@@ -343,11 +340,12 @@ def solver(inputData):
     # Print solution on console.
     # [START print_solution]
     # print(assignment)
+    print("before print")
     if assignment:
         return print_solution(data, manager, routing, assignment)
     # [END print_solution]
 
-    # print('\n\n\n')
+    print('\n\n\n')
     ### Running new instance ####
     # data['demands'][14] = 0
     
