@@ -141,10 +141,11 @@ class RouteView(View):
         dataForSolver['soft_time_windows'] = dataForSolver['time_windows']
         dataForSolver['soft_min_occupancy'] = [int((85/100)*x) for x in dataForSolver['busCapacity']]
         dataForSolver['previous_result'] = previous_result
+        results = {}
         if previous_result:
             results=solver(dataForSolver)
         else:
-            result = run_gavrptw(dataForSolver,0.85,0.02,100,True,previous_result)
+            results = run_gavrptw(dataForSolver,0.85,0.02,100,True,previous_result)
         print("printing optimal route")
         print(results)
         #print(x[0]["name"])
@@ -337,8 +338,8 @@ class SimulatorView(View):
 
         output=solver(dataForSolver)
         result=output['routes']
-        print("RESult=========")
-        print(result)
+        # print("RESult=========")
+        # print(result)
         data={}
         routes=[]
         for i in range(0,len(result)):
