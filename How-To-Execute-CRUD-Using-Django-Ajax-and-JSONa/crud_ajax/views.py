@@ -8,7 +8,6 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from .RouteOptimization import mySolver
 from .vrp_capacity import solver
-import requests
 import json
 import urllib
 from urllib.request import urlopen
@@ -93,6 +92,7 @@ def build_distance_matrix(response):
 
 class RouteView(View):
     def post(self, request):
+        print(request.POST)
         locations=json.loads(request.POST['locations'])
         print("locations#####")
         print(locations)
