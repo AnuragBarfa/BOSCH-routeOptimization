@@ -4,6 +4,7 @@
 {% block stylesheet %}
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
 <style type="text/css">
   #wrapper { position: relative; }
     #over_map { position: absolute; top: 10px; right: 1%; z-index: 99;  }
@@ -118,11 +119,18 @@
           </div>
           <div class="collapse" id="collapseExample3">
             <div class="card card-body">
-                <input type="text" name="office" id="officeval" placeholder="START POINT" style="margin: 5px;" autocomplete="on"> 
+                <input type="text" name="office" id="officeval" placeholder="Bus Depot" style="margin: 5px;" autocomplete="on"> 
                 <button  class="btn btn-primary" aria-expanded="false" style="margin: 5px;" onclick="office()" id="office"> Save </button>
           <!-- <i id="hide_no_loc_available2">NO BUS AVAILABLE</i> -->
-                 <input type="text" name="office2" id="officeval2" placeholder="DEPOT POINT" style="margin: 5px;" autocomplete="on"> 
+                <input type="text" name="office2" id="officeval2" placeholder="Office Location" style="margin: 5px;" autocomplete="on"> 
                 <button  class="btn btn-primary" id="office2" aria-expanded="false" style="margin: 5px;" onclick="office2()"> Save </button>
+                <input type="time" id="appt" name="appt" min="00:00" max="23:00"  placeholder="Min time window">
+                <!-- <button  class="btn btn-primary" id="appt" aria-expanded="false" style="margin: 5px;" onclick="mintirp()"> Save </button> -->
+                <input type="time" id="appt2" name="appt2" min="00:00" max="23:00" placeholder="Max time window">
+                <!-- <button  class="btn btn-primary" id="appt2" aria-expanded="false" style="margin: 5px;" onclick="maxtirp()"> Save </button> -->
+                <input type="number" id="trip_time" name="tirp_time" min="1" max="10000" placeholder="Trip Time">
+                <button  class="btn btn-primary" id="trip_time" aria-expanded="false" style="margin: 5px;" onclick="triptime()"> Pickup </button>
+                <button  class="btn btn-primary" id="trip_time" aria-expanded="false" style="margin: 5px;" onclick="triptime2()"> Drop </button>
             </div>
           </div>     
         </div>
@@ -223,7 +231,11 @@
       var directionsDisplay;
       var directionsService;
       var bounds;
-      var bustostore=[];
+      var citytostore=[],sendtocity=[];
+      var passengernotostore=[],citylattostore=[],citylngtostore=[];
+      var bustostore=[],capacitytostore=[];
+      var end_times=[];
+      var start_times=[];
       var start=[];
       var end=[];
       var bus_starts={};
@@ -238,7 +250,10 @@
       var directionsService9;
       var directionsDisplay9;
       var file,fr;
+      var previous_result={'status':false};
       var csvdata=[];
+      var realtiveToAbsolute;
+      var max_trip_time;
       function office(){
         // console.log(office1Marker);
         if (office1Marker!=null){
@@ -246,7 +261,7 @@
         }
         office1Marker=addOfficeMarker(officeloc,'red');
         storeLocationDetails[document.getElementById('officeval').value]=office1Marker;
-        officeloc="rando";
+        officeloc="";
       }
       function office2(){
         // console.log(office2Marker);
@@ -255,9 +270,37 @@
         }
         office2Marker=addOfficeMarker(officeloc2,'green');
         storeLocationDetails[document.getElementById('officeval2').value]=office2Marker;
-        officeloc2="rando";
+        officeloc2="";
       }
 
+      function triptime(){
+        var start_time =  document.getElementById('appt').value;
+        var end_time = document.getElementById('appt2').value;
+        max_trip_time = Number(document.getElementById('trip_time').value);
+        var s = moment.duration(end_time,"HH:mm");
+        var diff = moment.duration(end_time,"HH:mm");
+        var ss  = moment.duration(start_time,"HH:mm");
+        var lo = moment.duration(diff.subtract(ss)).asMinutes();
+        s.subtract(max_trip_time,'minutes');
+        realtiveToAbsolute = moment.utc(+s).format('HH:mm');
+        end_times.push(max_trip_time - lo);
+        end_times.push(max_trip_time);
+        pickup =1;
+      }
+      function triptime2(){
+        var start_time =  document.getElementById('appt').value;
+        var end_time = document.getElementById('appt2').value;
+        max_trip_time = Number(document.getElementById('trip_time').value);
+        var s = moment.duration(end_time,"HH:mm");
+        var diff = moment.duration(end_time,"HH:mm");
+        var ss  = moment.duration(start_time,"HH:mm");
+        var lo = moment.duration(diff.subtract(ss)).asMinutes();
+        s.subtract(max_trip_time,'minutes');
+        realtiveToAbsolute = moment.utc(+ss).format('HH:mm');
+        start_times.push(0);
+        start_times.push(lo);
+        pickup =0;
+      }
       $("#files").change(function() {
         console.log("in change file");
         for(var i=0;i<csvdata.length;i++){
@@ -377,8 +420,6 @@
         alert("UPLOADE DONE!!");
       }           
 
-///////////////////////////////
-
       function routeopt(){
         console.log("storeLocationDetails");
         console.log(storeLocationDetails);
@@ -393,17 +434,33 @@
           'count':0,
           'arr':1,
           'depa':1,
-          'lat':storeLocationDetails[$('#officeval').val()].getPosition().lat(),
-          'lng':storeLocationDetails[$('#officeval').val()].getPosition().lng()
+          'lat':office1Marker.getPosition().lat(),
+          'lng':office1Marker.getPosition().lng()
         };
         var office2={
           'name':$('#officeval2').val(),
           'count':0,
           'arr':1,
           'depa':1,
-          'lat':storeLocationDetails[$('#officeval2').val()].getPosition().lat(),
-          'lng':storeLocationDetails[$('#officeval2').val()].getPosition().lng()
+          'lat':office2Marker.getPosition().lat(),
+          'lng':office2Marker.getPosition().lng()
         };
+        //     var office1={
+        //   'name':$('#officeval').val(),
+        //   'count':0,
+        //   'arr':1,
+        //   'depa':1,
+        //   'lat':12.33,
+        //   'lng':70.88
+        // };
+        // var office2={
+        //   'name':$('#officeval2').val(),
+        //   'count':0,
+        //   'arr':1,
+        //   'depa':1,
+        //   'lat':12.34,
+        //   'lng':70.78
+        // };
         locations.push(office1);
         locations.push(office2);
         $('#loc_searchresult > table > tbody > tr').each(function() {
@@ -437,6 +494,8 @@
         });
         console.log(locations);
         console.log(busdetails);
+        console.log("prev result")
+        console.log(previous_result)
         $.ajax({
           url: "route/",
           data: {'csrfmiddlewaretoken':'{{csrf_token}}','locations':JSON.stringify(locations),
@@ -444,6 +503,7 @@
           'starts':JSON.stringify(start),
           'ends' : JSON.stringify(end),
           // 'pickup' :JSON.stringify(pickup),
+          'previous_result2':JSON.stringify(previous_result)
           },
           cache: false,
           type: "POST",
@@ -459,6 +519,8 @@
             }
             // boundall();
            // distancematrix(responsestore,responsestore);
+
+            previous_result['status'] = true;
            },
             error: function(xhr) {
               console.log("FAILED");
@@ -554,6 +616,7 @@
 
         });
         console.log(address.formatted_address);
+        storeLocationDetails[address.formatted_address]=marker;
         stoplocations.push(address.formatted_address);
         addInfoWindow(marker,location.name);
         return marker
@@ -879,6 +942,7 @@ $(document).ready(function()
           if (status == google.maps.GeocoderStatus.OK)
           {
             console.log(results);
+           alert("HI");
             var marker = new google.maps.Marker({
               map: map,
               title: address,
