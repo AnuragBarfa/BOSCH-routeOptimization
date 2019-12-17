@@ -909,12 +909,12 @@ $(document).ready(function()
     
       $(this).parents("tr").find(".add, .edit").toggle();
       $(".add-new").removeAttr("disabled");
-    
+      
       if($(this.closest('.collapse')).attr('id')==="collapseExample1"){
         var geocoder = new google.maps.Geocoder();
         geocoder.geocode( { 'address': address}, function(results, status) {
           if (status == google.maps.GeocoderStatus.OK)
-          {
+          { alert("HI");
             var marker = new google.maps.Marker({
               map: map,
               title: address,
