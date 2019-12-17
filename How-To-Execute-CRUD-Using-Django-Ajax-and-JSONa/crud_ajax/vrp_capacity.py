@@ -43,6 +43,8 @@ def create_data_model(inputData):
     data['soft_time_penalty'] = 2000
     data['soft_min_occupancy'] = inputData['soft_min_occupancy']
     data['hard_min_occupancy'] = inputData['hard_min_occupancy']
+    print('data############')
+    print(data)
     return data
     # [END data_model]
 
@@ -235,7 +237,7 @@ def solver(inputData):
     # # [START index_manager]
     # print(data['starts'])
     # print(data['num_vehicles'])
-    manager = pywrapcp.RoutingIndexManager(len(data['distance_matrix']),
+    manager = pywrapcp.RoutingIndexManager(len(data['duration_matrix']),
                                            data['num_vehicles'],
                                         #    data['depot'],
                                            data['starts'],
@@ -251,14 +253,14 @@ def solver(inputData):
 
     # Create and register a transit callback.
     # [START transit_callback]
-    def distance_callback(from_index, to_index):
+    def duration_callback(from_index, to_index):
         """Returns the distance between the two nodes."""
         # Convert from routing variable Index to distance matrix NodeIndex.
         from_node = manager.IndexToNode(from_index)
         to_node = manager.IndexToNode(to_index)
-        return data['distance_matrix'][from_node][to_node]
+        return data['duration_matrix'][from_node][to_node]
 
-    transit_callback_index = routing.RegisterTransitCallback(distance_callback)
+    transit_callback_index = routing.RegisterTransitCallback(duration_callback)
     # [END transit_callback]
 
     # Define cost of each arc.
@@ -280,7 +282,26 @@ def solver(inputData):
 
 
     # distance_dimension.SetCumulVarSoftUpperBound(index, time_window[1], soft_time_penalty)            
-    
+        # Add Capacity constraint.
+    # [START capacity_constraint]
+    # Create and register a transit callback.
+    # [START transit_callback]
+    def distance_callback(from_index, to_index):
+        """Returns the distance between the two nodes."""
+        # Convert from routing variable Index to distance matrix NodeIndex.
+        from_node = manager.IndexToNode(from_index)
+        to_node = manager.IndexToNode(to_index)
+        return data['duration_matrix'][from_node][to_node]
+
+    distance_callback_index = routing.RegisterUnaryTransitCallback(
+        distance_callback)
+    routing.AddDimension(
+        distance_callback_index,
+        0,  # null capacity slack
+        200000,  # vehicle maximum capacities
+        True,  # start cumul to zero
+        'distance')
+    # [END capacity_constraint]
     
     # Add Capacity constraint.
     # [START capacity_constraint]
