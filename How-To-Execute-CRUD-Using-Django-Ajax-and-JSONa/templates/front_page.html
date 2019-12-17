@@ -219,18 +219,17 @@
       var service;
       var geocoder;
       var storeLocationDetails=new Map();
-      var storeOfficeDetails=new Map();
+      // var storeOfficeDetails=new Map();
       var directionsDisplay;
       var directionsService;
       var bounds;
-      var citytostore=[],sendtocity=[];
-      var passengernotostore=[],citylattostore=[],citylngtostore=[];
-      var bustostore=[],capacitytostore=[];
+      var bustostore=[];
       var start=[];
       var end=[];
       var bus_starts={};
       var bus_ends={};
       var officeloc,officeloc2;
+      var office1Marker,office2Marker;
       var count = 0;
       var pickup=[];    
       var stoplocations=[];
@@ -241,12 +240,19 @@
       var file,fr;
       var csvdata=[];
       function office(){
-        addMarker(officeloc);
+        // console.log(office1Marker);
+        if (office1Marker!=null){
+          office1Marker.setMap(null);
+        }
+        office1Marker=addOfficeMarker(officeloc,'red');
         officeloc="";
       }
       function office2(){
-        console.log(officeloc2);
-        addMarker2(officeloc2);
+        // console.log(office2Marker);
+        if(office2Marker!=null){
+          office2Marker.setMap(null);
+        }
+        office2Marker=addOfficeMarker(officeloc2,'green');
         officeloc2="";
       }
 
@@ -533,23 +539,21 @@
         //storeOfficeDetails[location]=marker;
         addInfoWindow(marker,location.name);
       }
-      function addMarker2(location) {
+      function addOfficeMarker(address,color) {
         console.log("in marker");
         marker = new google.maps.Marker({
-            position: location.geometry.location,
+            position: address.geometry.location,
             map: map,
             icon: {
-              url: "http://maps.google.com/mapfiles/ms/icons/purple-dot.png"
+              url: "http://maps.google.com/mapfiles/ms/icons/"+color+"-dot.png"
             },
             animation: google.maps.Animation.DROP
 
         });
         storeLocationDetails[document.getElementById('officeval2').value]=marker;
         stoplocations.push(document.getElementById('officeval2').value);
-        // passengernotostore.push(0);
-        // alert(passengernotostore);
-        //storeOffice2Details[location]=marker;
         addInfoWindow(marker,location.name);
+        return marker
       }
       function calcRoute2(response) {
         var storetempmarker=[];
