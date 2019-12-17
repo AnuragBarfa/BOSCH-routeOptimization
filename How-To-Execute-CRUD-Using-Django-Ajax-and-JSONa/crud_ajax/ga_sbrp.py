@@ -377,7 +377,6 @@ def run_gavrptw(data, cx_pb, mut_pb, n_gen,initRoute=False, base_solution=[], po
 # # In[12]:
 
 
-
 # dataz = {'distance_matrix': [[0, 0, 5336, 2694, 4559], [0, 0, 5336, 2694, 4559], [5261, 5261, 0, 6381, 6962], [3010, 3010, 5083, 0, 3343], [4547, 4547, 6935, 2368, 0]], 'pickup': 1, 'passengerCount': [0, 0, 12, 13, 14], 'busCapacity': [15, 15, 10, 16], 'time_windows': [(0, 200), (0, 200), (0, 200), (0, 200), (0, 200)], 'starts': [0, 0, 0, 0], 'ends': [1, 1, 1, 1], 'max_allowed_time': 10000, 'soft_time_windows': [(0, 200), (0, 200), (0, 200), (0, 200), (0, 200)], 'soft_min_occupancy': [12, 12, 8, 13]}
 
 # # In[13]:

@@ -15,7 +15,7 @@ def create_data_model(inputData):
     # datamatrix,psngr_no,buscap,num_vehicles
     """Stores the data for the problem."""
     data = {}
-    data['duration_matrix'] = [ [y//60 for y in x] for x in inputData['duration_matrix'] ]
+    data['duration_matrix'] = inputData['duration_matrix']
     data['distance_matrix']=inputData['distance_matrix']
     data['demands']=inputData['passengerCount']
     # data['demands'][0]=0
@@ -25,7 +25,7 @@ def create_data_model(inputData):
     data['time_per_demand_unit'] = .5 
     data['lower_stop']  = 1
     data['pickup'] = inputData['pickup']
-    data['num_locations'] = len(inputData['distance_matrix'])
+    data['num_locations'] = len(inputData['duration_matrix'])
     if inputData['pickup'] == 1:
         data['starts'] = inputData['starts']
         data['ends'] = inputData['ends']
@@ -140,7 +140,7 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
             droppedNodes.append(manager.IndexToNode(node))
     print(dropped_nodes)
     print('Objective: {}'.format(assignment.ObjectiveValue()))
-    total_distance = 0
+    total_duration = 0
     total_load = 0
     total_time = 0
     capacity_dimension = routing.GetDimensionOrDie('Capacity')
@@ -148,7 +148,7 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
     for vehicle_id in xrange(data['num_vehicles']):
         index = routing.Start(vehicle_id)
         plan_output = 'Route for vehicle {}:\n'.format(vehicle_id)
-        distance = 0
+        duration = 0
         route={}
         route['bus']=vehicle_id
         route['nodes']=[]
@@ -172,7 +172,7 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
                 assignment.Min(slack_var), assignment.Max(slack_var))
             previous_index = index
             index = assignment.Value(routing.NextVar(index))
-            distance += routing.GetArcCostForVehicle(previous_index, index,
+            duration += routing.GetArcCostForVehicle(previous_index, index,
                                                      vehicle_id)
         load_var = capacity_dimension.CumulVar(index)
         time_var = time_dimension.CumulVar(index)
@@ -187,18 +187,18 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
         node['max_time_var']=assignment.Max(time_var)
         node['min_time_var']=assignment.Min(time_var)
         route['nodes'].append(node)
-        route['totalDistance']=distance
+        route['totalDuration']=duration
         route['routeLoad']=assignment.Value(load_var)
         route['totalTime']=assignment.Value(time_var)
         # route['start_time'] = data['office_start'] -  
         # route['start_time'] = data['office_end'] - node['min_time_var'] 
-        plan_output += 'Distance of the route: {0}m\n'.format(distance)
+        plan_output += 'Duration of the route: {0}m\n'.format(duration)
         plan_output += 'Load of the route: {}\n'.format(
             assignment.Value(load_var))
         plan_output += 'Time of the route: {}\n'.format(
             assignment.Value(time_var))
         print(plan_output)
-        total_distance += distance
+        total_duration += duration
         total_load += assignment.Value(load_var)
         total_time += assignment.Value(time_var)
         # print(route)
@@ -210,12 +210,14 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
     data2['routes']=routes
     data2['status'] = routing.status()
     data2['dropped_nodes']= droppedNodes
-    data2['totalDistace']= total_distance
+    data2['totalDuration']= total_duration
     data2['totalLoad']=total_load
     data2['totalTime']=total_time    
     data2['empty_vehicle'] = emptyVehicle
+    print("empty vehicle")
+    print(emptyVehicle)
     data2['pickup'] = data['pickup']
-    print('Total Distance of all routes: {0}m'.format(total_distance))
+    print('Total Duration of all routes: {0}m'.format(total_duration))
     print('Total Load of all routes: {}'.format(total_load))
     print('Total Time of all routes: {0}min'.format(total_time))
     # print(data)
@@ -268,20 +270,20 @@ def solver(inputData):
 
     # [END arc_cost]
 
- #  Add Distance constraint.
-#     dist_dimension_name = 'Distance'
-#     routing.AddDimension(
-#         transit_callback_index,
-#         0,  # no slack
-#         3000,  # vehicle maximum travel distance
-#         True,  # start cumul to zero
-#         dist_dimension_name)
-#     # distance_dimension = routing.GetDimensionOrDie(dist_dimension_name)
-#     # distance_dimension.SetGlobalSpanCostCoefficient(100)    
+#   Add Distance constraint.
+    # dist_dimension_name = 'Distance'
+    # routing.AddDimension(
+    #     transit_callback_index,
+    #     0,  # no slack
+    #     3000,  # vehicle maximum travel distance
+    #     True,  # start cumul to zero
+    #     dist_dimension_name)
+    # distance_dimension = routing.GetDimensionOrDie(dist_dimension_name)
+    # distance_dimension.SetGlobalSpanCostCoefficient(100)    
 
 
     # distance_dimension.SetCumulVarSoftUpperBound(index, time_window[1], soft_time_penalty)            
-        # Add Capacity constraint.
+    #     Add Capacity constraint.
     # [START capacity_constraint]
     # Create and register a transit callback.
     # [START transit_callback]
@@ -293,7 +295,7 @@ def solver(inputData):
     #     to_node = manager.IndexToNode(to_index)
     #     return data['distance_matrix'][from_node][to_node]
 
-    # distance_callback_index = routing.RegisterTransitCallback(
+    # distance_callback_index = routing.RegisterUnaryTransitCallback(
     #     distance_callback)
     # routing.AddDimension(
     #     distance_callback_index,
@@ -302,9 +304,9 @@ def solver(inputData):
     #     True,  # start cumul to zero
     #     'distance')
     # distance_dimension = routing.GetDimensionOrDie('dimension')
-    # distance_dimension.SetGlobalSpanCostCoefficient(0)
-    # [END capacity_constraint]
-    print("after dist")
+    # # distance_dimension.SetGlobalSpanCostCoefficient(0)
+    # # [END capacity_constraint]
+    # print("after dist")
     # Add Capacity constraint.
     # [START capacity_constraint]
     def demand_callback(from_index):

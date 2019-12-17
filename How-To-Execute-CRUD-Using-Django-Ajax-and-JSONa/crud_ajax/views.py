@@ -161,7 +161,7 @@ class RouteView(View):
         dataForSolver['soft_time_windows'] = dataForSolver['time_windows']
         dataForSolver['soft_min_occupancy'] = [int((85/100)*x) for x in dataForSolver['busCapacity']]
         dataForSolver['previous_result'] = previous_result
-        dataForSolver['duration_matrix'] = duration_matrix
+        dataForSolver['duration_matrix'] = [ [y//60 for y in x] for x in duration_matrix ]
         dataForSolver['hard_min_occupancy'] = []
         results = {}
         if previous_result['ga'] == True:
@@ -189,15 +189,18 @@ class RouteView(View):
         routes=[]
         print("results")
         print(results)
-        for i in range(0,len(results['routes'])):
+        for i in range(0,len(results['routes'])): #for each route
             route={}
             route['bus']="NH123"
             route['color']="red"    
-            route['type']="pickup/drop"
+            route['type']=results['pickup']
             route['nodes']=[]
-            for j in range(0,len(results['routes'][i]['nodes'])):
+            route['distance'] = 0
+            previous_index = results['routes'][i]['nodes'][0]['index']
+            for j in range(0,len(results['routes'][i]['nodes'])): # for each stop
                 node={}
                 stopIndex=results['routes'][i]['nodes'][j]['index']
+                route['distance'] += dataForSolver['distance_matrix'][previous_index][stopIndex]
                 node['lat']=locations[stopIndex]['lat']
                 node['lng']=locations[stopIndex]['lng']
                 node['load']=results['routes'][i]['nodes'][j]['load_var']
