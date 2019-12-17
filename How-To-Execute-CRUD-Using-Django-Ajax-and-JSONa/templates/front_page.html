@@ -5,8 +5,8 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <style type="text/css">
-	#wrapper { position: relative; }
-   	#over_map { position: absolute; top: 10px; right: 1%; z-index: 99;  }
+  #wrapper { position: relative; }
+    #over_map { position: absolute; top: 10px; right: 1%; z-index: 99;  }
 </style>
 <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
 
@@ -97,9 +97,9 @@
 {% endblock %}
 
 {% block content %}
-	<div class="container-fluid" style="padding: 0px;">
-		<div id="map" style="position:relative;width:100%;height: 800px;float:left;"></div>
-		<div id="over_map" class="pull-right">
+  <div class="container-fluid" style="padding: 0px;">
+    <div id="map" style="position:relative;width:100%;height: 800px;float:left;"></div>
+    <div id="over_map" class="pull-right">
       <p>
         <button class="btn btn-primary" aria-expanded="false" onclick="routeopt()">
               Route Optimizer</button>
@@ -128,7 +128,7 @@
         </div>
         <br/>
       </p>
-			<div class="table-wrapper" style="overflow-y: auto; max-height: 300px;  height: auto; padding-right : 15px">
+      <div class="table-wrapper" style="overflow-y: auto; max-height: 300px;  height: auto; padding-right : 15px">
           <div class="table-title">
             <div class="row">
               <div class="col-sm-8">
@@ -157,7 +157,7 @@
             </div>
           </div>  
       </div>
-			<br/>
+      <br/>
       <div class="table-wrapper" style="overflow-y: auto; max-height: 300px;  height: auto; padding-right : 15px">
         <div class="table-title">
           <div class="row">
@@ -189,7 +189,7 @@
           </div>
         </div>      
       </div>
-		</div>
+    </div>
     <div id="passanger_detail">
       <table class="table">
         <thead>
@@ -206,7 +206,7 @@
         </tbody>
       </table>
     </div>
-	</div>
+  </div>
 {% endblock %}
 
 {% block javascript %}
