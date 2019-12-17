@@ -260,7 +260,7 @@
           office1Marker.setMap(null);
         }
         office1Marker=addOfficeMarker(officeloc,'red');
-        storeLocationDetails[document.getElementById('offiveval').value]=office1Marker;
+        storeLocationDetails[document.getElementById('officeval').value]=office1Marker;
         officeloc="";
       }
       function office2(){
@@ -269,7 +269,7 @@
           office2Marker.setMap(null);
         }
         office2Marker=addOfficeMarker(officeloc2,'green');
-        storeLocationDetails[document.getElementById('offiveval2').value]=office2Marker;
+        storeLocationDetails[document.getElementById('officeval2').value]=office2Marker;
         officeloc2="";
       }
 
@@ -429,38 +429,38 @@
         var busdetails=[];
         var start=[];
         var end=[];
-        // var office1={
-        //   'name':$('#officeval').val(),
-        //   'count':0,
-        //   'arr':1,
-        //   'depa':1,
-        //   'lat':office1Marker.getPosition().lat(),
-        //   'lng':office1Marker.getPosition().lng()
-        // };
-        // var office2={
-        //   'name':$('#officeval2').val(),
-        //   'count':0,
-        //   'arr':1,
-        //   'depa':1,
-        //   'lat':office2Marker.getPosition().lat(),
-        //   'lng':office2Marker.getPosition().lng()
-        // };
-            var office1={
+        var office1={
           'name':$('#officeval').val(),
           'count':0,
           'arr':1,
           'depa':1,
-          'lat':12.33,
-          'lng':70.88
+          'lat':office1Marker.getPosition().lat(),
+          'lng':office1Marker.getPosition().lng()
         };
         var office2={
           'name':$('#officeval2').val(),
           'count':0,
           'arr':1,
           'depa':1,
-          'lat':12.34,
-          'lng':70.78
+          'lat':office2Marker.getPosition().lat(),
+          'lng':office2Marker.getPosition().lng()
         };
+        //     var office1={
+        //   'name':$('#officeval').val(),
+        //   'count':0,
+        //   'arr':1,
+        //   'depa':1,
+        //   'lat':12.33,
+        //   'lng':70.88
+        // };
+        // var office2={
+        //   'name':$('#officeval2').val(),
+        //   'count':0,
+        //   'arr':1,
+        //   'depa':1,
+        //   'lat':12.34,
+        //   'lng':70.78
+        // };
         locations.push(office1);
         locations.push(office2);
         $('#loc_searchresult > table > tbody > tr').each(function() {
@@ -605,6 +605,7 @@
       }
       function addOfficeMarker(address,color) {
         console.log("in marker");
+        console.log(address);
         marker = new google.maps.Marker({
             position: address.geometry.location,
             map: map,
@@ -614,6 +615,7 @@
             animation: google.maps.Animation.DROP
 
         });
+        console.log(address.formatted_address);
         storeLocationDetails[address.formatted_address]=marker;
         stoplocations.push(address.formatted_address);
         addInfoWindow(marker,location.name);
@@ -938,7 +940,9 @@ $(document).ready(function()
         var geocoder = new google.maps.Geocoder();
         geocoder.geocode( { 'address': address}, function(results, status) {
           if (status == google.maps.GeocoderStatus.OK)
-          { alert("HI");
+          {
+            console.log(results);
+           alert("HI");
             var marker = new google.maps.Marker({
               map: map,
               title: address,
