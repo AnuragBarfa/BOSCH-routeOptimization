@@ -15,6 +15,7 @@ def create_data_model(inputData):
     # datamatrix,psngr_no,buscap,num_vehicles
     """Stores the data for the problem."""
     data = {}
+    data['duration_matrix'] = inputData['duration_matrix']
     data['distance_matrix']=inputData['distance_matrix']
     data['demands']=inputData['passengerCount']
     # data['demands'][0]=0
@@ -59,8 +60,8 @@ def create_time_evaluator(data):
         else:
             # travel_time = manhattan_distance(data['locations'][from_node], data[
             #     'locations'][to_node]) / data['vehicle_speed']
-            travel_time = data['distance_matrix'][from_node][to_node]/data['vehicle_speed']
-            # travel_time = data['distance_matrix'][from_node][to_node]
+            # travel_time = data['distance_matrix'][from_node][to_node]/data['vehicle_speed']
+            travel_time = data['duration_matrix'][from_node][to_node]
         return travel_time
 
     _total_time = {}

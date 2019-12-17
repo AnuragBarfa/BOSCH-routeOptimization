@@ -8,18 +8,12 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from .RouteOptimization import mySolver
 from .vrp_capacity import solver
-<<<<<<< HEAD
 from .ga_sbrp import run_gavrptw
 #import requests
 import json
 import urllib
 from urllib.request import urlopen
 #import pandas as pd
-=======
-import json
-import urllib
-from urllib.request import urlopen
->>>>>>> 22f045d1132fbd0cd6368b1ce3edc3574d0f0088
 import random 
 import pickle
 from .ga_sbrp import run_gavrptw
@@ -51,6 +45,7 @@ def create_distance_matrix(data):
         print(origin_addresses)
         response = send_request(origin_addresses, dest_addresses, API_key)
         distance_matrix += build_distance_matrix(response)
+        duration_matrix += build_duration_matrix(response)
 
     # Get the remaining remaining r rows, if necessary.
     if r > 0:
@@ -60,7 +55,8 @@ def create_distance_matrix(data):
         print(origin_addresses)
         response = send_request(origin_addresses, dest_addresses, API_key)
         distance_matrix += build_distance_matrix(response)
-    return distance_matrix
+        duration_matrix += build_duration_matrix(response)
+    return distance_matrix,duration_matrix
 
 
 def send_request(origin_addresses, dest_addresses, API_key):
@@ -99,6 +95,18 @@ def build_distance_matrix(response):
     return distance_matrix  
 
 
+def build_duration_matrix(response):
+    print("response#############")
+    print(response)
+    distance_matrix = []
+    for row in response['rows']:
+        # print("row===================")
+        # print(row['elements'])
+        row_list = [row['elements'][j]['duration']['value'] for j in range(len(row['elements']))]
+        distance_matrix.append(row_list)
+    return distance_matrix  
+
+
 class RouteView(View):
     def post(self, request):
         print(request.POST)
@@ -110,7 +118,7 @@ class RouteView(View):
         ends = json.loads(request.POST['ends'])
         # pickup = json.loads(request.POST['pickup'])
         pickup = 1
-        previous_result = json.loads(request.POST['previous_result'])
+        previous_result = json.loads(request.POST['previous_result2'])
         print(locations)
         print("BUS=====================")
         print(busdetails)
@@ -132,7 +140,7 @@ class RouteView(View):
         print("dataForDistanceMatrix")
         print(dataForDistanceMatrix)
         
-        distance_matrix = create_distance_matrix(dataForDistanceMatrix)   
+        distance_matrix,duration_matrix = create_distance_matrix(dataForDistanceMatrix)   
         print(distance_matrix)
         
         for i in range(0,len(busdetails)):
@@ -149,6 +157,7 @@ class RouteView(View):
         dataForSolver['soft_time_windows'] = dataForSolver['time_windows']
         dataForSolver['soft_min_occupancy'] = [int((85/100)*x) for x in dataForSolver['busCapacity']]
         dataForSolver['previous_result'] = previous_result
+        dataForSolver['duration_matrix'] = duration_matrix
         results = {}
         if previous_result:
             results = run_gavrptw(dataForSolver,0.85,0.02,100,True,previous_result)

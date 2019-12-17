@@ -250,7 +250,7 @@
       var directionsService9;
       var directionsDisplay9;
       var file,fr;
-      var previous_result;
+      var previous_result={'status':false};
       var csvdata=[];
       var realtiveToAbsolute;
       var max_trip_time;
@@ -260,6 +260,7 @@
           office1Marker.setMap(null);
         }
         office1Marker=addOfficeMarker(officeloc,'red');
+        storeLocationDetails[document.getElementById('offiveval').value]=office1Marker;
         officeloc="";
       }
       function office2(){
@@ -268,6 +269,7 @@
           office2Marker.setMap(null);
         }
         office2Marker=addOfficeMarker(officeloc2,'green');
+        storeLocationDetails[document.getElementById('offiveval2').value]=office2Marker;
         officeloc2="";
       }
 
@@ -427,21 +429,37 @@
         var busdetails=[];
         var start=[];
         var end=[];
-        var office1={
+        // var office1={
+        //   'name':$('#officeval').val(),
+        //   'count':0,
+        //   'arr':1,
+        //   'depa':1,
+        //   'lat':office1Marker.getPosition().lat(),
+        //   'lng':office1Marker.getPosition().lng()
+        // };
+        // var office2={
+        //   'name':$('#officeval2').val(),
+        //   'count':0,
+        //   'arr':1,
+        //   'depa':1,
+        //   'lat':office2Marker.getPosition().lat(),
+        //   'lng':office2Marker.getPosition().lng()
+        // };
+            var office1={
           'name':$('#officeval').val(),
           'count':0,
           'arr':1,
           'depa':1,
-          'lat':storeLocationDetails[$('#officeval').val()].getPosition().lat(),
-          'lng':storeLocationDetails[$('#officeval').val()].getPosition().lng()
+          'lat':12.33,
+          'lng':70.88
         };
         var office2={
           'name':$('#officeval2').val(),
           'count':0,
           'arr':1,
           'depa':1,
-          'lat':storeLocationDetails[$('#officeval2').val()].getPosition().lat(),
-          'lng':storeLocationDetails[$('#officeval2').val()].getPosition().lng()
+          'lat':12.34,
+          'lng':70.78
         };
         locations.push(office1);
         locations.push(office2);
@@ -476,6 +494,8 @@
         });
         console.log(locations);
         console.log(busdetails);
+        console.log("prev result")
+        console.log(previous_result)
         $.ajax({
           url: "route/",
           data: {'csrfmiddlewaretoken':'{{csrf_token}}','locations':JSON.stringify(locations),
@@ -483,7 +503,7 @@
           'starts':JSON.stringify(start),
           'ends' : JSON.stringify(end),
           // 'pickup' :JSON.stringify(pickup),
-          'previous_result':JSON.stringify(previous_result)
+          'previous_result2':JSON.stringify(previous_result)
           },
           cache: false,
           type: "POST",
@@ -500,7 +520,7 @@
             // boundall();
            // distancematrix(responsestore,responsestore);
 
-            previous_result = response;
+            previous_result['status'] = true;
            },
             error: function(xhr) {
               console.log("FAILED");
@@ -594,8 +614,8 @@
             animation: google.maps.Animation.DROP
 
         });
-        storeLocationDetails[document.getElementById('officeval2').value]=marker;
-        stoplocations.push(document.getElementById('officeval2').value);
+        storeLocationDetails[address.formatted_address]=marker;
+        stoplocations.push(address.formatted_address);
         addInfoWindow(marker,location.name);
         return marker
       }
