@@ -181,9 +181,9 @@ class RouteView(View):
 
         # data={'lat':22.2,'lng':77.8,'arr':12,'depa':32,'count':20}
 
-        useGA = True
-        if(useGA):
-            results = new_results
+        # useGA = True
+        # if(useGA):
+        #     results = new_results
 
 
         routes=[]
@@ -327,6 +327,7 @@ class SimulatorView(View):
         dataIndex=json.loads(request.POST['index'])
         starts = json.loads(request.POST['starts'])
         ends = json.loads(request.POST['ends'])
+        previous_result = json.loads(request.POST['previous_result2'])
         previndex=dataIndex
         increment=random.choice([0,1])
         dataIndex=(dataIndex+increment)%3
@@ -376,9 +377,13 @@ class SimulatorView(View):
         dataForSolver['max_allowed_time'] = 10000
         dataForSolver['soft_time_windows'] = dataForSolver['time_windows']
         dataForSolver['soft_min_occupancy'] = [int((85/100)*x) for x in dataForSolver['busCapacity']]
-
+        dataForSolver['duration_matrix'] = dataForSolver['distance_matrix']
+        dataForSolver['hard_min_occupancy'] = []
+        dataForSolver['previous_result'] = previous_result
+        
         output=solver(dataForSolver)
         result=output['routes']
+        
         # print("RESult=========")
         # print(result)
         data={}
