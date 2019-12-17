@@ -15,7 +15,7 @@ def create_data_model(inputData):
     # datamatrix,psngr_no,buscap,num_vehicles
     """Stores the data for the problem."""
     data = {}
-    data['duration_matrix'] = inputData['duration_matrix']
+    data['duration_matrix'] = [ [y//60 for y in x] for x in inputData['duration_matrix'] ]
     data['distance_matrix']=inputData['distance_matrix']
     data['demands']=inputData['passengerCount']
     # data['demands'][0]=0
@@ -304,7 +304,7 @@ def solver(inputData):
     # distance_dimension = routing.GetDimensionOrDie('dimension')
     # distance_dimension.SetGlobalSpanCostCoefficient(0)
     # [END capacity_constraint]
-    print("after dist ")
+    print("after dist")
     # Add Capacity constraint.
     # [START capacity_constraint]
     def demand_callback(from_index):
