@@ -11,7 +11,6 @@ from .vrp_capacity import solver
 import json
 import urllib
 from urllib.request import urlopen
-import pandas as pd
 import random 
 import pickle
 buscap=[]
