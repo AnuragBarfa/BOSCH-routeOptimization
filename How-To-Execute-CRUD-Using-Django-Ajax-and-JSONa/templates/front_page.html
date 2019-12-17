@@ -245,7 +245,8 @@
           office1Marker.setMap(null);
         }
         office1Marker=addOfficeMarker(officeloc,'red');
-        officeloc="";
+        storeLocationDetails[document.getElementById('officeval').value]=office1Marker;
+        officeloc="rando";
       }
       function office2(){
         // console.log(office2Marker);
@@ -253,7 +254,8 @@
           office2Marker.setMap(null);
         }
         office2Marker=addOfficeMarker(officeloc2,'green');
-        officeloc2="";
+        storeLocationDetails[document.getElementById('officeval2').value]=office2Marker;
+        officeloc2="rando";
       }
 
       $("#files").change(function() {
@@ -541,6 +543,7 @@
       }
       function addOfficeMarker(address,color) {
         console.log("in marker");
+        console.log(address);
         marker = new google.maps.Marker({
             position: address.geometry.location,
             map: map,
@@ -550,8 +553,8 @@
             animation: google.maps.Animation.DROP
 
         });
-        storeLocationDetails[document.getElementById('officeval2').value]=marker;
-        stoplocations.push(document.getElementById('officeval2').value);
+        console.log(address.formatted_address);
+        stoplocations.push(address.formatted_address);
         addInfoWindow(marker,location.name);
         return marker
       }
@@ -869,12 +872,13 @@ $(document).ready(function()
     
       $(this).parents("tr").find(".add, .edit").toggle();
       $(".add-new").removeAttr("disabled");
-    
+      
       if($(this.closest('.collapse')).attr('id')==="collapseExample1"){
         var geocoder = new google.maps.Geocoder();
         geocoder.geocode( { 'address': address}, function(results, status) {
           if (status == google.maps.GeocoderStatus.OK)
           {
+            console.log(results);
             var marker = new google.maps.Marker({
               map: map,
               title: address,
