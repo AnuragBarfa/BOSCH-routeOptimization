@@ -8,14 +8,21 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from .RouteOptimization import mySolver
 from .vrp_capacity import solver
+<<<<<<< HEAD
 from .ga_sbrp import run_gavrptw
 #import requests
 import json
 import urllib
 from urllib.request import urlopen
 #import pandas as pd
+=======
+import json
+import urllib
+from urllib.request import urlopen
+>>>>>>> 22f045d1132fbd0cd6368b1ce3edc3574d0f0088
 import random 
 import pickle
+from .ga_sbrp import run_gavrptw
 buscap=[]
 count=[]
 num_vehicles=0
@@ -71,11 +78,11 @@ def send_request(origin_addresses, dest_addresses, API_key):
     dest_address_str = build_address_str(dest_addresses)
     request = request + '&origins=' + origin_address_str + '&destinations=' + \
                         dest_address_str + '&key=' + API_key
-    print("request#####")
-    print(request)
+    # print("request#####")
+    # print(request)
     jsonResult = urlopen(request).read()
-    print("jsonresult")
-    print(jsonResult)
+    # print("jsonresult")
+    # print(jsonResult)
     response = json.loads(jsonResult)
     return response
 
@@ -94,6 +101,7 @@ def build_distance_matrix(response):
 
 class RouteView(View):
     def post(self, request):
+        print(request.POST)
         locations=json.loads(request.POST['locations'])
         print("locations#####")
         print(locations)
@@ -102,6 +110,7 @@ class RouteView(View):
         ends = json.loads(request.POST['ends'])
         # pickup = json.loads(request.POST['pickup'])
         pickup = 1
+        previous_result = json.loads(request.POST['previous_result'])
         print(locations)
         print("BUS=====================")
         print(busdetails)
@@ -125,8 +134,6 @@ class RouteView(View):
         
         distance_matrix = create_distance_matrix(dataForDistanceMatrix)   
         print(distance_matrix)
-
-            
         
         for i in range(0,len(busdetails)):
             busCapacity.append(int(busdetails[i]['buscapacity']))
@@ -141,8 +148,12 @@ class RouteView(View):
         dataForSolver['max_allowed_time'] = 10000
         dataForSolver['soft_time_windows'] = dataForSolver['time_windows']
         dataForSolver['soft_min_occupancy'] = [int((85/100)*x) for x in dataForSolver['busCapacity']]
-    
-        results=solver(dataForSolver)
+        dataForSolver['previous_result'] = previous_result
+        results = {}
+        if previous_result:
+            results=solver(dataForSolver)
+        else:
+            results = run_gavrptw(dataForSolver,0.85,0.02,100,True,previous_result)
         print("printing optimal route")
         print(results)
         new_results = run_gavrptw(data = dataForSolver, cx_pb=0.85, mut_pb=0.02, n_gen=50, time_p=0, hor_p=0, initRoute=False, base_solution = results)

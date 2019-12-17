@@ -4,6 +4,7 @@ from functools import partial
 from six.moves import xrange
 from ortools.constraint_solver import routing_enums_pb2
 from ortools.constraint_solver import pywrapcp
+
 # [END import]
 
 
@@ -27,9 +28,11 @@ def create_data_model(inputData):
     if inputData['pickup'] == 1:
         data['starts'] = inputData['starts']
         data['ends'] = inputData['ends']
+        # data['office_end'] = inputData['office_end']
     else:
         data['starts'] = inputData['ends']
-        data['ends'] = inputData['starts']        
+        data['ends'] = inputData['starts']
+        # data['office_start'] = inputData['office_start']        
     data['time_windows'] = inputData['time_windows']
     data['soft_time_windows'] = inputData['soft_time_windows']
     data['max_allowed_time']  = inputData['max_allowed_time']
@@ -38,6 +41,7 @@ def create_data_model(inputData):
     data['soft_min_occ_penalty'] = 20000
     data['soft_time_penalty'] = 2000
     data['soft_min_occupancy'] = inputData['soft_min_occupancy']
+    data['hard_min_occupancy'] = inputData['hard_min_occupancy']
     return data
     # [END data_model]
 
@@ -46,7 +50,7 @@ def create_time_evaluator(data):
 
     def service_time(data, node):
         """Gets the service time for the specified location."""
-        return data['lower_stop'] + data['demands'][node] * data['time_per_demand_unit']
+        return data['lower_stop'] + int(data['demands'][node] * data['time_per_demand_unit'])
 
     def travel_time(data, from_node, to_node):
         """Gets the travel times between two locations."""
@@ -56,6 +60,7 @@ def create_time_evaluator(data):
             # travel_time = manhattan_distance(data['locations'][from_node], data[
             #     'locations'][to_node]) / data['vehicle_speed']
             travel_time = data['distance_matrix'][from_node][to_node]/data['vehicle_speed']
+            # travel_time = data['distance_matrix'][from_node][to_node]
         return travel_time
 
     _total_time = {}
@@ -101,21 +106,25 @@ def add_time_window_constraints(routing, manager, data, time_evaluator_index):
     # Add time window constraints for each vehicle start node
     # and 'copy' the slack var in the solution object (aka Assignment) to print it
     for vehicle_id in xrange(data['num_vehicles']):
-        index = routing.Start(vehicle_id)
+        index =  0
+        if data['pickup'] == 1:
+            index = routing.End(vehicle_id)
+        else:
+            index = routing.Start(vehicle_id) 
         time_dimension.CumulVar(index).SetRange(data['time_windows'][data['starts'][vehicle_id]][0],
                                                 data['time_windows'][data['starts'][vehicle_id]][1])
-        routing.AddToAssignment(time_dimension.SlackVar(index))
+        routing.AddToAssignment(time_dimension.SlackVar(index)) 
         # Warning: Slack var is not defined for vehicle's end node
         #routing.AddToAssignment(time_dimension.SlackVar(self.routing.End(vehicle_id)))
     
     ## soft constraint
     soft_time_penalty = data['soft_time_penalty']
-    for location_idx,soft_time_window in enumerate(data['soft_time_windows']):
+    for location_idx, soft_time_window in enumerate(data['soft_time_windows']):
         index = manager.NodeToIndex(location_idx)
         if index == -1:
             continue
-        time_dimension.SetCumulVarSoftLowerBound(index, time_window[0], soft_time_penalty)
-        time_dimension.SetCumulVarSoftUpperBound(index, time_window[1], soft_time_penalty)
+        time_dimension.SetCumulVarSoftLowerBound(index, soft_time_window[0], soft_time_penalty)
+        # time_dimension.SetCumulVarSoftUpperBound(index, soft_time_window[1], soft_time_penalty)
         
 def print_solution(data, manager, routing, assignment):  # pylint:disable=too-many-locals
     """Prints assignment on console"""
@@ -182,6 +191,8 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
         route['totalDistance']=distance
         route['routeLoad']=assignment.Value(load_var)
         route['totalTime']=assignment.Value(time_var)
+        # route['start_time'] = data['office_start'] -  
+        # route['start_time'] = data['office_end'] - node['min_time_var'] 
         plan_output += 'Distance of the route: {0}m\n'.format(distance)
         plan_output += 'Load of the route: {}\n'.format(
             assignment.Value(load_var))
@@ -199,8 +210,8 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
     data2={}
     data2['routes']=routes
     data2['status'] = routing.status()
-    data2['dropped_nodes']=droppedNodes
-    data2['totalDistace']=total_distance
+    data2['dropped_nodes']= droppedNodes
+    data2['totalDistace']= total_distance
     data2['totalLoad']=total_load
     data2['totalTime']=total_time    
     data2['empty_vehicle'] = emptyVehicle
@@ -299,7 +310,8 @@ def solver(inputData):
     for vehicle_id in range(data['num_vehicles']):
         index = routing.End(vehicle_id)
         demand_dimension.SetCumulVarSoftLowerBound(index,data['soft_min_occupancy'][vehicle_id], soft_min_occ_penalty)
-
+        if data['hard_min_occupancy']:
+            demand_dimension.CumulVar(routing.End(vehicle_id)).RemoveInterval(1, data['hard_min_occupancy'][vehicle_id])
     # Add Time Window constraint
     time_evaluator_index = routing.RegisterTransitCallback(
         partial(create_time_evaluator(data), manager))
