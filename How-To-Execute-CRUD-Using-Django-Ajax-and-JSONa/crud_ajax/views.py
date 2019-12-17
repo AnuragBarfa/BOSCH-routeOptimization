@@ -8,9 +8,18 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from .RouteOptimization import mySolver
 from .vrp_capacity import solver
+<<<<<<< HEAD
+from .ga_sbrp import run_gavrptw
+#import requests
 import json
 import urllib
 from urllib.request import urlopen
+#import pandas as pd
+=======
+import json
+import urllib
+from urllib.request import urlopen
+>>>>>>> 22f045d1132fbd0cd6368b1ce3edc3574d0f0088
 import random 
 import pickle
 from .ga_sbrp import run_gavrptw
@@ -147,10 +156,20 @@ class RouteView(View):
             results=solver(dataForSolver)
         print("printing optimal route")
         print(results)
+        new_results = run_gavrptw(data = dataForSolver, cx_pb=0.85, mut_pb=0.02, n_gen=50, time_p=0, hor_p=0, initRoute=False, base_solution = results)
+        print('New results ==========================>')
+        print(new_results)
+        print('\n\n')
         #print(x[0]["name"])
         #x[{},{}]
 
         # data={'lat':22.2,'lng':77.8,'arr':12,'depa':32,'count':20}
+
+        useGA = True
+        if(useGA):
+            results = new_results
+
+
         routes=[]
         for i in range(0,len(results['routes'])):
             route={}
@@ -207,8 +226,10 @@ class RouteView(View):
         print("DROPPED NODE==================================")
         print(data['dropped_nodes'])
         data['status'] = results['status']
-        data['pickup'] = results['pickup']      
-        # print("DATAROUTES++++++++=========================")
+        data['pickup'] = results['pickup'] 
+
+        print("DATA++++++++=========================")
+        print(data)
         # print(data['routes'][0]['nodes'])
         return JsonResponse(data)
 
@@ -331,7 +352,7 @@ class SimulatorView(View):
         dataForSolver['pickup'] = 1
         dataForSolver['starts'] = starts
         dataForSolver['ends'] = ends
-        dataForSolver['max_allowed_time'] = 700
+        dataForSolver['max_allowed_time'] = 10000
         dataForSolver['soft_time_windows'] = dataForSolver['time_windows']
         dataForSolver['soft_min_occupancy'] = [int((85/100)*x) for x in dataForSolver['busCapacity']]
 
