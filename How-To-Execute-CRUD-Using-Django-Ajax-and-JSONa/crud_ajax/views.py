@@ -181,9 +181,9 @@ class RouteView(View):
 
         # data={'lat':22.2,'lng':77.8,'arr':12,'depa':32,'count':20}
 
-        useGA = True
-        if(useGA):
-            results = new_results
+        # useGA = True
+        # if(useGA):
+        #     results = new_results
 
 
         routes=[]
