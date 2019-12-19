@@ -22,7 +22,8 @@ def create_data_model(inputData):
     # data['demands'][1]=0
     data['vehicle_capacities']=inputData['busCapacity']
     data['num_vehicles'] = len(inputData['busCapacity'])
-    data['time_per_demand_unit'] = inputData['time_per_demand_unit']
+    # data['time_per_demand_unit'] = inputData['time_per_demand_unit']
+    data['time_per_demand_unit'] = 0.5
     data['lower_stop']  = 1
     data['pickup'] = inputData['pickup']
     data['num_locations'] = len(inputData['duration_matrix'])
