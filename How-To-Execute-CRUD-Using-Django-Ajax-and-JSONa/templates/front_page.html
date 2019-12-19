@@ -257,7 +257,7 @@
       var file,fr;
       var previous_result={'ga':false};
       var csvdata=[];
-      var realtiveToAbsolute;
+      var relativeToAbsolute;
       var max_trip_time;
       function office(){
         // console.log(office1Marker);
@@ -287,7 +287,7 @@
         var ss  = moment.duration(start_time,"HH:mm");
         var lo = moment.duration(diff.subtract(ss)).asMinutes();
         s.subtract(max_trip_time,'minutes');
-        realtiveToAbsolute = moment.utc(+s).format('HH:mm');
+        relativeToAbsolute = moment.utc(+s).format('HH:mm');
         end_times.push(max_trip_time - lo);
         end_times.push(max_trip_time);
         pickup =1;
@@ -301,7 +301,7 @@
         var ss  = moment.duration(start_time,"HH:mm");
         var lo = moment.duration(diff.subtract(ss)).asMinutes();
         s.subtract(max_trip_time,'minutes');
-        realtiveToAbsolute = moment.utc(+ss).format('HH:mm');
+        relativeToAbsolute = moment.utc(+ss).format('HH:mm');
         start_times.push(0);
         start_times.push(lo);
         pickup =0;
@@ -544,9 +544,15 @@
               $('#routes_details').append('<p>'+ 'duration: ' + response['routes'][i]['duration']+'</p>')
               $('#routes_details').append('<p>'+ 'distance: ' + response['routes'][i]['distance']+'</p>')
               for(var j=0;j<response['routes'][i]['nodes'].length;++j){
+                var t1 = moment.duration(relativeToAbsolute,"HH:mm");
+                var t2 = moment.duration(relativeToAbsolute,"HH:mm");
+                t1.add(response['routes'][i]['nodes'][j]['arrival'],'minutes');
+                var arrival = moment.utc(+t1).format("HH:mm");
+                t2.add(response['routes'][i]['nodes'][j]['departure'],'minutes');
+                var departure = moment.utc(+t2).format("HH:mm");
                 $('#routes_details').append('<p>'+ 'location: ' + ":" + locations[response['routes'][i]['nodes'][j]['index']]['name']+'</p>')
-                $('#routes_details').append('<p>'+ 'Arrival: ' + ":" + response['routes'][i]['nodes'][j]['arrival']+'</p>')
-                $('#routes_details').append('<p>'+ 'Departure: ' + ":" + response['routes'][i]['nodes'][j]['departure']+'</p>')
+                $('#routes_details').append('<p>'+ 'Arrival: ' + ":" + arrival+'</p>')
+                $('#routes_details').append('<p>'+ 'Departure: ' + ":" + departure+'</p>')
 
               }
             }

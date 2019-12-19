@@ -185,7 +185,7 @@ class RouteView(View):
         print("printing optimal route")
         print(results)
         # new_results = run_gavrptw(data = dataForSolver, cx_pb=0.85, mut_pb=0.02, n_gen=50, time_p=0, hor_p=0, initRoute=False, base_solution = results)
-        print('New results ==========================>')
+        # print('New results ==========================>')
         # print(new_results)
         print('\n\n')
         #print(x[0]["name"])
