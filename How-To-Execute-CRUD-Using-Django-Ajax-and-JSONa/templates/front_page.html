@@ -454,11 +454,10 @@
               storeLocationDetails[currStop['busStopName']]=marker;
               console.log("printing location");
               console.log(storeLocationDetails);
-
-              var row = '<tr>' +
-                    '<td><div style="max-width:140px;width:auto;">'+currStop['busStopName']+'</div></td>' +
-                    '<td><div style="float: right;margin-left:55px;max-width:20px;width:auto;">'+currStop['psngrCount']+'</div></td>' +
-                '<td><div style="float: right;  padding: 5px;"><a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a><a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a><a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a></div></td>'+
+ var row = '<tr>' +
+                    '<td>'+currStop['busStopName']+'</td>' +
+                    '<td>'+currStop['psngrCount']+'</td>' +
+                '<td><a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a><a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a><a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a></td>'+
                 '</tr>';
                 
               // $(this).closest('card').find('i').hide();
