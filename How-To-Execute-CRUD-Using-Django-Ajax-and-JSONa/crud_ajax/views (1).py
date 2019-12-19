@@ -8,20 +8,28 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from .RouteOptimization import mySolver
 from .vrp_capacity import solver
-from .ga_sbrp import run_gavrptw
 import utm
-from  geopy.geocoders import Nominatim
+from .ga_sbrp import run_gavrptw
 #import requests
 import json
 import urllib
 from urllib.request import urlopen
+from  geopy.geocoders import Nominatim
+from .stop_assign import assign_stops
 #import pandas as pd
 import random 
 import pickle
-
+from .ga_sbrp import run_gavrptw
 buscap=[]
 count=[]
 num_vehicles=0
+def FrontView(request):
+    users=CrudUser.objects.all()
+    # mySolver()
+    return render(request,'front_page.html',{'users':users})
+
+
+
 
 # please pass the locations in the form [office_location, other bus stops, ...]
 class BusStopSelection(View):
@@ -83,10 +91,6 @@ class BusStopSelection(View):
         return JsonResponse(data)    
 
 
-def FrontView(request):
-    users=CrudUser.objects.all()
-    # mySolver()
-    return render(request,'front_page.html',{'users':users})
 
 def create_distance_matrix(data):
     addresses = data["addresses"]
@@ -146,9 +150,6 @@ def send_request(origin_addresses, dest_addresses, API_key):
     response = json.loads(jsonResult)
     return response
 
-def service_time(data, node):
-    """Gets the service time for the specified location."""
-    return dataForSolver['lower_stop'] + int(data['demands'][node] * data['time_per_demand_unit'])
 
 def build_distance_matrix(response):
     print("response#############")
@@ -185,10 +186,9 @@ class RouteView(View):
         busdetails=json.loads(request.POST['busdetails'])
         starts = json.loads(request.POST['starts'])
         ends = json.loads(request.POST['ends'])
-        pickup = json.loads(request.POST['pickup'])
-        # pickup = 1
+        # pickup = json.loads(request.POST['pickup'])
+        pickup = 1
         previous_result = json.loads(request.POST['previous_result2'])
-        # time_window = json.loads(request.POST['time_window'])
         print(locations)
         print("BUS=====================")
         print(busdetails)
@@ -221,47 +221,27 @@ class RouteView(View):
         dataForSolver['pickup'] = pickup
         dataForSolver['passengerCount']=passengerPerStop
         dataForSolver['busCapacity']=busCapacity
-        dataForSolver['time_windows']= [(0,200)]*len(locations)
-        # dataForSolver['time_windows2'] = time_window
+        dataForSolver['time_windows']=[(0,200)]*len(locations)
         dataForSolver['starts'] = starts
         dataForSolver['ends'] = ends
-        dataForSolver['max_allowed_time'] = 1000
+        dataForSolver['max_allowed_time'] = 120
         dataForSolver['soft_time_windows'] = dataForSolver['time_windows']
         dataForSolver['soft_min_occupancy'] = [int((85/100)*x) for x in dataForSolver['busCapacity']]
         dataForSolver['previous_result'] = previous_result
         dataForSolver['duration_matrix'] = [ [y//60 for y in x] for x in duration_matrix ]
         dataForSolver['hard_min_occupancy'] = []
-        dataForSolver['time_per_demand_unit'] = .5
         results = {}
-
-        if previous_result['ga']:
-            print("PRE####")
-            # print(pre_result)
-            results = run_gavrptw(data = dataForSolver, cx_pb=0.85, mut_pb=0.02, n_gen=50, time_p=0, hor_p=0, initRoute=True, base_solution = previous_result['value'])
-            # pre_result = results
+        if previous_result['ga'] == True:
+            results = run_gavrptw(dataForSolver,0.85,0.02,100,True,previous_result)
         else:
             print("before solver")
             results=solver(dataForSolver)
-            # pre_result = results
-            print("PRE####")
-            # print(pre_result)
             print("after solver")
-
-        # print("before solver")
-        # results=solver(dataForSolver)
-        # # pre_result = results
-        # print("PRE####")
-        # # print(pre_result)
-        # print("after solver")
-
-
         print("printing optimal route")
         print(results)
-        print(results['routes'])
-        
-        # new_results = run_gavrptw(data = dataForSolver, cx_pb=0.85, mut_pb=0.02, n_gen=50, time_p=0, hor_p=0, initRoute=False, base_solution = results)
-        # print('New results ==========================>')
-        # print(new_results)
+        new_results = run_gavrptw(data = dataForSolver, cx_pb=0.85, mut_pb=0.02, n_gen=50, time_p=0, hor_p=0, initRoute=False, base_solution = results)
+        print('New results ==========================>')
+        print(new_results)
         print('\n\n')
         #print(x[0]["name"])
         #x[{},{}]
@@ -278,15 +258,11 @@ class RouteView(View):
         print(results)
         for i in range(0,len(results['routes'])): #for each route
             route={}
-            route['bus']=results['routes'][i]['bus']
-            random_number = random.randint(0,16777215)
-            hex_number = str(hex(random_number))
-            hex_number ='#'+ hex_number[2:]
-            route['color']=hex_number    
+            route['bus']="NH123"
+            route['color']="red"    
             route['type']=results['pickup']
             route['nodes']=[]
             route['distance'] = 0
-            route['duration'] = results['routes'][i]['duration']
             previous_index = results['routes'][i]['nodes'][0]['index']
             for j in range(0,len(results['routes'][i]['nodes'])): # for each stop
                 node={}
@@ -304,13 +280,35 @@ class RouteView(View):
                     node['min_slack']=0
                 node['max_time']=results['routes'][i]['nodes'][j]['max_time_var']
                 node['min_time']=results['routes'][i]['nodes'][j]['min_time_var']
-                node['arrival'] = node['min_time']
-                node['departure'] = node['arrival'] + 1 + int(dataForSolver['passengerCount'][node['index']] * dataForSolver['time_per_demand_unit'])
                 route['nodes'].append(node)    
             routes.append(route)
         print(routes)
+        # route={}
+        # route['bus']="NH123"
+        # route['color']="red"
+        # route['type']="pickup/drop"
+        # route['nodes']=[]
+        # for i in range(0,len(locations)):
+        #     route['nodes'].append(locations[i])
+        #     count.append(int(locations[i]['count']))
+        # print("PSNGR NO ================")    
+        # print(count)
+        # for i in range(0,len(busdetails)):
+        #     # route['bus'].append(busdetails[i])
+        #     buscap.append(int(busdetails[i]['buscapacity']))
+        # print("buscapacity================")    
+        # print(buscap)
+        # num_vehicles=len(buscap)
+        # routes.append(route)
+        # data['routes']=routes
+        # # data['routes']=route['nodes'] 
+
+        # print("ROUTES==================================")
+        # # print(routes[len(routes)]['nodes'][len(routes[0]['nodes'])]['name'])
+        # print(routes[0]['nodes'][0]['name'])
+        # print(routes[0]['nodes'][0]['name'].replace(", ", "+"))
+        # print("ROUTES=============OVER=================")   
         data={}
-        data['pre_result'] = results
         data['routes']=routes
         data['empty_vehicle'] = results['empty_vehicle']
         data['dropped_nodes'] = results['dropped_nodes']
