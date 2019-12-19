@@ -83,6 +83,9 @@ def send_request(origin_addresses, dest_addresses, API_key):
     response = json.loads(jsonResult)
     return response
 
+def service_time(data, node):
+    """Gets the service time for the specified location."""
+    return dataForSolver['lower_stop'] + int(data['demands'][node] * data['time_per_demand_unit'])
 
 def build_distance_matrix(response):
     print("response#############")
@@ -163,6 +166,7 @@ class RouteView(View):
         dataForSolver['previous_result'] = previous_result
         dataForSolver['duration_matrix'] = [ [y//60 for y in x] for x in duration_matrix ]
         dataForSolver['hard_min_occupancy'] = []
+        dataForSolver['time_per_demand_unit'] = .5
         results = {}
         if previous_result['ga'] == True:
             results = run_gavrptw(dataForSolver,0.85,0.02,100,True,previous_result)
@@ -172,9 +176,9 @@ class RouteView(View):
             print("after solver")
         print("printing optimal route")
         print(results)
-        new_results = run_gavrptw(data = dataForSolver, cx_pb=0.85, mut_pb=0.02, n_gen=50, time_p=0, hor_p=0, initRoute=False, base_solution = results)
+        # new_results = run_gavrptw(data = dataForSolver, cx_pb=0.85, mut_pb=0.02, n_gen=50, time_p=0, hor_p=0, initRoute=False, base_solution = results)
         print('New results ==========================>')
-        print(new_results)
+        # print(new_results)
         print('\n\n')
         #print(x[0]["name"])
         #x[{},{}]
@@ -191,15 +195,17 @@ class RouteView(View):
         print(results)
         for i in range(0,len(results['routes'])): #for each route
             route={}
-            route['bus']="NH123"
+            route['bus']=results['routes'][i]['bus']
             route['color']="red"    
             route['type']=results['pickup']
             route['nodes']=[]
             route['distance'] = 0
+            route['duration'] = results['routes'][i]['duration']
             previous_index = results['routes'][i]['nodes'][0]['index']
             for j in range(0,len(results['routes'][i]['nodes'])): # for each stop
                 node={}
                 stopIndex=results['routes'][i]['nodes'][j]['index']
+                node['index'] = stopIndex
                 route['distance'] += dataForSolver['distance_matrix'][previous_index][stopIndex]
                 node['lat']=locations[stopIndex]['lat']
                 node['lng']=locations[stopIndex]['lng']
@@ -212,6 +218,8 @@ class RouteView(View):
                     node['min_slack']=0
                 node['max_time']=results['routes'][i]['nodes'][j]['max_time_var']
                 node['min_time']=results['routes'][i]['nodes'][j]['min_time_var']
+                node['arrival'] = node['min_time']
+                node['departure'] = node['arrival'] + 1 + int(dataForSolver['passengerCount'][node['index']] * dataForSolver['time_per_demand_unit'])
                 route['nodes'].append(node)    
             routes.append(route)
         print(routes)
@@ -248,7 +256,7 @@ class RouteView(View):
         print(data['dropped_nodes'])
         data['status'] = results['status']
         data['pickup'] = results['pickup'] 
-
+        data['locations'] = locations
         print("DATA++++++++=========================")
         print(data)
         # print(data['routes'][0]['nodes'])

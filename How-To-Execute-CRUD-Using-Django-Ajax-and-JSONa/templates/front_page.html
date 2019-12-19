@@ -198,6 +198,11 @@
         </div>      
       </div>
     </div>
+    <div id="route_detail">
+      <div id="dropped_nodes"></div>
+      <div id="empty_vehicle"></div>
+      <div id="routes_details"></div>
+    </div>
     <div id="passanger_detail">
       <table class="table">
         <thead>
@@ -523,7 +528,27 @@
           //  function print(response) {
 
           //   }
+            previous_result['value'] = response['routes']
             previous_result['status'] = true;
+            for(var i=0;i<response['dropped_nodes'].length;i++){
+              console.log("in drop");
+              $('#dropped_nodes').append('<p>'+response['dropped_nodes'][i]+'</p>');
+            }
+            for(var i=0;i<response['empty_vehicle'].length;i++){
+              console.log("in drop");
+              $('#empty_vehicle').append('<p>'+response['empty_vehicle'][i]+'</p>');
+            }
+            for(var i=0;i<response['routes'].length;i++){
+              $('#routes_details').append('<p>'+ 'bus: ' + response['routes'][i]['bus']+'</p>')
+              $('#routes_details').append('<p>'+ 'duration: ' + response['routes'][i]['duration']+'</p>')
+              $('#routes_details').append('<p>'+ 'distance: ' + response['routes'][i]['distance']+'</p>')
+              for(var j=0;j<response['routes'][i]['nodes'].length;++j){
+                $('#routes_details').append('<p>'+ 'location: ' + ":" + locations[response['routes'][i]['nodes'][j]['index']]['name']+'</p>')
+                $('#routes_details').append('<p>'+ 'Arrival: ' + ":" + response['routes'][i]['nodes'][j]['arrival']+'</p>')
+                $('#routes_details').append('<p>'+ 'Departure: ' + ":" + response['routes'][i]['nodes'][j]['departure']+'</p>')
+
+              }
+            }
            },
             error: function(xhr) {
               console.log("FAILED");

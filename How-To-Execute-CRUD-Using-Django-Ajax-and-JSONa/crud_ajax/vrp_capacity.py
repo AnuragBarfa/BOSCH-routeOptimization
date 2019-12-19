@@ -22,7 +22,7 @@ def create_data_model(inputData):
     # data['demands'][1]=0
     data['vehicle_capacities']=inputData['busCapacity']
     data['num_vehicles'] = len(inputData['busCapacity'])
-    data['time_per_demand_unit'] = .5 
+    data['time_per_demand_unit'] = inputData['time_per_demand_unit']
     data['lower_stop']  = 1
     data['pickup'] = inputData['pickup']
     data['num_locations'] = len(inputData['duration_matrix'])
@@ -189,7 +189,7 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
         route['nodes'].append(node)
         route['totalDuration']=duration
         route['routeLoad']=assignment.Value(load_var)
-        route['totalTime']=assignment.Value(time_var)
+        route['duration']=assignment.Value(time_var)
         # route['start_time'] = data['office_start'] -  
         # route['start_time'] = data['office_end'] - node['min_time_var'] 
         plan_output += 'Duration of the route: {0}m\n'.format(duration)
@@ -201,6 +201,7 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
         total_duration += duration
         total_load += assignment.Value(load_var)
         total_time += assignment.Value(time_var)
+        # route['duration'] = time_var
         # print(route)
         if len(route['nodes'])<3:
             emptyVehicle.append(vehicle_id)
@@ -217,7 +218,7 @@ def print_solution(data, manager, routing, assignment):  # pylint:disable=too-ma
     print("empty vehicle")
     print(emptyVehicle)
     data2['pickup'] = data['pickup']
-    print('Total Duration of all routes: {0}m'.format(total_duration))
+    print('Total Distance of all routes: {0}m'.format(total_duration))
     print('Total Load of all routes: {}'.format(total_load))
     print('Total Time of all routes: {0}min'.format(total_time))
     # print(data)
