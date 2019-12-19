@@ -161,7 +161,7 @@ class RouteView(View):
         dataForSolver['time_windows']=[(0,200)]*len(locations)
         dataForSolver['starts'] = starts
         dataForSolver['ends'] = ends
-        dataForSolver['max_allowed_time'] = 120
+        dataForSolver['max_allowed_time'] = 1000
         dataForSolver['soft_time_windows'] = dataForSolver['time_windows']
         dataForSolver['soft_min_occupancy'] = [int((85/100)*x) for x in dataForSolver['busCapacity']]
         dataForSolver['previous_result'] = previous_result
@@ -170,20 +170,31 @@ class RouteView(View):
         dataForSolver['time_per_demand_unit'] = .5
         results = {}
 
-        if previous_result['ga']:
-            print("PRE####")
-            # print(pre_result)
-            results = run_gavrptw(data = dataForSolver, cx_pb=0.85, mut_pb=0.02, n_gen=50, time_p=0, hor_p=0, initRoute=True, base_solution = previous_result['value'])
-            # pre_result = results
-        else:
-            print("before solver")
-            results=solver(dataForSolver)
-            # pre_result = results
-            print("PRE####")
-            # print(pre_result)
-            print("after solver")
+        # if previous_result['ga']:
+        #     print("PRE####")
+        #     # print(pre_result)
+        #     results = run_gavrptw(data = dataForSolver, cx_pb=0.85, mut_pb=0.02, n_gen=50, time_p=0, hor_p=0, initRoute=True, base_solution = previous_result['value'])
+        #     # pre_result = results
+        # else:
+        #     print("before solver")
+        #     results=solver(dataForSolver)
+        #     # pre_result = results
+        #     print("PRE####")
+        #     # print(pre_result)
+        #     print("after solver")
+
+        print("before solver")
+        results=solver(dataForSolver)
+        # pre_result = results
+        print("PRE####")
+        # print(pre_result)
+        print("after solver")
+
+
         print("printing optimal route")
         print(results)
+        print(results['routes'])
+        
         # new_results = run_gavrptw(data = dataForSolver, cx_pb=0.85, mut_pb=0.02, n_gen=50, time_p=0, hor_p=0, initRoute=False, base_solution = results)
         print('New results ==========================>')
         # print(new_results)
@@ -204,7 +215,10 @@ class RouteView(View):
         for i in range(0,len(results['routes'])): #for each route
             route={}
             route['bus']=results['routes'][i]['bus']
-            route['color']="red"    
+            random_number = random.randint(0,16777215)
+            hex_number = str(hex(random_number))
+            hex_number ='#'+ hex_number[2:]
+            route['color']=hex_number    
             route['type']=results['pickup']
             route['nodes']=[]
             route['distance'] = 0
