@@ -198,6 +198,11 @@
         </div>      
       </div>
     </div>
+    <div id="route_detail">
+      <div id="dropped_nodes"></div>
+      <div id="empty_vehicle"></div>
+      <div id="routes_details"></div>
+    </div>
     <div id="passanger_detail">
       <table class="table">
         <thead>
@@ -521,6 +526,21 @@
            // distancematrix(responsestore,responsestore);
 
             previous_result['status'] = true;
+            console.log("printing");
+            for(var i=0;i<response['dropped_nodes'].length;i++){
+              console.log("in drop");
+              $('#dropped_nodes').append('<p>'+response['dropped_nodes'][i]+'</p>');
+            }
+            for(var i=0;i<response['empty_vehicle'].length;i++){
+              console.log("in drop");
+              $('#empty_vehicle').append('<p>'+response['empty_vehicle'][i]+'</p>');
+            }
+            for(var i=0;i<response['routes'].length;i++){
+              for(var j=0;j<response['routes'][i].length;j++){
+                console.log("in drop");
+                $('#routes_details').append('<p>'+response['routes'][i][j]+'</p>');
+              }
+            }
            },
             error: function(xhr) {
               console.log("FAILED");
