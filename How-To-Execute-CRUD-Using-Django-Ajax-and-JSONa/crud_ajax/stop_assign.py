@@ -293,28 +293,31 @@ class Router():
 
 
 
-def assign_stops(stud_data, stop_data, maxwalk, capacity, time_windows):
+def assign_stops(stud_data, stop_data, maxwalk, capacity, time_windows, horizon):
 
     router = Router(stud_data, stop_data, maxwalk, capacity)
     path_list, assignment = router.route_local_search()
+
+    print('<><>><><>><><>><>< ')
+    print(assignment)
     inf = 1000000000000000
     stop_wins = {}
-    for sno, stopno in assignment:
+    for sno, stopno in assignment.items():
         stop_wins[stopno] = []
-    for sno, stopno in assignment:
+    for sno, stopno in assignment.items():
         stop_wins[stopno].append(time_windows[sno-1])
 
     final_wins = {}
 
-    for stopno, wlist in stop_wins:
-        final_wins[stopno] = get_time_windows(wlist)
+    for stopno, wlist in stop_wins.items():
+        final_wins[stopno] = get_time_windows(wlist, horizon)
 
     for j in range(1, len(stop_data)):
         if(j not in final_wins):
             final_wins[j] = (0, inf)
 
     final_assignment = {}
-    for sno, stopno in assignment:
+    for sno, stopno in assignment.items():
         final_assignment[sno-1] = stopno
 
 
