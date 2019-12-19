@@ -305,6 +305,7 @@ class RouteView(View):
         routes=[]
         print("results")
         print(results)
+        totalDistance=0
         for i in range(0,len(results['routes'])): #for each route
             route={}
             route['bus']=results['routes'][i]['bus']
@@ -322,6 +323,7 @@ class RouteView(View):
                 stopIndex=results['routes'][i]['nodes'][j]['index']
                 node['index'] = stopIndex
                 route['distance'] += dataForSolver['distance_matrix'][previous_index][stopIndex]
+                totalDistance += dataForSolver['distance_matrix'][previous_index][stopIndex]
                 node['lat']=locations[stopIndex]['lat']
                 node['lng']=locations[stopIndex]['lng']
                 node['load']=results['routes'][i]['nodes'][j]['load_var']
@@ -340,6 +342,8 @@ class RouteView(View):
         print(routes)
         data={}
         data['pre_result'] = results
+        data['totalTime'] = results['totalTime']
+        data['totalDistance'] = totalDistance
         data['routes']=routes
         data['empty_vehicle'] = results['empty_vehicle']
         data['dropped_nodes'] = results['dropped_nodes']
@@ -348,6 +352,7 @@ class RouteView(View):
         data['status'] = results['status']
         data['pickup'] = results['pickup'] 
         data['locations'] = locations
+        data['totalLoad'] = results['totalLoad']
         print("DATA++++++++=========================")
         print(data)
         # print(data['routes'][0]['nodes'])
