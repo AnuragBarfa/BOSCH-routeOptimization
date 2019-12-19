@@ -283,7 +283,7 @@
       var file,fr;
       var previous_result={'ga':false};
       var csvdata=[];
-      var realtiveToAbsolute;
+      var relativeToAbsolute;
       var max_trip_time;
       var time_window2 ={};
       function office(){
@@ -316,7 +316,7 @@
         var ss  = moment.duration(start_time,"HH:mm");
         var lo = moment.duration(diff.subtract(ss)).asMinutes();
         s.subtract(max_trip_time,'minutes');
-        realtiveToAbsolute = moment.utc(+s).format('HH:mm');
+        relativeToAbsolute = moment.utc(+s).format('HH:mm');
         end_times.push(max_trip_time - lo);
         end_times.push(max_trip_time);
         pickup =1;
@@ -337,7 +337,7 @@
         var ss  = moment.duration(start_time,"HH:mm");
         var lo = moment.duration(diff.subtract(ss)).asMinutes();
         s.subtract(max_trip_time,'minutes');
-        realtiveToAbsolute = moment.utc(+ss).format('HH:mm');
+        relativeToAbsolute = moment.utc(+ss).format('HH:mm');
         start_times.push(0);
         start_times.push(lo);
         pickup =0;
@@ -438,23 +438,23 @@
         //var geoc = new google.maps.Geocoder();
 
         
-        $.ajax({
-          url: "/busStopSelection/",
-          data: {'csrfmiddlewaretoken':'{{csrf_token}}',
-          'passenger':JSON.stringify(stud_list),
-          'busStops':JSON.stringify(location_set)
-          },
-          cache: false,
-          type: "POST",
-          success:function(response){
-            console.log("success");
-            console.log(response);
-          },
-          error: function(xhr) {
-              console.log("FAILED");
-              console.log(xhr);
-          }        
-        });
+        // $.ajax({
+        //   url: "/busStopSelection/",
+        //   data: {'csrfmiddlewaretoken':'{{csrf_token}}',
+        //   'passenger':JSON.stringify(stud_list),
+        //   'busStops':JSON.stringify(location_set)
+        //   },
+        //   cache: false,
+        //   type: "POST",
+        //   success:function(response){
+        //     console.log("success");
+        //     console.log(response);
+        //   },
+        //   error: function(xhr) {
+        //       console.log("FAILED");
+        //       console.log(xhr);
+        //   }        
+        // });
         
         headPosition=headPosition+headerSeprator;
         var busDetailsTill=headPosition+noOfBus;
@@ -509,7 +509,7 @@
         alert("UPLOAD DONE!!");
 
       }
-      function routeopt(){
+      function routeopt(ga = false){
         directionsService9 = new google.maps.DirectionsService();
         ch=1;
         console.log("storeLocationDetails");
@@ -1120,18 +1120,10 @@ $(document).ready(function()
             
           }
         });
-     //   alert("1");
-      if(ch==1 && ch2>3){
-       // alert("2");
-      directionsDisplay9.setMap(null); 
-
-         routeopt();
-       }
-     
       }
       
     }
-   //routeopt();   
+   routeopt(true);   
 });
   
 

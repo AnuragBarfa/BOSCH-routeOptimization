@@ -226,6 +226,14 @@ class RouteView(View):
         dataForSolver['ends'] = ends
         dataForSolver['max_allowed_time'] = max_trip_time
         dataForSolver['soft_time_windows'] = dataForSolver['time_windows']
+        if previous_result['ga']:
+            for k in time_window2:
+                print("k##")
+                print(k)
+                print(type(k))
+                print(time_window2[k])
+                print(dataForSolver['time_windows'][int(k)])
+                dataForSolver['time_windows'][int(k)] = time_window2[k]
         dataForSolver['soft_min_occupancy'] = [int((85/100)*x) for x in dataForSolver['busCapacity']]
         dataForSolver['previous_result'] = previous_result
         dataForSolver['duration_matrix'] = [ [y//60 for y in x] for x in duration_matrix ]
