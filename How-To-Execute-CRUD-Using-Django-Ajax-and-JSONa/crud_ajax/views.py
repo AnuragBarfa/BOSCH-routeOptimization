@@ -126,7 +126,7 @@ class RouteView(View):
         pickup = json.loads(request.POST['pickup'])
         # pickup = 1
         previous_result = json.loads(request.POST['previous_result2'])
-        time_window = json.loads(request.POST['time_window'])
+        # time_window = json.loads(request.POST['time_window'])
         print(locations)
         print("BUS=====================")
         print(busdetails)
@@ -160,10 +160,10 @@ class RouteView(View):
         dataForSolver['passengerCount']=passengerPerStop
         dataForSolver['busCapacity']=busCapacity
         dataForSolver['time_windows']= [(0,200)]*len(locations)
-        dataForSolver['time_windows2'] = time_window
+        # dataForSolver['time_windows2'] = time_window
         dataForSolver['starts'] = starts
         dataForSolver['ends'] = ends
-        dataForSolver['max_allowed_time'] = 120
+        dataForSolver['max_allowed_time'] = 1000
         dataForSolver['soft_time_windows'] = dataForSolver['time_windows']
         dataForSolver['soft_min_occupancy'] = [int((85/100)*x) for x in dataForSolver['busCapacity']]
         dataForSolver['previous_result'] = previous_result
@@ -184,8 +184,19 @@ class RouteView(View):
             print("PRE####")
             # print(pre_result)
             print("after solver")
+
+        # print("before solver")
+        # results=solver(dataForSolver)
+        # # pre_result = results
+        # print("PRE####")
+        # # print(pre_result)
+        # print("after solver")
+
+
         print("printing optimal route")
         print(results)
+        print(results['routes'])
+        
         # new_results = run_gavrptw(data = dataForSolver, cx_pb=0.85, mut_pb=0.02, n_gen=50, time_p=0, hor_p=0, initRoute=False, base_solution = results)
         # print('New results ==========================>')
         # print(new_results)
@@ -206,7 +217,10 @@ class RouteView(View):
         for i in range(0,len(results['routes'])): #for each route
             route={}
             route['bus']=results['routes'][i]['bus']
-            route['color']="red"    
+            random_number = random.randint(0,16777215)
+            hex_number = str(hex(random_number))
+            hex_number ='#'+ hex_number[2:]
+            route['color']=hex_number    
             route['type']=results['pickup']
             route['nodes']=[]
             route['distance'] = 0
