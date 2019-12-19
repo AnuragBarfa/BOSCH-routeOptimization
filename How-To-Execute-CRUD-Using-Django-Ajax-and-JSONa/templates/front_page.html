@@ -259,6 +259,7 @@
       var csvdata=[];
       var relativeToAbsolute;
       var max_trip_time;
+      var time_window;
       function office(){
         // console.log(office1Marker);
         if (office1Marker!=null){
@@ -426,7 +427,8 @@
         alert("UPLOADE DONE!!");
       }           
 
-      function routeopt(){
+      function routeopt(ga = False){
+        previous_result['ga'] = False;
         console.log("storeLocationDetails");
         console.log(storeLocationDetails);
         console.log("stoplocations");
@@ -562,7 +564,7 @@
               console.log(xhr);
             }
           });
-          previous_result['ga'] = true;
+         previous_result['ga'] = true;
          return false;
          
       }
@@ -1014,7 +1016,7 @@ $(document).ready(function()
       }
       
     }
-    routeopt();   
+    routeopt( True );   
 });
   
 
