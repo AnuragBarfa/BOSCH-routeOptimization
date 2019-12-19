@@ -22,20 +22,64 @@
 
 <body>
   <!-- <canvas id="myCanvas" width="400" height="400"></canvas> -->
-    
+  <div id="map" style="position:relative;width:0%;height: 0%;float:left;"></div>
+
   <div id="container">
 
   <div id="myDiv" style="height: 620px; width: 100%"></div>
   
-  <div id="myDiv2" style="height: 620px; opacity: 0.7; width: 96%"></div>
+  <div id="myDiv2" style="height: 620px; opacity: 0.4; width: 96%"></div>
 </div>
 
   
       
     <script type="text/javascript">
-      var previous_result={'ga':false};
-      var layout2 = {
+      var map;
+      var request;
+      var service;
+      var geocoder;
+      var directionsDisplay;
+      var directionsService;
 
+      function initMap() {  
+        var myLatLng = {lat: 20, lng: 78};
+        directionsService = new google.maps.DirectionsService();
+        map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 4,
+          center: myLatLng,
+          disableDefaultUI: true
+        });
+        directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
+        service = new google.maps.DistanceMatrixService;
+        directionsDisplay.setMap(map);
+        bounds = new google.maps.LatLngBounds();
+        geocoder = new google.maps.Geocoder();
+        
+      }
+
+      function codeLatLng(lat, lng) {
+        var latlng = new google.maps.LatLng(lat, lng);
+        geocoder.geocode({
+          'latLng': latlng
+        }, function (results, status) {
+          if (status === google.maps.GeocoderStatus.OK) {
+            if (results[0]) {
+              console.log(results[0]);
+              return results[0];
+            } else {
+              alert('No results found');
+            }
+          } else {
+            alert('Geocoder failed due to: ' + status);
+          }
+        });
+
+      }
+
+     
+
+
+      var layout2 = {
   xaxis: {
     zeroline: false,
     showline: false,
@@ -53,8 +97,6 @@
      "gridcolor": "rgb(255,255,255)"
     }
 };        
-
-
         var layout = {
           title: 'BUS ROUTES SIMULATION',
           xaxis: {
@@ -72,6 +114,7 @@
             
         };
         var loc={};
+        var loc2={};
         var myVar;
         var index=0;
         var starts=[0,0];
@@ -86,16 +129,25 @@
         var busStopsY=[];
         var intermidiateNodeY=[];
         var officeY=[];
+        var totalbuses;
+        var glob={};
+        var old={};
+        var old2={};
         function getUpdate(){
           $.ajax({
                 url: "/simulator/",
-                data: {'csrfmiddlewaretoken':'{{csrf_token}}','updates':'ifUIisusedforupdatepassdatafromhere','index':index,'starts':JSON.stringify(starts),'ends':JSON.stringify(ends),'previous_result2':JSON.stringify(previous_result)},
+                data: {'csrfmiddlewaretoken':'{{csrf_token}}','updates':'ifUIisusedforupdatepassdatafromhere','index':index,'starts':JSON.stringify(starts),'ends':JSON.stringify(ends)},
                 cache: false,
                 type: "POST",
                 success: function(response) {
                   console.log("SUCCESS");
                   console.log(response);
+                  glob=response;
                   index=response['index'];
+                  console.log("ROUTES");
+                  console.log(response['routes']);
+                  totalbuses=response['routes'].length;
+                  // alert(totalbuses);
                   data = [];
                   busStopsX=[];
                   intermidiateNodeX=[];
@@ -110,7 +162,6 @@
                       xCord.push(response['allRoutes'][i][j]['lat']);
                       yCord.push(response['allRoutes'][i][j]['lng']);
                     }
-
                     var route = {
                       x: xCord,
                       y: yCord,
@@ -156,15 +207,12 @@
                     }
                     console.log(xCord);
                     console.log(yCord);
-
                   
-
-
                     var route = {
                       x: xCord,
                       y: yCord,
                       mode: 'lines',
-                      name: 'Route'+i.toString(),
+                      name: 'Route',
                       text: stopName,
                       line: {
                         color: routeColor,
@@ -218,25 +266,45 @@
                   console.log(data);
                   Plotly.newPlot('myDiv', data, layout, {showSendToCloud: true});
                   // console.log(response['routes']) 
-
-
                   //////////
                   
                   loc['xCord']=[];
                   loc['yCord']=[];
+                  loc2['xCord']=[];
+                  loc2['yCord']=[];
+              
+                  old['xCord']=[];
+                  old['yCord']=[];
+                  old2['xCord']=[];
+                  old2['yCord']=[];
+                      
+                    //BUS1 ROUTE:
+                    var lengthis=response['routes'];
+                  for(var i=0;i<lengthis[0].length;i++){
+                    loc['xCord'].push(lengthis[0][i]["lat"]);
+                    loc['yCord'].push(lengthis[0][i]["lng"]);
+                  }
+                    loc['xCord'].push(lengthis[0][0]["lat"]);
+                    loc['yCord'].push(lengthis[0][0]["lng"]);
+                    
+                    old['xCord'].push(lengthis[0][lengthis.length-1]["lat"]);
+                    old['xCord'].push(lengthis[0][lengthis.length-1]["lng"]);
 
-                  for(var i=0;i<xCord.length;i++){
-                    loc['xCord'].push(xCord[i]);
-                    loc['yCord'].push(yCord[i]);
+                    //BUS2 ROUTE:
+                  for(var i=0;i<lengthis[1].length;i++){
+                    loc2['xCord'].push(lengthis[1][i]["lat"]);
+                    loc2['yCord'].push(lengthis[1][i]["lng"]);
                   }
-                  for(var i=0;i<intermidiateNodeY.length;i++){
-                    loc['xCord'].push(intermidiateNodeX[i]);
-                    loc['yCord'].push(intermidiateNodeY[i]);
-                  }
+                    old2['xCord'].push(lengthis[1][lengthis.length-1]["lat"]);
+                    old2['xCord'].push(lengthis[1][lengthis.length-1]["lng"]);
+                    
+                    loc2['xCord'].push(response['routes'][1][0]["lat"]);
+                    loc2['yCord'].push(response['routes'][1][0]["lng"]);
+
+
   
-  
-                  randomize(loc,12000);
-                  previous_result['status'] = true;
+                  randomize(loc,120000);
+                  
                   //////////
                  },
                 error: function(xhr) {
@@ -244,14 +312,15 @@
                   console.log(xhr);
                 }
               });
-
               
         }
         
         function randomize(loc,speed) {
+          var move_markers=[];
+          // for(var i =0;i<totalbuses.length;i++){
               var move_marker = {
-                    x: [xCord[0]],
-                    y: [yCord[0]],
+                    x: [xCord[i]],
+                    y: [yCord[i]],
                     mode: 'markers',
                     marker: {
                       color: 'rgb(0,0,0)',
@@ -263,6 +332,8 @@
                       }
                     }
                   };
+                  move_markers.push(move_marker);
+
                   var move_marker2 = {
                     x: [xCord[1]],
                     y: [yCord[1]],
@@ -277,47 +348,43 @@
                       }
                     }
                   };
-                   
-                  Plotly.plot('myDiv2', [move_marker,move_marker2] ,layout2 , {showSendToCloud: true});
+                  move_markers.push(move_marker2);
+                  var finalMarkerloc=[];
+                  finalMarkerloc[x]={}
 
+                 //  }
+                  Plotly.newPlot('myDiv2', move_markers ,layout2 , {showSendToCloud: true});
                 
             // for(var j=fromY;j<toY;j+=0.2)
-             for(var i=0;i<loc['xCord'].length-1;i++){
-              
-              Plotly.animate(
-                "myDiv2",
-                {
-                  data: [{ x: [loc['xCord'][i]] , y:[loc['yCord'][i]]},{ x: [loc['xCord'][i+1]] , y:[loc['yCord'][i+1]]}],
-                  
-                  layout: layout2
-                },
-                {
-                  transition: {
-                    duration: speed,
-                    easing: "cubic-in-out"
-                  }
-                }
-              );
-
-              }
+             for(var i=1;i<loc['xCord'].length;i++){
 
               
               Plotly.animate(
                 "myDiv2",
                 {
-                  data: [{ x: [loc['xCord'][loc['xCord'].length-2]] , y:[loc['yCord'][loc['yCord'].length-2]]},{ x: [loc['xCord'][loc['xCord'].length-1]] , y:[loc['yCord'][loc['xCord'].length-1]]}],
+                  data: [{ x: [loc['xCord'][i-1]] , y:[loc['yCord'][i-1]]},{ x: [loc2['xCord'][i]] , y:[loc2['yCord'][i]]}],
                   
                   layout: layout2
                 },
                 {
                   transition: {
-                    duration: speed,
+                    duration: 5000,
                     easing: "cubic-in-out"
                   }
                 }
               );
               
+              // console.log("NEXT STOP FOR BUS2 IS:"+loc2['xCord'][i]+" "+loc['yCord'][i]);  
               
+               }
+          for(var i=1;i<loc['xCord'].length;i++){
+              console.log("BUS1 STOP "+i+"th :"+loc['xCord'][i-1]+" "+loc['yCord'][i-1]);
+              // console.log(i+"th STOP FOR BUS1 IS:"+loc['xCord'][i]+" "+loc['yCord'][i]);
+          }            
+          for(var i=1;i<loc['xCord'].length;i++){
+          
+              console.log("BUS2 STOP "+i+"th :"+loc2['xCord'][i-1]+" "+loc['yCord'][i-1]);
+          }
         }
         function startSimulation(){
             var d = new Date();
@@ -329,20 +396,32 @@
             clearInterval(myVar); // stop the simualtion
         }
         $(document).ready(function(){
-             startSimulation();
+            startSimulation();
             // stopSimulation();
             // startSimulation();
             myVar = setInterval(function(){
               loc['xCord']=[];
               loc['yCord']=[];
+              loc2['xCord']=[];
+              loc2['yCord']=[];
+              
+              loc['xCord'].push(old['xCord'][0]);
+              loc['yCord'].push(old['yCord'][0]);
+              loc2['xCord'].push(old2['xCord'][0]);
+              loc2['yCord'].push(old2['yCord'][0]);
+              
+              old['xCord']=[];
+              old['yCord']=[];
+              old2['xCord']=[];
+              old2['yCord']=[];
               
               startSimulation();
-
-
-            }, 12000);
-            // setInterval(function(){
+            }, 15000);
+            //setInterval(function(){
             // },20);
         });
     </script> 
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmwBs8dSuwg56fTWsbJyMdrvXYU3_Pim4&libraries=places&callback=initMap">
+</script>
   </body>
 </html>
