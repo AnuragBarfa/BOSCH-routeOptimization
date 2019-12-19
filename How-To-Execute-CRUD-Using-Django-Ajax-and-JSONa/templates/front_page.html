@@ -214,8 +214,8 @@
           </div>
           <div class="collapse" id="collapseExample4">
             <div class="card card-body">
-                <p><input type="text" placeholder="Min occupancy %" style="margin: 5px;">
-                <input type="checkbox"style="margin: 5px;">  
+                <p><input type="text" id="min_occ" placeholder="Min occupancy %" style="margin: 5px;">
+                <input type="checkbox" id="min_occ_checkbox" style="margin: 5px;">  
               </p>
                 <button  class="btn btn-primary" id="trip_time" aria-expanded="false" style="margin: 5px;" onclick=""> Save </button>
             </div>
@@ -551,6 +551,19 @@
         console.log("prev result")
         console.log(previous_result)
 
+        
+        var MinOccupancyPer,MinOccupancyPerHard;
+        MinOccupancyPer=document.getElementById('min_occ').value;
+        var checkBox=document.getElementById('min_occ_checkbox');
+        if (checkBox.checked == true){
+          MinOccupancyPerHard=true;
+        }else{
+          MinOccupancyPerHard=false;
+        }
+
+        console.log(MinOccupancyPer);
+        console.log(MinOccupancyPerHard);
+
         $.ajax({
           url: "route/",
           data: {'csrfmiddlewaretoken':'{{csrf_token}}','locations':JSON.stringify(locations),
@@ -834,7 +847,7 @@
           }
         });
         directionsDisplay9.setMap(map);
-        var directionsService9 = new google.maps.DirectionsService();
+        
         directionsService9.route(request, function(result, status) {
           if (status == google.maps.DirectionsStatus.OK) {
             directionsDisplay9.setDirections(result);
