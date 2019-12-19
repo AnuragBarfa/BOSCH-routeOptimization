@@ -438,23 +438,39 @@
         //var geoc = new google.maps.Geocoder();
 
         
-        // $.ajax({
-        //   url: "/busStopSelection/",
-        //   data: {'csrfmiddlewaretoken':'{{csrf_token}}',
-        //   'passenger':JSON.stringify(stud_list),
-        //   'busStops':JSON.stringify(location_set)
-        //   },
-        //   cache: false,
-        //   type: "POST",
-        //   success:function(response){
-        //     console.log("success");
-        //     console.log(response);
-        //   },
-        //   error: function(xhr) {
-        //       console.log("FAILED");
-        //       console.log(xhr);
-        //   }        
-        // });
+        $.ajax({
+          url: "/busStopSelection/",
+          data: {'csrfmiddlewaretoken':'{{csrf_token}}',
+          'passenger':JSON.stringify(stud_list),
+          'busStops':JSON.stringify(location_set)
+          },
+          cache: false,
+          type: "POST",
+          success:function(response){
+            console.log("success");
+            console.log(response);
+            x = [];
+            for(var key in response['bus_stop_info']){
+              var k1 = key;
+              var k2 = response['bus_stop_info'][key]['psngrCount'];
+              var res = {};
+              res['busStopName'] = k1;
+              res['psngrCount'] = k2;
+              res['time_window'] = response['bus_stop_info'][key]['time_window'];
+              x.push(res);
+            }
+            for(var i=0;i<x.length;i++){
+              var currStop=x[i];
+              console.log(currStop);
+              geocoder.geocode( { 'address': x[i]['busStopName']}, makeCallback(currStop));
+              console.log(storeLocationDetails);
+            }
+          },
+          error: function(xhr) {
+              console.log("FAILED");
+              console.log(xhr);
+          }        
+        });
         
         headPosition=headPosition+headerSeprator;
         var busDetailsTill=headPosition+noOfBus;
@@ -468,15 +484,11 @@
           '</tr>';
           currTable.prepend(row);
         }
-        var x=[{'busStopName':'Devegowda petrol bunk, Gowdanapalya, Uttarahalli Hobli, Bengaluru,','psngrCount':10},{'busStopName':'RNSIT, Channasandra, RR Nagar, Bengaluru,','psngrCount':20},{'busStopName':'PES College Road, Phase 1, Banashankari Stage I, Banashankari, Bengaluru','psngrCount':15}];
+        // var x=[{'busStopName':'Devegowda petrol bunk, Gowdanapalya, Uttarahalli Hobli, Bengaluru,','psngrCount':10},
+        // {'busStopName':'RNSIT, Channasandra, RR Nagar, Bengaluru,','psngrCount':20},
+        // {'busStopName':'PES College Road, Phase 1, Banashankari Stage I, Banashankari, Bengaluru','psngrCount':15}];
         var geocoder = new google.maps.Geocoder();
-        for(var i=0;i<x.length;i++){
-          var currStop=x[i];
-          console.log(currStop);
-          geocoder.geocode( { 'address': x[i]['busStopName']}, makeCallback(currStop));
-          console.log(storeLocationDetails);
-        
-        }
+
         function makeCallback(currStop) {
           var geocodeCallBack=function(results, status) {
             if (status == google.maps.GeocoderStatus.OK){
@@ -678,8 +690,6 @@
             }
           });
           previous_result['ga'] = true;
-          
-          
          return false;
          
       }
