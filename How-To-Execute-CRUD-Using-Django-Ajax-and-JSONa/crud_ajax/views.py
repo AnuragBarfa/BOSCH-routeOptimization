@@ -186,8 +186,9 @@ class RouteView(View):
         starts = json.loads(request.POST['starts'])
         ends = json.loads(request.POST['ends'])
         pickup = json.loads(request.POST['pickup'])
-        # pickup = 1
+        max_trip_time = json.loads(request.POST['max_trip_time'])
         previous_result = json.loads(request.POST['previous_result2'])
+        time_window2 = json.loads(request.POST['time_window2'])
         print(locations)
         print("BUS=====================")
         print(busdetails)
@@ -223,7 +224,7 @@ class RouteView(View):
         dataForSolver['time_windows']=[(0,200)]*len(locations)
         dataForSolver['starts'] = starts
         dataForSolver['ends'] = ends
-        dataForSolver['max_allowed_time'] = 1000
+        dataForSolver['max_allowed_time'] = max_trip_time
         dataForSolver['soft_time_windows'] = dataForSolver['time_windows']
         dataForSolver['soft_min_occupancy'] = [int((85/100)*x) for x in dataForSolver['busCapacity']]
         dataForSolver['previous_result'] = previous_result
