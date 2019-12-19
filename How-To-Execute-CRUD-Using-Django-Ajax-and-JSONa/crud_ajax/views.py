@@ -170,25 +170,25 @@ class RouteView(View):
         dataForSolver['time_per_demand_unit'] = .5
         results = {}
 
-        # if previous_result['ga']:
-        #     print("PRE####")
-        #     # print(pre_result)
-        #     results = run_gavrptw(data = dataForSolver, cx_pb=0.85, mut_pb=0.02, n_gen=50, time_p=0, hor_p=0, initRoute=True, base_solution = previous_result['value'])
-        #     # pre_result = results
-        # else:
-        #     print("before solver")
-        #     results=solver(dataForSolver)
-        #     # pre_result = results
-        #     print("PRE####")
-        #     # print(pre_result)
-        #     print("after solver")
+        if previous_result['ga']:
+            print("PRE####")
+            # print(pre_result)
+            results = run_gavrptw(data = dataForSolver, cx_pb=0.85, mut_pb=0.02, n_gen=50, time_p=0, hor_p=0, initRoute=True, base_solution = previous_result['value'])
+            # pre_result = results
+        else:
+            print("before solver")
+            results=solver(dataForSolver)
+            # pre_result = results
+            print("PRE####")
+            # print(pre_result)
+            print("after solver")
 
-        print("before solver")
-        results=solver(dataForSolver)
-        # pre_result = results
-        print("PRE####")
-        # print(pre_result)
-        print("after solver")
+        # print("before solver")
+        # results=solver(dataForSolver)
+        # # pre_result = results
+        # print("PRE####")
+        # # print(pre_result)
+        # print("after solver")
 
 
         print("printing optimal route")
