@@ -333,7 +333,7 @@ class SimulatorView(View):
         dataIndex=json.loads(request.POST['index'])
         starts = json.loads(request.POST['starts'])
         ends = json.loads(request.POST['ends'])
-        # previous_result = json.loads(request.POST['previous_result2'])
+        previous_result = json.loads(request.POST['previous_result'])
         previndex=dataIndex
         increment=random.choice([0,1])
         dataIndex=(dataIndex+increment)%3
@@ -385,8 +385,8 @@ class SimulatorView(View):
         dataForSolver['soft_min_occupancy'] = [int((85/100)*x) for x in dataForSolver['busCapacity']]
         dataForSolver['duration_matrix'] = dataForSolver['distance_matrix']
         dataForSolver['hard_min_occupancy'] = []
-        # dataForSolver['previous_result'] = previous_result
-        
+        dataForSolver['previous_result'] = previous_result
+        dataForSolver['time_per_demand_unit'] = .5
         output=solver(dataForSolver)
         result=output['routes']
         
@@ -429,6 +429,7 @@ class SimulatorView(View):
         #     data['updated']=True
         data['updated']=True
         data['routes']=routes
+        data['pre_result'] = output
         data['allRoutes']=allRoutes
         data['index']=dataIndex
         return JsonResponse(data)

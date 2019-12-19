@@ -133,10 +133,11 @@
         var glob={};
         var old={};
         var old2={};
+        var previous_result={'ga':false};
         function getUpdate(){
           $.ajax({
                 url: "/simulator/",
-                data: {'csrfmiddlewaretoken':'{{csrf_token}}','updates':'ifUIisusedforupdatepassdatafromhere','index':index,'starts':JSON.stringify(starts),'ends':JSON.stringify(ends)},
+                data: {'csrfmiddlewaretoken':'{{csrf_token}}','updates':'ifUIisusedforupdatepassdatafromhere','index':index,'starts':JSON.stringify(starts),'ends':JSON.stringify(ends),'previous_result':JSON.stringify(previous_result)},
                 cache: false,
                 type: "POST",
                 success: function(response) {
@@ -303,8 +304,9 @@
 
 
   
-                  randomize(loc,120000);
-                  
+                  randomize(loc,120);
+                  previous_result['value'] = response['pre_result']
+                  previous_result['status'] = true;
                   //////////
                  },
                 error: function(xhr) {
@@ -358,7 +360,7 @@
                 },
                 {
                   transition: {
-                    duration: 8000,
+                    duration: speed,
                     easing: "cubic-in-out"
                   }
                 }
@@ -372,7 +374,6 @@
               // console.log(i+"th STOP FOR BUS1 IS:"+loc['xCord'][i]+" "+loc['yCord'][i]);
           }            
           for(var i=1;i<loc['xCord'].length;i++){
-          
               console.log("BUS2 STOP "+i+"th :"+loc2['xCord'][i-1]+" "+loc['yCord'][i-1]);
           }
         }
