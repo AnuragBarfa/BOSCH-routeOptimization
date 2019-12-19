@@ -188,7 +188,6 @@ class RouteView(View):
         pickup = json.loads(request.POST['pickup'])
         # pickup = 1
         previous_result = json.loads(request.POST['previous_result2'])
-        # time_window = json.loads(request.POST['time_window'])
         print(locations)
         print("BUS=====================")
         print(busdetails)
@@ -221,8 +220,7 @@ class RouteView(View):
         dataForSolver['pickup'] = pickup
         dataForSolver['passengerCount']=passengerPerStop
         dataForSolver['busCapacity']=busCapacity
-        dataForSolver['time_windows']= [(0,200)]*len(locations)
-        # dataForSolver['time_windows2'] = time_window
+        dataForSolver['time_windows']=[(0,200)]*len(locations)
         dataForSolver['starts'] = starts
         dataForSolver['ends'] = ends
         dataForSolver['max_allowed_time'] = 1000
@@ -235,7 +233,7 @@ class RouteView(View):
         results = {}
 
         if previous_result['ga']:
-            print("PRE####")
+            print("RUNNING GENETIC ALGO")
             # print(pre_result)
             results = run_gavrptw(data = dataForSolver, cx_pb=0.85, mut_pb=0.02, n_gen=50, time_p=0, hor_p=0, initRoute=True, base_solution = previous_result['value'])
             # pre_result = results
@@ -260,7 +258,7 @@ class RouteView(View):
         print(results['routes'])
         
         # new_results = run_gavrptw(data = dataForSolver, cx_pb=0.85, mut_pb=0.02, n_gen=50, time_p=0, hor_p=0, initRoute=False, base_solution = results)
-        # print('New results ==========================>')
+        print('New results ==========================>')
         # print(new_results)
         print('\n\n')
         #print(x[0]["name"])
@@ -397,7 +395,7 @@ class SimulatorView(View):
         dataIndex=json.loads(request.POST['index'])
         starts = json.loads(request.POST['starts'])
         ends = json.loads(request.POST['ends'])
-        previous_result = json.loads(request.POST['previous_result2'])
+        # previous_result = json.loads(request.POST['previous_result2'])
         previndex=dataIndex
         increment=random.choice([0,1])
         dataIndex=(dataIndex+increment)%3
@@ -449,7 +447,7 @@ class SimulatorView(View):
         dataForSolver['soft_min_occupancy'] = [int((85/100)*x) for x in dataForSolver['busCapacity']]
         dataForSolver['duration_matrix'] = dataForSolver['distance_matrix']
         dataForSolver['hard_min_occupancy'] = []
-        dataForSolver['previous_result'] = previous_result
+        # dataForSolver['previous_result'] = previous_result
         
         output=solver(dataForSolver)
         result=output['routes']
