@@ -508,7 +508,7 @@
           'busdetails':JSON.stringify(busdetails),
           'starts':JSON.stringify(start),
           'ends' : JSON.stringify(end),
-          // 'pickup' :JSON.stringify(pickup),
+          'pickup' :JSON.stringify(pickup),
           'previous_result2':JSON.stringify(previous_result)
           },
           cache: false,
@@ -528,16 +528,16 @@
           //  function print(response) {
 
           //   }
-            previous_result['value'] = response['routes']
+            previous_result['value'] = response['pre_result']
             previous_result['status'] = true;
             console.log("printing");
             for(var i=0;i<response['dropped_nodes'].length;i++){
               console.log("in drop");
-              $('#dropped_nodes').append('<p>'+response['dropped_nodes'][i]+'</p>');
+              $('#dropped_nodes').append('<p>'+"Dropped Nodes: "  + response['dropped_nodes'][i]+'</p>');
             }
             for(var i=0;i<response['empty_vehicle'].length;i++){
               console.log("in drop");
-              $('#empty_vehicle').append('<p>'+response['empty_vehicle'][i]+'</p>');
+              $('#empty_vehicle').append('<p>'+"empty Vehicle: "  + response['empty_vehicle'][i]+'</p>');
             }
             for(var i=0;i<response['routes'].length;i++){
               $('#routes_details').append('<p>'+ 'bus: ' + response['routes'][i]['bus']+'</p>')
@@ -556,7 +556,9 @@
               console.log(xhr);
             }
           });
+          previous_result['ga'] = true;
          return false;
+         
       }
       
       document.getElementById('office').disabled = false;
@@ -1005,7 +1007,8 @@ $(document).ready(function()
       // }
       }
       
-    }   
+    }
+    routeopt();   
 });
   
 

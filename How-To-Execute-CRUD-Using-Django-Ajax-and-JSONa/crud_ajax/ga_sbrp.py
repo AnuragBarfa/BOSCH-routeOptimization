@@ -64,10 +64,18 @@ def load_data(data):
 
 
 def mutz(individual):
+    # print("INDI")
+    if(len(individual) <= 4):
+        cpy = individual
+        random.shuffle(cpy)
+        return cpy
+        
     start, stop = sorted(random.sample(range(len(individual)), 2))
     while(start >= stop or start == 0 or stop+1 == len(individual)):
+        print(start)
+        print(stop)
         start, stop = sorted(random.sample(range(len(individual)), 2))
-        
+    #print("after while") 
     individual = individual[:start] + individual[stop:start-1:-1] + individual[stop+1:]
     return individual
 
@@ -119,12 +127,14 @@ def converts(soln, instance):
 # In[6]:
 
 
-def initPopulation():
+def initPopulation(baze):
     ## return some random initialization
     prob = random.random()
     mutation_prob = 0.5
     #base_individual = [12,11,15,13,9,14,16,10,2,1,4,3,7,8,6,5]
-    individual = base_individual
+    individual = baze
+    # print("ing")
+    # print(individual)
     if(prob < mutation_prob):
         individual = mutz(individual)
     return individual
@@ -330,7 +340,8 @@ def cx_partialy_matched(ind1, ind2):
 def run_gavrptw(data, cx_pb, mut_pb, n_gen,initRoute=False, base_solution={}, pop_size = 400,      time_p=2000, horiz=10000, hor_p=1500,load_p=20000):
     '''gavrptw.core.run_gavrptw(instance_name, unit_cost, init_cost, wait_cost, delay_cost,
         ind_size, pop_size, cx_pb, mut_pb, n_gen, export_csv=False, customize_data=False)'''
-
+    # print("basse")
+    # print(base_solution)
     instance = load_data(data)
     #print(instance)
     actual_size = instance['good_nodes']
@@ -348,8 +359,10 @@ def run_gavrptw(data, cx_pb, mut_pb, n_gen,initRoute=False, base_solution={}, po
 
 
     base_individual = converts(base_solution, instance)
+    # print("baseee")
+    # print(base_individual)
     if(initRoute):
-        toolbox.register('indexes', initPopulation)
+        toolbox.register('indexes', initPopulation, baze = base_individual)
     else:
         toolbox.register('indexes', random.sample, range(0, actual_size), actual_size)
     

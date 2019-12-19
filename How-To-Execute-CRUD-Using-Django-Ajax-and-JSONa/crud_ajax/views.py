@@ -20,6 +20,7 @@ from .ga_sbrp import run_gavrptw
 buscap=[]
 count=[]
 num_vehicles=0
+
 def FrontView(request):
     users=CrudUser.objects.all()
     # mySolver()
@@ -122,8 +123,8 @@ class RouteView(View):
         busdetails=json.loads(request.POST['busdetails'])
         starts = json.loads(request.POST['starts'])
         ends = json.loads(request.POST['ends'])
-        # pickup = json.loads(request.POST['pickup'])
-        pickup = 1
+        pickup = json.loads(request.POST['pickup'])
+        # pickup = 1
         previous_result = json.loads(request.POST['previous_result2'])
         print(locations)
         print("BUS=====================")
@@ -168,11 +169,18 @@ class RouteView(View):
         dataForSolver['hard_min_occupancy'] = []
         dataForSolver['time_per_demand_unit'] = .5
         results = {}
-        if previous_result['ga'] == True:
-            results = run_gavrptw(dataForSolver,0.85,0.02,100,True,previous_result)
+
+        if previous_result['ga']:
+            print("PRE####")
+            # print(pre_result)
+            results = run_gavrptw(data = dataForSolver, cx_pb=0.85, mut_pb=0.02, n_gen=50, time_p=0, hor_p=0, initRoute=True, base_solution = previous_result['value'])
+            # pre_result = results
         else:
             print("before solver")
             results=solver(dataForSolver)
+            # pre_result = results
+            print("PRE####")
+            # print(pre_result)
             print("after solver")
         print("printing optimal route")
         print(results)
@@ -249,6 +257,7 @@ class RouteView(View):
         # print(routes[0]['nodes'][0]['name'].replace(", ", "+"))
         # print("ROUTES=============OVER=================")   
         data={}
+        data['pre_result'] = results
         data['routes']=routes
         data['empty_vehicle'] = results['empty_vehicle']
         data['dropped_nodes'] = results['dropped_nodes']
