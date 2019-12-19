@@ -368,6 +368,7 @@
           var currPsngr=dataRows[headPosition].split(",");
           console.log(currPsngr);
         }
+        
         headPosition=headPosition+headerSeprator;
         var busDetailsTill=headPosition+noOfBus;
         for(headPosition;headPosition<busDetailsTill;headPosition++){
@@ -519,7 +520,9 @@
             }
             // boundall();
            // distancematrix(responsestore,responsestore);
+          //  function print(response) {
 
+          //   }
             previous_result['status'] = true;
            },
             error: function(xhr) {

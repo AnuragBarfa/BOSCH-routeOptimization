@@ -157,7 +157,7 @@ class RouteView(View):
         dataForSolver['time_windows']=[(0,200)]*len(locations)
         dataForSolver['starts'] = starts
         dataForSolver['ends'] = ends
-        dataForSolver['max_allowed_time'] = 10000
+        dataForSolver['max_allowed_time'] = 120
         dataForSolver['soft_time_windows'] = dataForSolver['time_windows']
         dataForSolver['soft_min_occupancy'] = [int((85/100)*x) for x in dataForSolver['busCapacity']]
         dataForSolver['previous_result'] = previous_result
@@ -374,7 +374,7 @@ class SimulatorView(View):
         dataForSolver['pickup'] = 1
         dataForSolver['starts'] = starts
         dataForSolver['ends'] = ends
-        dataForSolver['max_allowed_time'] = 10000
+        dataForSolver['max_allowed_time'] = 120
         dataForSolver['soft_time_windows'] = dataForSolver['time_windows']
         dataForSolver['soft_min_occupancy'] = [int((85/100)*x) for x in dataForSolver['busCapacity']]
         dataForSolver['duration_matrix'] = dataForSolver['distance_matrix']
