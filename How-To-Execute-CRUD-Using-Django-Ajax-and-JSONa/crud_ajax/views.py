@@ -16,7 +16,7 @@ from urllib.request import urlopen
 #import pandas as pd
 import random 
 import pickle
-from .ga_sbrp import run_gavrptw
+
 buscap=[]
 count=[]
 num_vehicles=0
@@ -231,31 +231,6 @@ class RouteView(View):
                 route['nodes'].append(node)    
             routes.append(route)
         print(routes)
-        # route={}
-        # route['bus']="NH123"
-        # route['color']="red"
-        # route['type']="pickup/drop"
-        # route['nodes']=[]
-        # for i in range(0,len(locations)):
-        #     route['nodes'].append(locations[i])
-        #     count.append(int(locations[i]['count']))
-        # print("PSNGR NO ================")    
-        # print(count)
-        # for i in range(0,len(busdetails)):
-        #     # route['bus'].append(busdetails[i])
-        #     buscap.append(int(busdetails[i]['buscapacity']))
-        # print("buscapacity================")    
-        # print(buscap)
-        # num_vehicles=len(buscap)
-        # routes.append(route)
-        # data['routes']=routes
-        # # data['routes']=route['nodes'] 
-
-        # print("ROUTES==================================")
-        # # print(routes[len(routes)]['nodes'][len(routes[0]['nodes'])]['name'])
-        # print(routes[0]['nodes'][0]['name'])
-        # print(routes[0]['nodes'][0]['name'].replace(", ", "+"))
-        # print("ROUTES=============OVER=================")   
         data={}
         data['pre_result'] = results
         data['routes']=routes
