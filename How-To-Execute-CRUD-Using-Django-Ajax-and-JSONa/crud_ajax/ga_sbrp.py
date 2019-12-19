@@ -22,11 +22,11 @@ def load_data(data):
     L.sort(reverse=True)
     instance['vehicle_capacity'] , instance['perm'] = zip(*L)
     #instance['vehicle_capacity'] = data['busCapacity']
-    instance['distance_matrix'] = data['distance_matrix']
-    instance['distance_matrix'] = [[item/830 for item in subl] for subl in data['distance_matrix']]
-    print('distance matrix ===============> ')
-    print(instance['distance_matrix'])
-    instance['tot_stops'] = len(data['distance_matrix'])
+    instance['distance_matrix'] = data['duration_matrix']
+    # instance['distance_matrix'] = [[item/830 for item in subl] for subl in data['duration_matrix']]
+    # print('distance matrix ===============> ')
+    # print(instance['distance_matrix'])
+    instance['tot_stops'] = len(data['duration_matrix'])
     instance['ready_time'] = []
     instance['due_time'] = []
     for j in data['time_windows']:
@@ -121,6 +121,9 @@ def converts(soln, instance):
         if(j not in ret):
             ret.append(j)
 
+    for j in range(len(ret)):
+        ret[j] = instance['rev_map'][ret[j]]
+
     return ret
 
 
@@ -198,37 +201,47 @@ def print_route(route, instance, base_solution,merge=False):
     final_routes = {}
     final_routes['routes'] = []
     totload = 0
+    timesum = 0
     for sub_route in route:
         sub_route_count += 1
         curbus = instance['perm'][sub_route_count-1]
         thisdict = {}
         curload = 0
+        route_time = 0
         thisdict['bus'] = curbus
         thisdict['nodes'] = []
         sub_route_str = str(instance['bus_starts'][curbus])
-        tmp_dict = {'index': 0, 'load_var': 0, 'max_time_var': not_avail, 'min_time_var': not_avail, 'max_slack_var': not_avail, 'min_slack_var': not_avail}
+        lastindex = instance['bus_starts'][curbus]
+        tmp_dict = {'index': 0, 'load_var': 0, 'max_time_var': 0, 'min_time_var': 0, 'max_slack_var': not_avail, 'min_slack_var': not_avail}
         tmp_dict['index'] = instance['bus_starts'][curbus]
         tmp_dict['load_var'] = 0
         thisdict['nodes'].append(tmp_dict)
         for customer_id in sub_route:
             #customer = instance['valid_stations'][customer_id]
+            route_time += instance['distance_matrix'][lastindex][customer_id]
             sub_route_str = f'{sub_route_str} - {customer_id}'
             route_str = f'{route_str} - {customer_id}'
             curload += instance['demand'][customer_id]
-            tmp_dict = {'index': 0, 'load_var': 0, 'max_time_var': not_avail, 'min_time_var': not_avail, 'max_slack_var': not_avail, 'min_slack_var': not_avail}
+            tmp_dict = {'index': 0, 'load_var': 0, 'max_time_var': 0, 'min_time_var': 0, 'max_slack_var': not_avail, 'min_slack_var': not_avail}
             tmp_dict['index'] = customer_id
             tmp_dict['load_var'] = curload
+            tmp_dict['min_time_var'] = route_time
             thisdict['nodes'].append(tmp_dict)
+            lastindex = customer_id
         sub_route_str = f'{sub_route_str} - {instance[bestr][sub_route_count-1]}'
 
-        tmp_dict = {'index': 0, 'load_var': 0, 'max_time_var': not_avail, 'min_time_var': not_avail, 'max_slack_var': not_avail, 'min_slack_var': not_avail}
+        tmp_dict = {'index': 0, 'load_var': 0, 'max_time_var': 0, 'min_time_var': 0, 'max_slack_var': not_avail, 'min_slack_var': not_avail}
+        route_time += instance['distance_matrix'][lastindex][ instance['bus_ends'][curbus] ]
         tmp_dict['index'] = instance['bus_ends'][curbus]
         tmp_dict['load_var']=curload
+        tmp_dict['min_time_var'] = route_time
         thisdict['nodes'].append(tmp_dict)
         thisdict['totalDistance'] = 0
         thisdict['routeLoad'] = curload
-        thisdict['totalTime'] = 0
+        thisdict['totalTime'] = route_time
+        thisdict['duration'] = route_time
         final_routes['routes'].append(thisdict)
+        timesum += route_time
         totload += curload
         if not merge:
             S = (f'  Vehicle {curbus}\'s route: {sub_route_str}')
@@ -238,9 +251,12 @@ def print_route(route, instance, base_solution,merge=False):
     final_routes['dropped_nodes'] = []
     final_routes['totalDistace'] = 0
     final_routes['totalLoad']=totload
-    final_routes['totalTime'] = 0
+    final_routes['totalTime'] = timesum
     final_routes['empty_vehicle'] = []
-    final_routes['pickup'] = base_solution['pickup']
+    if(len(base_solution) > 0):
+        final_routes['pickup'] = base_solution['pickup']
+    else:
+        final_routes['pickup'] = 1
     if merge:
         print(route_str)
     return final_routes
@@ -273,7 +289,7 @@ def eval_vrptw(individual, instance, time_p=2000, horiz=5000, hor_p=1500,load_p=
         hcost = 0
         for customer_id in sub_route:
             # Calculate section distance
-            customer = instance['rev_map'][customer_id]
+            customer = customer_id     ############### same as customer_id ###########################
             distance = instance['distance_matrix'][last_customer_id][customer]
             # Update sub-route distance
             if(sub_route_distance <= horizonz and sub_route_distance + distance > horizonz):
@@ -358,7 +374,8 @@ def run_gavrptw(data, cx_pb, mut_pb, n_gen,initRoute=False, base_solution={}, po
     # Attribute generator
 
 
-    base_individual = converts(base_solution, instance)
+    if(initRoute):
+        base_individual = converts(base_solution, instance)
     # print("baseee")
     # print(base_individual)
     if(initRoute):
@@ -456,24 +473,28 @@ def run_gavrptw(data, cx_pb, mut_pb, n_gen,initRoute=False, base_solution={}, po
     return print_route(ind2route(best_ind, instance), instance = instance, base_solution = base_solution)
     
 
-
-# In[12]:
-
-
-#dataz = {'distance_matrix': [[0, 0, 5336, 2694, 4559], [0, 0, 5336, 2694, 4559], [5261, 5261, 0, 6381, 6962], [3010, 3010, 5083, 0, 3343], [4547, 4547, 6935, 2368, 0]], 'pickup': 1, 'passengerCount': [0, 0, 12, 13, 14], 'busCapacity': [15, 15, 10, 16], 'time_windows': [(0, 200), (0, 200), (0, 200), (0, 200), (0, 200)], 'starts': [0, 0, 0, 0], 'ends': [1, 1, 1, 1], 'max_allowed_time': 10000, 'soft_time_windows': [(0, 200), (0, 200), (0, 200), (0, 200), (0, 200)], 'soft_min_occupancy': [12, 12, 8, 13]}
+##
+# # In[12]:
 
 
-# In[13]:
+# dataz = {'duration_matrix': [[0, 0, 5336, 2694, 4559], [0, 0, 5336, 2694, 4559], [5261, 5261, 0, 6381, 6962], [3010, 3010, 5083, 0, 3343], [4547, 4547, 6935, 2368, 0]], 'pickup': 1, 'passengerCount': [0, 0, 12, 13, 14], 'busCapacity': [15, 15, 10, 16], 'time_windows': [(0, 200), (0, 200), (0, 200), (0, 200), (0, 200)], 'starts': [0, 0, 0, 0], 'ends': [1, 1, 1, 1], 'max_allowed_time': 10000, 'soft_time_windows': [(0, 200), (0, 200), (0, 200), (0, 200), (0, 200)], 'soft_min_occupancy': [12, 12, 8, 13]}
 
 
-#dataz['distance_matrix']
-#dataz['time_windows'] = [(0,50000) for i in range(5)]
+# # In[13]:
 
 
-# In[14]:
+# dataz['duration_matrix']
+# dataz['time_windows'] = [(0,50000) for i in range(5)]
 
 
-#dataz
+# # In[14]:
 
 
-# In[15]:
+# dataz
+
+
+# # In[15]:
+
+# ans=run_gavrptw(dataz, 0.85, 0.02,50)
+
+# print(ans)
