@@ -530,6 +530,7 @@
           //   }
             previous_result['value'] = response['routes']
             previous_result['status'] = true;
+            console.log("printing");
             for(var i=0;i<response['dropped_nodes'].length;i++){
               console.log("in drop");
               $('#dropped_nodes').append('<p>'+response['dropped_nodes'][i]+'</p>');
