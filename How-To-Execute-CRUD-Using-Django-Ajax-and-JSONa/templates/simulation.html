@@ -1,7 +1,5 @@
 {% load static %}
 <!doctype html>
-<html>{% load static %}
-<!doctype html>
 <html>
   <head>
     <meta charset="utf-8">
@@ -30,7 +28,7 @@
 
   <div id="myDiv" style="height: 620px; width: 100%"></div>
   
-  <div id="myDiv2" style="height: 620px; opacity: 0.4; width: 93%"></div>
+  <div id="myDiv2" style="height: 620px; opacity: 0.4; width: 96%"></div>
 </div>
 
   
@@ -326,6 +324,10 @@
         }
         
         function randomize(loc,speed) {
+          var start = new Date().getTime();
+          setTimeout(function(){},2000);
+          var delta;
+          var chng=0;
           var move_markers=[];
           
           console.log(move_markers);
@@ -340,9 +342,10 @@
                 marker: {
                   color: 'rgb(0,0,255)',
                   size: 20,
-                }
+                },
+               
             };
-
+    
             console.log(move_marker);
 
              move_markers.push(move_marker);
@@ -360,23 +363,27 @@
           routesx.push(routex);
           routesy.push(routey);
         }
-
-                  glob=routesx;
+                  
                   var max=0;
                   for(var i=0;i<routesx.length;i++)
                   max=Math.max(max,routesx[i].length);
 
-                  
-                  // for(var i=0;i<routesx.length;i++)
                     for(var j=0;j<max;j++){
                       var tempx=[],tempy=[];              
                       for(var k=0;k<routesx.length;k++){
+
                         tempx.push(routesx[k][j]);
                         tempy.push(routesy[k][j]);
                       }
+
+                      
                       console.log(routesx);
                       console.log("printing");
                       console.log(tempx);
+                       
+
+                    
+
                      Plotly.animate("myDiv2", 
                       {
                         data: 
@@ -386,455 +393,61 @@
                       },
                       {
                         transition: [
-                        {duration: 500,easing: "  -in-out"},
+                        {duration: 50000,easing: "cubic-in-out"},
                         ]
+                      },{
+
                       }
                     );
+                    glob=tempx;
+                    
+
+                      delta=new Date().getTime()-start;
+                      if(j==0)chng=delta;
+                      
+                      setTimeout(() => {  console.log("World!"); }, 2000);
+                      
+                      for(var l=0;l<tempx.length;l++)
+                      {var o=l+1;
+                        console.log("MARKER"+o);
+                      if(delta-chng==1){console.log("1st X:"+tempx[l]+" Y: "+tempy[l]+" STOP NO:"+j);}
+                      if(delta-chng==2){console.log("2nd X:"+tempx[l]+" Y: "+tempy[l]+" STOP NO:"+j);}
+                      if(delta-chng==3){console.log("3rd X:"+tempx[l]+" Y: "+tempy[l]+" STOP NO:"+j);}
+                      }
+
+
+                      // alert(delta);
+                      console.log(start);
+                      console.log(delta);
+
+                      if(delta>=50 && delta<=80){
+                        // alert("BREAKING AT"+delta+" "+j); alert(max);
+                      }
+                     
                     
           }}
         function startSimulation(){
             var d = new Date();
             var t = d.toLocaleTimeString();
-            $("#demo").html(t); // display data on the page
-            var data =getUpdate();
-        }
-        function stopSimulation(){
-            clearInterval(myVar); // stop the simualtion
-        }
-        $(document).ready(function(){
-            startSimulation();
-            // stopSimulation();
-            // startSimulation();
-             myVar = setInterval(function(){
-         //    for(var j=0;j<loc['xCord'].length;i++){
-         //      loc['xCord'][j]=[];
-         //      loc['yCord'][j]=[];
-         
-         //      loc['xCord'][j].push(old['xCord'][j][0]);
-         //      loc['yCord'][j].push(old['yCord'][j][0]);
-
-         //      old['xCord'][j]=[];
-         //      old['yCord'][j]=[];
-         // }     
-              
-               startSimulation();
-             }, 5000);
-            //setInterval(function(){
-            // },20);
-        });
-    </script> 
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDmwBs8dSuwg56fTWsbJyMdrvXYU3_Pim4&libraries=places&callback=initMap">
-</script>
-  </body>
-</html>
-  <head>
-    <meta charset="utf-8">
-    <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>  
-      <script src="{% static 'js/bootstrap.min.js' %}"></script>
-      <script src="{% static 'js/plotly-latest.min.js' %}"></script>
-  <script src="{% static 'js/plotly-latest.min.js' %}"></script>
-  <style>
-  #container {
-  position: relative;
-    }
-    #container #myDiv, #myDiv2 {
-      position: absolute;
-    }
-    #myDiv{
-      border: 1px solid black;
-    }
-  </style>
-</head>
-
-<body>
-  <!-- <canvas id="myCanvas" width="400" height="400"></canvas> -->
-  <div id="map" style="position:relative;width:0%;height: 0%;float:left;"></div>
-
-  <div id="container">
-
-  <div id="myDiv" style="height: 620px; width: 100%"></div>
-  
-  <div id="myDiv2" style="height: 620px; opacity: 0.4; width: 96%"></div>
-</div>
-
-  
-      
-    <script type="text/javascript">
-      var map;
-      var request;
-      var service;
-      var geocoder;
-      var directionsDisplay;
-      var directionsService;
-
-      function initMap() {  
-        var myLatLng = {lat: 20, lng: 78};
-        directionsService = new google.maps.DirectionsService();
-        map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 4,
-          center: myLatLng,
-          disableDefaultUI: true
-        });
-        directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
-        service = new google.maps.DistanceMatrixService;
-        directionsDisplay.setMap(map);
-        bounds = new google.maps.LatLngBounds();
-        geocoder = new google.maps.Geocoder();
-        
-      }
-
-      function codeLatLng(lat, lng) {
-        var latlng = new google.maps.LatLng(lat, lng);
-        geocoder.geocode({
-          'latLng': latlng
-        }, function (results, status) {
-          if (status === google.maps.GeocoderStatus.OK) {
-            if (results[0]) {
-              console.log(results[0]);
-              return results[0];
-            } else {
-              alert('No results found');
-            }
-          } else {
-            alert('Geocoder failed due to: ' + status);
-          }
-        });
-
-      }
-
-     
-
-
-      var layout2 = {
-  xaxis: {
-    zeroline: false,
-    showline: false,
-    autotick: false,
-    showgrid: false,
-     range: [0, 100],
-     "gridcolor": "rgb(255,255,255)"
-    },
-  yaxis: {
-    autotick: false,
-    showline: false,
-    showgrid: false,
-    zeroline: false,
-     range: [0, 100],
-     "gridcolor": "rgb(255,255,255)"
-    }
-};        
-        var layout = {
-          title: 'BUS ROUTES SIMULATION',
-          xaxis: {
-            title: 'x axis distance in km',
-            showline: false,
-           "gridcolor": "rgb(0,0,0)",
-           range: [0, 100]
-          },
-          yaxis: {
-            title: 'y axis distance in km',
-            showline: false,
-            "gridcolor": "rgb(0,0,0 )",
-            range: [0, 100]
-          },
+            $("#demo").html(t); // di   splay data on the page
+            var changingBusStop={};
             
-        };
-        var loc={};
-        var loc2={};
-        var myVar;
-        var index=0;
-        var starts=[0,0];
-        var ends=[0,0];
-        var busStart=[50,50],busEnd=[100,100];
-        var xCord=[];
-        var yCord=[];
-        var data = [];
-        var busStopsX=[];
-        var intermidiateNodeX=[];
-        var officeX=[];
-        var busStopsY=[];
-        var intermidiateNodeY=[];
-        var officeY=[];
-        var totalbuses;
-        var glob={};
-        var old={};
-        var old2={};
-        var previous_result={'ga':false};
-        function getUpdate(){
-          $.ajax({
-                url: "/simulator/",
-                data: {'csrfmiddlewaretoken':'{{csrf_token}}','updates':'ifUIisusedforupdatepassdatafromhere','index':index,'starts':JSON.stringify(starts),'ends':JSON.stringify(ends),'previous_result':JSON.stringify(previous_result)},
-                cache: false,
-                type: "POST",
-                success: function(response) {
-                  console.log("SUCCESS");
-                  console.log(response);
-                  glob=response;
-                  index=response['index'];
-                  console.log("ROUTES");
-                  console.log(response['routes']);
-                  totalbuses=response['routes'].length;
-                  // alert(totalbuses);
-                  data = [];
-                  busStopsX=[];
-                  intermidiateNodeX=[];
-                  officeX=[];
-                  busStopsY=[];
-                  intermidiateNodeY=[];
-                  officeY=[];
-                  for(var i=0;i<response['allRoutes'].length;i++){
-                    xCord=[];
-                    yCord=[];
-                    for(var j=0;j<response['allRoutes'][i].length;j++){
-                      xCord.push(response['allRoutes'][i][j]['lat']);
-                      yCord.push(response['allRoutes'][i][j]['lng']);
-                    }
-                    var route = {
-                      x: xCord,
-                      y: yCord,
-                      mode: 'lines',
-                      name: 'Route'+i.toString(),
-                      text: stopName,
-                      line: {
-                        color: 'rgb(0, 0, 0)',
-                        width: 2,
-                        dash: 'dot'
-                      },
-                      type: 'scatter'
-                    };
-                    // data.push(route);
-                  }
-                  for(var i=0;i<response['routes'].length;i++){
-                    console.log("getting route");                    
-                    var routeColor='rgb(';
-                    for(var j=0;j<3;j++){
-                      x=Math.floor(Math.random() * Math.floor(255));
-                      routeColor=routeColor+x.toString();
-                      if(j!=2){
-                        routeColor=routeColor+', '
-                      }
-                    }
-                    routeColor=routeColor+')';
-                    console.log(routeColor);
-                    var xCord=[];
-                    var yCord=[];
-                    var stopName=[];
-                    for(var j=0;j<response['routes'][i].length;j++){
-                      xCord.push(response['routes'][i][j]['lat']);
-                      yCord.push(response['routes'][i][j]['lng']);
-                      stopName.push('Stop'+j.toString());
-                      if(response['routes'][i][j]['type']==='intermediateStop'){
-                        intermidiateNodeX.push(response['routes'][i][j]['lat']);
-                        intermidiateNodeY.push(response['routes'][i][j]['lng']);
-                      }
-                      else{
-                        busStopsX.push(response['routes'][i][j]['lat']);
-                        busStopsY.push(response['routes'][i][j]['lng']);
-                      }
-                    }
-                    console.log(xCord);
-                    console.log(yCord);
-                  
-                    var route = {
-                      x: xCord,
-                      y: yCord,
-                      mode: 'lines',
-                      name: 'Route',
-                      text: stopName,
-                      line: {
-                        color: routeColor,
-                        width: 2
-                      },
-                      type: 'scatter'
-                    };
-                    data.push(route);
-                  };
-                  var office = {
-                    x: [50],
-                    y: [50],
-                    mode: 'markers',
-                    name: 'Office',
-                    text: ['school'],
-                    marker: {
-                      color: 'rgb(205,165,0)',
-                      size: 40,
-                      line: {
-                        color: 'rgb(0,0,0)',
-                        width: 0.5,
-                        dash: 'dot',
-                      }
-                    }
-                  };
-                  var busStops = {
-                    x: busStopsX,
-                    y: busStopsY,
-                    mode: 'markers',
-                    name: 'Bus Stop',
-                    text: ['bus'],
-                    marker: {
-                      color: 'rgb(255,105,0)',
-                      size: 20
-                    }
-                  };
-                  var intermediateStop = {
-                    x: intermidiateNodeX,
-                    y: intermidiateNodeY,
-                    mode: 'markers',
-                    name: 'Intermidiate Stop',
-                    text: ['inter'],
-                    marker: {
-                      color: 'rgb(155,65,0)',
-                      size: 10
-                    }
-                  }
-                  data.push(office);
-                  data.push(busStops);
-                  data.push(intermediateStop);
-                  console.log(data);
-                  Plotly.newPlot('myDiv', data, layout, {showSendToCloud: true});
-                  // console.log(response['routes']) 
-                  //////////
-                  
-                  loc['xCord']=[];
-                  loc['yCord']=[];
-                  loc2['xCord']=[];
-                  loc2['yCord']=[];
-              
-                  old['xCord']=[];
-                  old['yCord']=[];
-                  old2['xCord']=[];
-                  old2['yCord']=[];
-                      
-                    //BUS1 ROUTE:
-                    var lengthis=response['routes'];
-                  for(var i=0;i<lengthis[0].length;i++){
-                    loc['xCord'].push(lengthis[0][i]["lat"]);
-                    loc['yCord'].push(lengthis[0][i]["lng"]);
-                  }
-                    loc['xCord'].push(lengthis[0][0]["lat"]);
-                    loc['yCord'].push(lengthis[0][0]["lng"]);
-                    
-                    old['xCord'].push(lengthis[0][lengthis.length-1]["lat"]);
-                    old['xCord'].push(lengthis[0][lengthis.length-1]["lng"]);
-
-                    //BUS2 ROUTE:
-                  for(var i=0;i<lengthis[1].length;i++){
-                    loc2['xCord'].push(lengthis[1][i]["lat"]);
-                    loc2['yCord'].push(lengthis[1][i]["lng"]);
-                  }
-                    old2['xCord'].push(lengthis[1][lengthis.length-1]["lat"]);
-                    old2['xCord'].push(lengthis[1][lengthis.length-1]["lng"]);
-                    
-                    loc2['xCord'].push(response['routes'][1][0]["lat"]);
-                    loc2['yCord'].push(response['routes'][1][0]["lng"]);
-
-
-  
-                  randomize(loc,120);
-                  previous_result['value'] = response['pre_result']
-                  previous_result['status'] = true;
-                  //////////
-                 },
-                error: function(xhr) {
-                  console.log("FAILED");
-                  console.log(xhr);
-                }
-              });
-              
-        }
-        
-        function randomize(loc,speed) {
-          var move_markers=[];
-          // for(var i =0;i<totalbuses.length;i++){
-              var move_marker = {
-                    x: [xCord[i]],
-                    y: [yCord[i]],
-                    mode: 'markers',
-                    marker: {
-                      color: 'rgb(0,0,0)',
-                      size: 20,
-                    }
-                  };
-                  move_markers.push(move_marker);
-
-                  var move_marker2 = {
-                    x: [xCord[1]],
-                    y: [yCord[1]],
-                    mode: 'markers',
-                    marker: {
-                      color: 'rgb(0,0,0)',
-                      size: 20,
-                    }
-                  };
-                  move_markers.push(move_marker2);
-                  var finalMarkerloc=[];
-                  finalMarkerloc[x]={}
-
-                 //  }
-                  Plotly.newPlot('myDiv2', move_markers ,layout2 , {showSendToCloud: true});
-                
-            // for(var j=fromY;j<toY;j+=0.2)
-             for(var i=1;i<loc['xCord'].length;i++){
-
-              
-              Plotly.animate(
-                "myDiv2",
-                {
-                  data: [{ x: [loc['xCord'][i-1]] , y:[loc['yCord'][i-1]]},{ x: [loc2['xCord'][i]] , y:[loc2['yCord'][i]]}],
-                  
-                  layout: layout2
-                },
-                {
-                  transition: {
-                    duration: speed,
-                    easing: "cubic-in-out"
-                  }
-                }
-              );
-              
-              // console.log("NEXT STOP FOR BUS2 IS:"+loc2['xCord'][i]+" "+loc['yCord'][i]);  
-              
-               }
-          for(var i=1;i<loc['xCord'].length;i++){
-              console.log("BUS1 STOP "+i+"th :"+loc['xCord'][i-1]+" "+loc['yCord'][i-1]);
-              // console.log(i+"th STOP FOR BUS1 IS:"+loc['xCord'][i]+" "+loc['yCord'][i]);
-          }            
-          for(var i=1;i<loc['xCord'].length;i++){
-              console.log("BUS2 STOP "+i+"th :"+loc2['xCord'][i-1]+" "+loc['yCord'][i-1]);
-          }
-        }
-        function startSimulation(){
-            var d = new Date();
-            var t = d.toLocaleTimeString();
-            $("#demo").html(t); // display data on the page
             var data =getUpdate();
+
         }
         function stopSimulation(){
+
             clearInterval(myVar); // stop the simualtion
         }
         $(document).ready(function(){
             startSimulation();
             // stopSimulation();
             // startSimulation();
-            myVar = setInterval(function(){
-              loc['xCord']=[];
-              loc['yCord']=[];
-              loc2['xCord']=[];
-              loc2['yCord']=[];
-              
-              loc['xCord'].push(old['xCord'][0]);
-              loc['yCord'].push(old['yCord'][0]);
-              loc2['xCord'].push(old2['xCord'][0]);
-              loc2['yCord'].push(old2['yCord'][0]);
-              
-              old['xCord']=[];
-              old['yCord']=[];
-              old2['xCord']=[];
-              old2['yCord']=[];
-              
-              startSimulation();
-            }, 8000);
-            //setInterval(function(){
+            //  myVar = setInterval(function(){
+         
+            //    startSimulation();
+            //  }, 5000);
+            // //setInterval(function(){
             // },20);
         });
     </script> 

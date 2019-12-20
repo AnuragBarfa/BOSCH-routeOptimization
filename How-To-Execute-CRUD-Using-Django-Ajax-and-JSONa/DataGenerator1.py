@@ -75,22 +75,17 @@ BasicInstance['busStopDetails']=[
 BasicInstance['CostMatrix']=[]
 for j in range(0,len(BasicInstance['busStopDetails'])):
     distanceFromJ=[]
-    print("J===",j)
     for k in range(0,len(BasicInstance['busStopDetails'])):
-        print("k===",k)
         distanceBetweenIJ=[]
         numRoutesBetweenIJ=random.randint(1,3)
         for l in range(0,numRoutesBetweenIJ):
-            print("L===",l)
             route={}
             distTotal=0
             timeTotal = 0
-            #k7l1m1
             route['intermediateNodes']=[]
             numIntermidiate=random.randint(1,2)
             prev = [BasicInstance['busStopDetails'][j]['lat'] , BasicInstance['busStopDetails'][j]['lng']]
-            for m in range(0,numIntermidiate-1):
-                print("M===",m)
+            for m in range(0,numIntermidiate):
                 intermediateNode={}
                 x1 = BasicInstance['busStopDetails'][j]['lat']
                 x1 += BasicInstance['busStopDetails'][k]['lat']
@@ -100,7 +95,7 @@ for j in range(0,len(BasicInstance['busStopDetails'])):
                 y1 += BasicInstance['busStopDetails'][k]['lng']
                 y1 /= 2
 
-                offset = 1
+                offset = 5
 
                 costhe = random.random()
                 sinthe = math.sqrt(1 - costhe*costhe)
@@ -112,40 +107,27 @@ for j in range(0,len(BasicInstance['busStopDetails'])):
                 D = (newX - prev[0])**2 + (newY-prev[1])**2
                 distTotal += math.sqrt(D)
                 prev = [newX, newY]
-                print("distance", D)
+
                 speed = random.randint(40, 100)
                 timeTotal += (( math.sqrt(D)) / speed)*60
                 # intermediateNode['dist']=random.randint(0, 4)
                 intermediateNode['lat']= newX
                 intermediateNode['lng']= newY
                 route['intermediateNodes'].append(intermediateNode)
-            print(distTotal)    
             route['distTotal']=distTotal
             route['timeTotal']=timeTotal   
             distanceBetweenIJ.append(route)
         distanceFromJ.append(distanceBetweenIJ)
     BasicInstance['CostMatrix'].append(distanceFromJ)
-# print(BasicInstance)
+print(BasicInstance)
 Instances={}
-for i in range(0,20):
+for i in range(0,10):
     Instance={}
     Instance['officeDetails']=BasicInstance['officeDetails']
     Instance['startDetails']=BasicInstance['startDetails']
     Instance['busDetails']=BasicInstance['busDetails']
     Instance['busStopDetails']=BasicInstance['busStopDetails']
     Instance['CostMatrix']=BasicInstance['CostMatrix']
-    for j in range(0,len(Instance['CostMatrix'])):
-        for k in range(0,len(Instance['CostMatrix'][j])):
-            for l in range(0,len(Instance['CostMatrix'][j][k])):
-                currTime=Instance['CostMatrix'][j][k][l]['timeTotal']
-                print(currTime)
-                ran=random.random()
-                print(ran)
-                if ran>0.75:
-                    ran=10  
-                currTime=currTime+currTime*ran
-                print(currTime)
-                Instance['CostMatrix'][j][k][l]['timeTotal']=currTime
     Instances[i]=Instance    
 dbfile = open('SimulationData', 'wb') 
 # source, destination 

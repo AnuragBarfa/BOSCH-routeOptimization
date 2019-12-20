@@ -18,7 +18,7 @@
     font-family: 'Open Sans', sans-serif;
   }
   .table-wrapper {
-    width: 300px;
+    width: 400px;
     background: #f2f2f2; 
     box-shadow: 0 1px 1px rgba(0,0,0,.05);
     }
@@ -124,6 +124,7 @@
           <!-- <i id="hide_no_loc_available2">NO BUS AVAILABLE</i> -->
                 <input type="text" name="office2" id="officeval2" placeholder="Office Location" style="margin: 5px;" autocomplete="on"> 
                 <button  class="btn btn-primary" id="office2" aria-expanded="false" style="margin: 5px;" onclick="office2()"> Save </button>
+                <br/>
                 <input type="time" id="appt" name="appt" min="00:00" max="23:00"  placeholder="Min time window">
                 <!-- <button  class="btn btn-primary" id="appt" aria-expanded="false" style="margin: 5px;" onclick="mintirp()"> Save </button> -->
                 <input type="time" id="appt2" name="appt2" min="00:00" max="23:00" placeholder="Max time window">
@@ -154,9 +155,11 @@
                 <table class="table">
                   <thead>
                       <tr>
-                        <th><div style="max-width:140px;width:auto;">Location</div></th>
-                        <th><div style="margin-left:45px;width:auto;">P.No.</div></th>
-                        <th><button type="button" class="btn btn-info add-new"><!-- <i class="fa fa-plus"></i> -->Add Loc</button></th>
+                       <th><div style="width:80px;">Location</div></th>
+                        <th><div style="width:40px;float:right; margin-left:20px;">P.No.</div></th>
+                        <th><div style="width:55px;float:right;">Start</div></th>
+                        <th><div style="width:55px;float:right;">End</div></th>
+                        <th><button type="button" class="btn btn-info add-new" style="float: right;"><i class="fa fa-plus"></i></button></th>
                       </tr>
                   </thead>
                   <tbody >
@@ -419,6 +422,8 @@
         var location_set = new Set();
         for(headPosition;headPosition<passangerDetailsTill;headPosition++){
           var currPsngr=dataRows[headPosition].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+
+          glob=currPsngr;
           console.log(currPsngr);
 
           var stud_dict = {};
@@ -1065,18 +1070,31 @@ $(document).ready(function()
     $(this).attr("disabled", "disabled");
     
     var row = '<tr>' +
-        '<td><input type="text" class="form-control" style="max-width:140px;width:auto;" name="name" id="name"></td>' +
-        '<td><input type="text" class="form-control" style="float: right;margin-left:55px;max-width:20px;width:auto;" name="department" id="department"></td>' +
-    '<td><div style="float: right;  padding: 5px;"><a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a><a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a><a class="delete" title="Delete" data-toggle="tooltip" ><i class="material-icons">&#xE872;</i></a></td></div>'+
+        '<td><input type="text" class="form-control" style="width:80px;" name="name" id="name"></td>' +
+        '<td><input type="text" class="form-control" style="width:40px;float:right; margin-left:20px;" name="department" id="department"></td>' +
+            '<td><input type="time" id="appt" name="appt" min="00:00" max="23:00"  placeholder="Min time window" style="width:55px;float:right;"></td>' +
+        '<td><input type="time" id="appt2" name="appt2" min="00:00" style="width:55px; float:right;" max="23:00" placeholder="Max time window"></td>' +
+    '<td><a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a><a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a><a class="delete" title="Delete" data-toggle="tooltip" ><i class="material-icons">&#xE872;</i></a></td>'+
     '</tr>';
+
+
+var row2 = '<tr>' +
+        '<td><input type="text" class="form-control"  name="name" id="name"></td>' +
+        '<td><input type="text" class="form-control"  name="department" id="department"></td>' +
+    '<td><a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a><a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a><a class="delete" title="Delete" data-toggle="tooltip" ><i class="material-icons">&#xE872;</i></a></td>'+
+    '</tr>';
+    
     
     // $(this).closest('card').find('i').hide();
       $('#hide_no_bus_available > div > i ').hide();
     hide_or_show_no_bus();
-    var currTable = $(this).closest('table');
+     var currTable = $(this).closest('#collapseExample1').find('table');
     currTable.prepend(row);  
     currTable.find('tbody').find('tr').eq(0).find(".add, .edit").toggle();
-
+    
+    var currTablebus = $(this).closest('#collapseExample2').find('table');
+    currTablebus.append(row2);  
+    currTablebus.find('tbody').find('tr').eq(0).find(".add, .edit").toggle();
     // hide_or_show_no_bus();
     // $("table tbody tr").eq(0).find(".add, .edit").toggle();
     $('[data-toggle="tooltip"]').tooltip();

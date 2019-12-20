@@ -477,6 +477,8 @@ class SimulatorView(View):
         dataForSolver['busCapacity']=[]
         for i in range(0,len(currData['busDetails'])):
             dataForSolver['busCapacity'].append(currData['busDetails'][i]['capacity'])
+            starts.append(0)
+            ends.append(1)
 
         dataForSolver['time_windows']=[(0,200)]*len(currData['busStopDetails'])
         dataForSolver['pickup'] = 1
