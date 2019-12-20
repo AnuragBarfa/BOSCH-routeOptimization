@@ -473,7 +473,9 @@
               console.log(xhr);
           }        
         });
-        
+        console.log("printing");
+        console.log(noOfBus);
+        console.log(headPosition);
         headPosition=headPosition+headerSeprator;
         var busDetailsTill=headPosition+noOfBus;
         for(headPosition;headPosition<busDetailsTill;headPosition++){
@@ -485,7 +487,7 @@
           '<td><a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a><a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a><a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a></td>'+
           '</tr>';
           // if(currStop['psngrCount']!=0){
-          //   currTable.prepend(row);
+            currTable.prepend(row);
           // }
          
         }
