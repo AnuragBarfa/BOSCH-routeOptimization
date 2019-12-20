@@ -39,7 +39,7 @@ def create_data_model(inputData):
     data['soft_time_windows'] = inputData['soft_time_windows']
     data['max_allowed_time']  = inputData['max_allowed_time']
     data['vehicle_speed'] = 830  # Travel speed: 5km/h converted in m/min
-    data['drop_penalty'] = 80000
+    data['drop_penalty'] = 100000
     data['soft_min_occ_penalty'] = 20000
     data['soft_time_penalty'] = 2000
     data['soft_min_occupancy'] = inputData['soft_min_occupancy']
@@ -366,6 +366,8 @@ def solver(inputData):
     # [START solve]
     assignment = routing.SolveWithParameters(search_parameters)
     # [END solve]
+    print("assignment")
+    print()
     data['previous_solution'] = assignment
     # Print solution on console.
     # [START print_solution]
