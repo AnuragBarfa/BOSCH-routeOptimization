@@ -678,6 +678,8 @@
             previous_result['value'] = response['pre_result']
             previous_result['status'] = true;
             console.log("printing");
+            var totalDist = 0;
+            var totalDura = 0;
             for(var i=0;i<response['dropped_nodes'].length;i++){
               console.log("in drop");
               $('#dropped_nodes').append('<p>'+"Dropped Nodes: "  + response['dropped_nodes'][i]+'</p>');
@@ -694,6 +696,8 @@
               $('#routes_details').append('<p>'+ 'bus: ' + response['routes'][i]['bus']+'</p>')
               $('#routes_details').append('<p>'+ 'duration: ' + response['routes'][i]['duration']+'</p>')
               $('#routes_details').append('<p>'+ 'distance: ' + response['routes'][i]['distance']+'</p>')
+              totalDist = totalDist + response['routes'][i]['distance'];
+              totalDura = totalDura + response['routes'][i]['duration'];
               for(var j=0;j<response['routes'][i]['nodes'].length;++j){
                 var t1 = moment.duration(relativeToAbsolute,"HH:mm");
                 var t2 = moment.duration(relativeToAbsolute,"HH:mm");
