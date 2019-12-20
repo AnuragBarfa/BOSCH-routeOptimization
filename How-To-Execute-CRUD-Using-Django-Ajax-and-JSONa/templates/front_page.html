@@ -232,7 +232,7 @@
       <div id="global_values"></div>
       <div id="routes_details"></div>
     </div>
-    <div id="passanger_detail">
+    <!-- <div id="passanger_detail">
       <table class="table">
         <thead>
             <tr>
@@ -241,13 +241,13 @@
               <th>Pickup Time</th>
               <th>Drop Adress</th>
               <th>Drop Time</th>
-              <th><button type="button" class="btn btn-info add-new"><!-- <i class="fa fa-plus"></i> -->Add Loc</button></th>
+              <th><button type="button" class="btn btn-info add-new"><i class="fa fa-plus"></i> Add Loc</button></th>
             </tr>
         </thead>
         <tbody >
         </tbody>
       </table>
-    </div>
+    </div> -->
   </div>
 {% endblock %}
 
@@ -442,7 +442,7 @@
         console.log(location_set);
 
         //var geoc = new google.maps.Geocoder();
-
+        
         
         $.ajax({
           url: "/busStopSelection/",
@@ -456,6 +456,7 @@
             console.log("success");
             console.log(response);
             x = [];
+
             for(var key in response['bus_stop_info']){
               var k1 = key;
               var k2 = response['bus_stop_info'][key]['psngrCount'];
@@ -466,6 +467,7 @@
               x.push(res);
             }
             console.log(x);
+
             for(var i=0;i<x.length;i++){
               var currStop=x[i];
               console.log(currStop);
@@ -476,7 +478,8 @@
           error: function(xhr) {
               console.log("FAILED");
               console.log(xhr);
-          }        
+          }
+
         });
         console.log("printing");
         console.log(noOfBus);
@@ -517,8 +520,10 @@
               console.log("printing location");
               console.log(storeLocationDetails);
  var row = '<tr>' +
-                    '<td>'+currStop['busStopName']+'</td>' +
-                    '<td>'+currStop['psngrCount']+'</td>' +
+                    '<td >'+currStop['busStopName']+'</td>' +
+                    '<td >'+currStop['psngrCount']+'</td>' +
+                    '<td ><div style="width:55px;float:right;">'+currStop['time_window'][0]+'</div></td>' +
+                    '<td><div style="width:55px;float:right;">'+currStop['time_window'][1]+'</div></td>' +
                 '<td><a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a><a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a><a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a></td>'+
                 '</tr>';
                 
@@ -545,7 +550,7 @@
           }
           return geocodeCallBack;
         }
-        alert("UPLOAD DONE!!");
+        alert("FILE UPLOADED!! WAIT PLOTTING THEM...");
 
       }
       function routeopt(ga = false){
@@ -1080,7 +1085,6 @@ var row2 = '<tr>' +
     '<td><a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a><a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a><a class="delete" title="Delete" data-toggle="tooltip" ><i class="material-icons">&#xE872;</i></a></td>'+
     '</tr>';
     
-    
     // $(this).closest('card').find('i').hide();
       $('#hide_no_bus_available > div > i ').hide();
     hide_or_show_no_bus();
@@ -1089,7 +1093,7 @@ var row2 = '<tr>' +
     currTable.find('tbody').find('tr').eq(0).find(".add, .edit").toggle();
     
     var currTablebus = $(this).closest('#collapseExample2').find('table');
-    currTablebus.append(row2);  
+    currTablebus.prepend(row2);  
     currTablebus.find('tbody').find('tr').eq(0).find(".add, .edit").toggle();
     // hide_or_show_no_bus();
     // $("table tbody tr").eq(0).find(".add, .edit").toggle();
@@ -1116,7 +1120,7 @@ var row2 = '<tr>' +
   // Add row on add button click
   $(document).on("click", ".add", function(){
     var empty = false;
-    var input = $(this).parents("tr").find('input[type="text"]');
+    var input = $(this).parents("tr").find('input');
     
     input.each(function(){
       if(!$(this).val()){
@@ -1143,7 +1147,7 @@ var row2 = '<tr>' +
       $(this).parents("tr").find(".add, .edit").toggle();
       $(".add-new").removeAttr("disabled");
       
-      if(input.length!=1 && $(this.closest('.collapse')).attr('id')==="collapseExample1"){
+      if(input.length!=3 && $(this.closest('.collapse')).attr('id')==="collapseExample1"){
         var geocoder = new google.maps.Geocoder();
         geocoder.geocode( { 'address': address}, function(results, status) {
           if (status == google.maps.GeocoderStatus.OK)
