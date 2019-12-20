@@ -460,6 +460,7 @@
               res['time_window'] = response['bus_stop_info'][key]['time_window'];
               x.push(res);
             }
+            console.log(x);
             for(var i=0;i<x.length;i++){
               var currStop=x[i];
               console.log(currStop);
@@ -483,7 +484,10 @@
               '<td>'+currBus[1]+'</td>' +
           '<td><a class="add" title="Add" data-toggle="tooltip"><i class="material-icons">&#xE03B;</i></a><a class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a><a class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a></td>'+
           '</tr>';
-          currTable.prepend(row);
+          // if(currStop['psngrCount']!=0){
+          //   currTable.prepend(row);
+          // }
+         
         }
         // var x=[{'busStopName':'Devegowda petrol bunk, Gowdanapalya, Uttarahalli Hobli, Bengaluru,','psngrCount':10},
         // {'busStopName':'RNSIT, Channasandra, RR Nagar, Bengaluru,','psngrCount':20},
@@ -514,7 +518,22 @@
               // $(this).closest('card').find('i').hide();
               var currTable = $('#collapseExample1').find('tbody');
               // console.log(currTable);
-              currTable.prepend(row); 
+              console.log("priting");
+              console.log(currStop);
+              
+              if(currStop['psngrCount']!=0){
+                // console.log("ps/gr");
+                console.log("in if");
+                currTable.prepend(row);  
+              }
+              else{
+                console.log(currStop['psngrCount']);
+                console.log("in else");
+              }
+            }
+            else{
+              console.log("could not find location");
+              console.log(currStop);
             }
           }
           return geocodeCallBack;
@@ -636,7 +655,7 @@
             noofbusesrunning=response['routes'].length;
 
             responsestore=response['routes'];
-            console.log(response['routes'][0]['nodes'][0]);
+            // console.log(response['routes'][0]['nodes'][0]);
             for(var i =0;i<response['routes'].length;i++){  
 
             //  calcRoute2(response['routes'][2]);

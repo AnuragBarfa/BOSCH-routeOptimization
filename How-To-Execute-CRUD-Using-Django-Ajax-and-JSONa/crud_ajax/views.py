@@ -72,7 +72,7 @@ class BusStopSelection(View):
         # create final map
 
 
-        assignment, tw = assign_stops(stud_data, stop_data, 200000000000, 10, times, 500)
+        assignment, tw = assign_stops(stud_data, stop_data, 2000, 10, times, 500)
         counts = {}
         counts[None]=0
         for j in range(len(potentialBusStops)):
@@ -235,9 +235,13 @@ class RouteView(View):
         distance_matrix,duration_matrix = create_distance_matrix(dataForDistanceMatrix)   
         print("dist")
         print(distance_matrix)
-        
+        print("bus deatils")
+        print(busdetails)
+
         for i in range(0,len(busdetails)):
             busCapacity.append(int(busdetails[i]['buscapacity']))
+        print("busdeatils")
+        print(busCapacity)
 
         dataForSolver['distance_matrix']=distance_matrix
         dataForSolver['pickup'] = pickup
