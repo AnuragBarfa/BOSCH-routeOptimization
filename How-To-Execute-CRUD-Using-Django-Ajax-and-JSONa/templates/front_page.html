@@ -688,18 +688,23 @@
           //  function print(response) {
 
           //   }
+
+          $('#dropped_nodes').val('');
+          $('#empty_vehicle').val('');
+          $('#routes_details').val('');
+          $('#global_values').val('');
             previous_result['value'] = response['pre_result']
             previous_result['status'] = true;
             console.log("printing");
             var totalDist = 0;
             var totalDura = 0;
-            $('#dropped_nodes').append('<p> Dropped Nodes: ');
+            $('#dropped_nodes').append('<p> <strong>Dropped Nodes: </strong>  ');
             for(var i=0;i<response['dropped_nodes'].length;i++){
               console.log("in drop");
               $('#dropped_nodes').append(' '+response['dropped_nodes'][i]+', ');
             }
             $('#dropped_nodes').append('</p>');
-            $('#empty_vehicle').append('<p> empty Vehicles:');
+            $('#empty_vehicle').append('<p> <strong>Empty Vehicles: </strong>');
             for(var i=0;i<response['empty_vehicle'].length;i++){
               console.log("in drop");
               $('#empty_vehicle').append(' '+response['empty_vehicle'][i]+', ');
@@ -721,14 +726,14 @@
                 if(ga == false){
                   time_window2[response['routes'][i]['nodes'][j]['index']] = [response['routes'][i]['nodes'][j]['arrival'],response['routes'][i]['nodes'][j]['arrival']+5];
                 }
-                $('#routes_details').append('<p>'+ 'location: ' + ":" + locations[response['routes'][i]['nodes'][j]['index']]['name']+'</p>')
-                $('#routes_details').append('<p>'+ 'Arrival: ' + ":" + arrival+'</p>')
-                $('#routes_details').append('<p>'+ 'Departure: ' + ":" + departure+'</p>')
+                $('#routes_details').append('<p>'+ '<strong>location: ' + ":" + locations[response['routes'][i]['nodes'][j]['index']]['name']+'</strong></p>')
+                $('#routes_details').append('<p>'+ '<strong>Arrival: </strong>' + ":" + arrival+'</p>')
+                $('#routes_details').append('<p>'+ '<strong>Departure: </strong>' + ":" + departure+'</p>')
               }
             }
-            $('#global_values').append('<p>'+"Total distance: "  + totalDist + 'meters' + '</p>');
-            $('#global_values').append('<p>'+"Total duration: "  +  totalDura +  'minutes' + '</p>');
-            $('#global_values').append('<p>'+"Total Load: "  + response['totalLoad']+'</p>');
+            $('#global_values').append('<p>'+"<strong>Total distance: </strong>"  + totalDist + 'meters' + '</p>');
+            $('#global_values').append('<p>'+"<strong>Total duration: </strong>"  +  totalDura +  'minutes' + '</p>');
+            $('#global_values').append('<p>'+"<strong>Total Load: </strong>"  + response['totalLoad']+'</p>');
            },
             error: function(xhr) {
               console.log("FAILED");
