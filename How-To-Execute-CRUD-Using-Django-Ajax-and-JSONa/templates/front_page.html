@@ -636,10 +636,11 @@
 
         
         var MinOccupancyPer,MinOccupancyPerHard;
-        MinOccupancyPer=document.getElementById('min_occ').value;
+        // MinOccupancyPer=document.getElementById('min_occ').value;
         var checkBox=document.getElementById('min_occ_checkbox');
         if (checkBox.checked == true){
           MinOccupancyPerHard=true;
+          MinOccupancyPer=document.getElementById('min_occ').value;
         }else{
           MinOccupancyPerHard=false;
         }
@@ -656,7 +657,9 @@
           'pickup' :pickup,
           'previous_result2':JSON.stringify(previous_result),
           'time_window2':JSON.stringify(time_window2),
-          'max_trip_time': JSON.stringify(max_trip_time)
+          'max_trip_time': JSON.stringify(max_trip_time),
+          'min_occ': JSON.stringify(MinOccupancyPer),
+          'is_min_occ': JSON.stringify(MinOccupancyPerHard)
           },
           cache: false,
           type: "POST",

@@ -211,6 +211,8 @@ class RouteView(View):
         max_trip_time = json.loads(request.POST['max_trip_time'])
         previous_result = json.loads(request.POST['previous_result2'])
         time_window2 = json.loads(request.POST['time_window2'])
+        min_occ=json.loads(request.POST['min_occ'])
+        is_min_occ=json.loads(request.POST['is_min_occ'])
         print(locations)
         print("BUS=====================")
         print(busdetails)
@@ -263,7 +265,10 @@ class RouteView(View):
         dataForSolver['soft_min_occupancy'] = [int((85/100)*x) for x in dataForSolver['busCapacity']]
         dataForSolver['previous_result'] = previous_result
         dataForSolver['duration_matrix'] = [ [y//60 for y in x] for x in duration_matrix ]
-        dataForSolver['hard_min_occupancy'] = []
+        if is_min_occ:
+            dataForSolver['hard_min_occupancy'] = [int((int(min_occ)/100)*x) for x in dataForSolver['busCapacity']]
+        else:
+            dataForSolver['hard_min_occupancy'] = []
         dataForSolver['time_per_demand_unit'] = .5
         results = {}
 
