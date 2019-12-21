@@ -636,11 +636,11 @@
 
         
         var MinOccupancyPer,MinOccupancyPerHard;
-        // MinOccupancyPer=document.getElementById('min_occ').value;
+        MinOccupancyPer=document.getElementById('min_occ').value;
         var checkBox=document.getElementById('min_occ_checkbox');
         if (checkBox.checked == true){
           MinOccupancyPerHard=true;
-          MinOccupancyPer=document.getElementById('min_occ').value;
+          
         }else{
           MinOccupancyPerHard=false;
         }
@@ -693,15 +693,18 @@
             console.log("printing");
             var totalDist = 0;
             var totalDura = 0;
+            $('#dropped_nodes').append('<p> Dropped Nodes: ');
             for(var i=0;i<response['dropped_nodes'].length;i++){
               console.log("in drop");
-              $('#dropped_nodes').append('<p>'+"Dropped Nodes: "  + response['dropped_nodes'][i]+'</p>');
+              $('#dropped_nodes').append(' '+response['dropped_nodes'][i]+', ');
             }
+            $('#dropped_nodes').append('</p>');
+            $('#empty_vehicle').append('<p> empty Vehicles:');
             for(var i=0;i<response['empty_vehicle'].length;i++){
               console.log("in drop");
-              $('#empty_vehicle').append('<p>'+"empty Vehicle: "  + response['empty_vehicle'][i]+'</p>');
+              $('#empty_vehicle').append(' '+response['empty_vehicle'][i]+', ');
             }
-            
+            $('#empty_vehicle').append('</p>');
             for(var i=0;i<response['routes'].length;i++){
               $('#routes_details').append('<p>'+ 'bus: ' + response['routes'][i]['bus']+'</p>')
               $('#routes_details').append('<p>'+ 'duration: ' + response['routes'][i]['duration']+'</p>')

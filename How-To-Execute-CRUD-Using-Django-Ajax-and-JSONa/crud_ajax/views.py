@@ -493,7 +493,10 @@ class SimulatorView(View):
         dataForSolver['soft_time_windows'] = dataForSolver['time_windows']
         dataForSolver['soft_min_occupancy'] = [int((85/100)*x) for x in dataForSolver['busCapacity']]
         dataForSolver['duration_matrix'] = dataForSolver['distance_matrix']
-        dataForSolver['hard_min_occupancy'] = []
+        if is_min_occ:
+            dataForSolver['hard_min_occupancy'] = []
+        else:
+            dataForSolver['hard_min_occupancy']= [int((int(min_occ)/100)*x) for x in dataForSolver['busCapacity']]
         dataForSolver['previous_result'] = previous_result
         dataForSolver['time_per_demand_unit'] = .5
         output=solver(dataForSolver)
