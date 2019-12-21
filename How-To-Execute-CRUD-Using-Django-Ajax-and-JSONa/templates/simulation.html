@@ -406,12 +406,14 @@
                       if(j==0)chng=delta;
                       
                       setTimeout(() => {  console.log("World!"); }, 2000);
-                      var start={},start['X']=[],start['Y']=[],end={},end['X']=[],end['Y']=[];
+                      var start={},end={};
+                      start['X']=[],start['Y']=[];
+                      end['X']=[],end['Y']=[];
                       for(var l=0;l<tempx.length;l++){
-                        start['X']=0;
-                        start['Y']=0;
-                        end['X']=0;
-                        end['Y']=0;                
+                        start['X'].push(0);
+                        start['Y'].push(0);
+                        end['X'].push(0);
+                        end['Y'].push(0);                
                       }
                       for(var l=0;l<tempx.length;l++)
                       {var o=l+1;
@@ -419,11 +421,15 @@
                       if(delta-chng==1){console.log("1st X:"+tempx[l]+" Y: "+tempy[l]+" STOP NO:"+j);
                     }
                       if(delta-chng==2){console.log("2nd X:"+tempx[l]+" Y: "+tempy[l]+" STOP NO:"+j);}
-                      if(delta-chng==3){console.log("3rd X:"+tempx[l]+" Y: "+tempy[l]+" STOP NO:"+j);}
-                      start['X']=tempx[l];
-                      start['Y']=tempx[l];
+                      if(delta-chng==3){console.log("3rd X:"+tempx[l]+" Y: "+tempy[l]+" STOP NO:"+j);
+                      start['X'].push(tempx[l]);
+                      start['Y'].push(tempy[l]);
                       
-                      console.log("BUSES ARE AT "+start);                      
+                      console.log("BUSES ARE AT ");                      
+                      console.log(start);                      
+                      
+                    }
+                      
                       }
 
                       
