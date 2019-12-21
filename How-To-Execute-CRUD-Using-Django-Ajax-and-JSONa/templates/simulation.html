@@ -393,7 +393,7 @@
                       },
                       {
                         transition: [
-                        {duration: 50000,easing: "cubic-in-out"},
+                        {duration: 5000,easing: "cubic-in-out"},
                         ]
                       },{
 
@@ -406,15 +406,27 @@
                       if(j==0)chng=delta;
                       
                       setTimeout(() => {  console.log("World!"); }, 2000);
-                      
+                      var start={},start['X']=[],start['Y']=[],end={},end['X']=[],end['Y']=[];
+                      for(var l=0;l<tempx.length;l++){
+                        start['X']=0;
+                        start['Y']=0;
+                        end['X']=0;
+                        end['Y']=0;                
+                      }
                       for(var l=0;l<tempx.length;l++)
                       {var o=l+1;
                         console.log("MARKER"+o);
-                      if(delta-chng==1){console.log("1st X:"+tempx[l]+" Y: "+tempy[l]+" STOP NO:"+j);}
+                      if(delta-chng==1){console.log("1st X:"+tempx[l]+" Y: "+tempy[l]+" STOP NO:"+j);
+                    }
                       if(delta-chng==2){console.log("2nd X:"+tempx[l]+" Y: "+tempy[l]+" STOP NO:"+j);}
                       if(delta-chng==3){console.log("3rd X:"+tempx[l]+" Y: "+tempy[l]+" STOP NO:"+j);}
+                      start['X']=tempx[l];
+                      start['Y']=tempx[l];
+                      
+                      console.log("BUSES ARE AT "+start);                      
                       }
 
+                      
 
                       // alert(delta);
                       console.log(start);
@@ -423,7 +435,7 @@
                       if(delta>=50 && delta<=80){
                         // alert("BREAKING AT"+delta+" "+j); alert(max);
                       }
-                     
+                    
                     
           }}
         function startSimulation(){
